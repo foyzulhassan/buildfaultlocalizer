@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Mar 10, 2017 3:55:54 PM by Hibernate Tools 4.3.1.Final -->
 <hibernate-mapping>
-    <class name="edu.utsa.buildlogparser.entityernate.Gradlepatch" table="gradlepatch" catalog="travistorrent" optimistic-lock="version">
+    <class name="com.build.analyzer.entity.Gradlepatch" table="gradlepatch" catalog="travistorrent" optimistic-lock="version">
         <id name="row" type="long">
             <column name="row" />
             <generator class="assigned" />
