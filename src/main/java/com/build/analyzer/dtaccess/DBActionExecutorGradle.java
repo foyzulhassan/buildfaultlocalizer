@@ -7,6 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.build.analyzer.entity.Gradlebuildfixdata;
 import com.build.analyzer.entity.Gradlepatch;
 import com.build.analyzer.entity.Travistorrent;
 
@@ -139,8 +140,34 @@ public class DBActionExecutorGradle {
 	}
 	
 	
-	public void insertBatchGradleRecord(List<Gradlepatch> datas) {
-		//Travistorrent travis = null;
+	public void insertBatchGradleRecord(List<Gradlepatch> datas) {		
+
+		Session session = SessionGenerator.getSessionFactoryInstance().openSession();		
+		
+
+		Transaction tx = null;
+		try {
+			
+			for(int index=0;index<datas.size();index++)
+			{
+				tx = session.beginTransaction();			
+			
+				session.save(datas.get(index));
+				tx.commit();		
+				
+			}
+
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+	}
+	
+	public void insertBatchBuildFixRecord(List<Gradlebuildfixdata> datas) {		
 
 		Session session = SessionGenerator.getSessionFactoryInstance().openSession();		
 		
