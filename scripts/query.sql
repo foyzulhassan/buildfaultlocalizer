@@ -10,5 +10,8 @@ CREATE TABLE gradlebuildfixdata(
 	 bl_log mediumtext,	
 	 fail_change MEDIUMTEXT,
 	 fix_change MEDIUMTEXT,	
+	 revereted_status text,
+	 changefile_count int not null default 0,
+	 revertfile_count int not null default 0,
 	 PRIMARY KEY ( row )
 );

@@ -36,5 +36,14 @@
         <property name="fixChange" type="string">
             <column name="fix_change" length="16777215" />
         </property>
+		<property name="reveretedStatus" type="string">
+            <column name="revereted_status" length="65535" />
+        </property>
+        <property name="changeFileCount" type="java.lang.Integer">
+            <column name="changefile_count" />
+        </property>
+        <property name="revertFileCount" type="java.lang.Integer">
+            <column name="revertfile_count" />
+        </property>
     </class>
 </hibernate-mapping>

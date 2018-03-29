@@ -17,6 +17,9 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	private String blLog;
 	private String failChange;
 	private String fixChange;
+	private String reveretedStatus;
+	private Integer changeFileCount;
+	private Integer revertFileCount;
 
 	public Gradlebuildfixdata() {
 	}
@@ -27,7 +30,7 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 
 	public Gradlebuildfixdata(long row, String ghProjectName, String gitBranch, String gitCommit,
 			String gitFailintroCommit, String gitLastfailCommit, String gitFixCommit, String blLog, String failChange,
-			String fixChange) {
+			String fixChange,String revertStatus,Integer changeFileCount,Integer revertFileCount) {
 		this.row = row;
 		this.ghProjectName = ghProjectName;
 		this.gitBranch = gitBranch;
@@ -38,6 +41,11 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 		this.blLog = blLog;
 		this.failChange = failChange;
 		this.fixChange = fixChange;
+		this.reveretedStatus= revertStatus;
+		this.changeFileCount=changeFileCount;
+		this.revertFileCount=revertFileCount;
+		
+				
 	}
 
 	public long getRow() {
@@ -118,6 +126,29 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 
 	public void setFixChange(String fixChange) {
 		this.fixChange = fixChange;
+	}
+	public String getReveretedStatus() {
+		return reveretedStatus;
+	}
+
+	public void setReveretedStatus(String reveretedStatus) {
+		this.reveretedStatus = reveretedStatus;
+	}
+
+	public Integer getChangeFileCount() {
+		return changeFileCount;
+	}
+
+	public void setChangeFileCount(Integer changeFileCount) {
+		this.changeFileCount = changeFileCount;
+	}
+
+	public Integer getRevertFileCount() {
+		return revertFileCount;
+	}
+
+	public void setRevertFileCount(Integer revertFileCount) {
+		this.revertFileCount = revertFileCount;
 	}
 
 }
