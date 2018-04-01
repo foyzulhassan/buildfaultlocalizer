@@ -5,12 +5,13 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Config {
-    //public static String mainDir = "/home/foyzulhassan/Research/Data/autobuilder_testing/";     
-//    public static String workDir ="/media/AutoBuilder/Machine_Learning/";    
-//    public static String repoDir = "/media/AutoBuilder/Machine_Learning/Project_Repo/"; 
+    //public static String mainDir = "/home/foyzulhassan/Research/Data/autobuilder_testing/"; 
+	
+    public static String workDir ="/media/AutoBuilder/Machine_Learning/";    
+    public static String repoDir = "/media/AutoBuilder/Machine_Learning/Project_Repo/"; 
     
-    public static String workDir ="D:\\Researh_Works\\ICSE_2017\\data";    
-    public static String repoDir = "D:\\Researh_Works\\ICSE_2017\\data\\src_repo\\";   
+//    public static String workDir ="D:\\Researh_Works\\ASE_2018\\data_repo\\";    
+//    public static String repoDir = "D:\\Researh_Works\\ASE_2018\\data_repo\\Project_Repo\\";   
    
     //public static String outDir = mainDir + "outputs";
     

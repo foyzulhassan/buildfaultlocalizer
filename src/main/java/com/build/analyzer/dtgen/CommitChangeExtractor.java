@@ -48,7 +48,6 @@ public class CommitChangeExtractor {
 					failintrocommit);
 
 			if (revertcheker.isCodeRevereted(failchangemap, fixchangemap)) {
-
 				projects.get(index).setReveretedStatus("YES");
 			} else {
 				projects.get(index).setReveretedStatus("NO");
@@ -56,9 +55,15 @@ public class CommitChangeExtractor {
 
 			int revertfilecount = revertcheker.getRevertedFileCount(failchangemap, fixchangemap);
 			int changefilecount = failchangemap.size();
-
-			projects.get(index).setChangeFileCount(changefilecount);
-			projects.get(index).setRevertFileCount(revertfilecount);
+			
+			String failchangefiles=revertcheker.getChangeFileList(failchangemap);
+			String fixchangefiles=revertcheker.getChangeFileList(fixchangemap);
+			
+			
+			projects.get(index).setFailFilelist(failchangefiles);
+			projects.get(index).setPassFilelist(fixchangefiles);
+			projects.get(index).setChangefileCount(changefilecount);
+			projects.get(index).setRevertfileCount(revertfilecount);
 
 		}
 

@@ -236,8 +236,11 @@ public class CommitAnalyzer {
 
 				if (diff.getNewPath().contains(".gradle")) {
 
-					String currentContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit2);
-					String previousContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit1);
+					String currentContent = getFileContentAtCommit(ID2, diff);
+					String previousContent = getFileContentAtCommit(ID1,diff);
+
+					//String currentContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit2);
+					//String previousContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit1);
 
 					File f1 = commitAnalyzingUtils.writeContentInFile("g1.gradle", currentContent);
 					File f2 = commitAnalyzingUtils.writeContentInFile("g2.gradle", previousContent);
@@ -264,8 +267,11 @@ public class CommitAnalyzer {
 
 					}
 				} else if (diff.getNewPath().contains(".java")) {
-					String currentContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit2);
-					String previousContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit1);
+					
+					String currentContent = getFileContentAtCommit(ID2, diff);
+					String previousContent = getFileContentAtCommit(ID1,diff);
+					//String currentContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit2);
+					//String previousContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit1);
 
 					File f1 = commitAnalyzingUtils.writeContentInFile("j1.java", currentContent);
 					File f2 = commitAnalyzingUtils.writeContentInFile("j2.java", previousContent);

@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Jun 17, 2017 1:25:01 PM by Hibernate Tools 4.3.1.Final -->
 <hibernate-mapping>
-	 <class name="com.build.analyzer.entity.Travistorrent" table="travistorrent_8_2_2017" catalog="travistorrent" optimistic-lock="version">
+	 <class name="edu.utsa.buildlogparser.entity.Travistorrent" table="travistorrent_8_2_2017" catalog="travistorrent" optimistic-lock="version">
     <!--<class name="edu.utsa.buildlogparser.entity.Travistorrent" table="travistorrent_8_2_2017" catalog="travisci" optimistic-lock="version">-->
         <id name="rowId" type="java.lang.Integer">
             <column name="row_id" />

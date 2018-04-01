@@ -1,49 +1,68 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Mar 17, 2018 1:44:34 AM by Hibernate Tools 5.1.0.Alpha1 -->
+<!-- Generated Apr 1, 2018 2:51:28 AM by Hibernate Tools 5.1.0.Alpha1 -->
 <hibernate-mapping>
-    <!--<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata" catalog="travistorrent" optimistic-lock="version">-->
- 	<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata" catalog="travisci" optimistic-lock="version">   
-        <id name="row" type="long">
-            <column name="row" />
-            <generator class="assigned" />
-        </id>
-        <property name="ghProjectName" type="string">
-            <column name="gh_project_name" length="65535" />
-        </property>
-        <property name="gitBranch" type="string">
-            <column name="git_branch" length="65535" />
-        </property>
-        <property name="gitCommit" type="string">
-            <column name="git_commit" length="65535" />
-        </property>
-        <property name="gitFailintroCommit" type="string">
-            <column name="git_failintro_commit" length="65535" />
-        </property>
-        <property name="gitLastfailCommit" type="string">
-            <column name="git_lastfail_commit" length="65535" />
-        </property>
-        <property name="gitFixCommit" type="string">
-            <column name="git_fix_commit" length="65535" />
-        </property>
-        <property name="blLog" type="string">
-            <column name="bl_log" length="16777215" />
-        </property>
-        <property name="failChange" type="string">
-            <column name="fail_change" length="16777215" />
-        </property>
-        <property name="fixChange" type="string">
-            <column name="fix_change" length="16777215" />
-        </property>
+	<!--For Server -->
+	<!--<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata" 
+		catalog="travistorrent" optimistic-lock="version"> -->
+	<!--For Local Test -->
+	<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata"
+		catalog="travisci" optimistic-lock="version">
+		<id name="row" type="long">
+			<column name="row" />
+			<generator class="assigned" />
+		</id>
+		<property name="f1row" type="long">
+			<column name="f1row" not-null="true" />
+		</property>
+		<property name="f2row" type="long">
+			<column name="f2row" not-null="true" />
+		</property>
+		<property name="ghProjectName" type="string">
+			<column name="gh_project_name" length="65535" />
+		</property>
+		<property name="gitBranch" type="string">
+			<column name="git_branch" length="65535" />
+		</property>
+		<property name="gitCommit" type="string">
+			<column name="git_commit" length="65535" />
+		</property>
+		<property name="gitFailintroCommit" type="string">
+			<column name="git_failintro_commit" length="65535" />
+		</property>
+		<property name="gitLastfailCommit" type="string">
+			<column name="git_lastfail_commit" length="65535" />
+		</property>
+		<property name="gitFixCommit" type="string">
+			<column name="git_fix_commit" length="65535" />
+		</property>
+		<property name="blLog" type="string">
+			<column name="bl_log" length="16777215" />
+		</property>
+		<property name="blLargelog" type="string">
+			<column name="bl_largelog" length="16777215" />
+		</property>
+		<property name="failChange" type="string">
+			<column name="fail_change" length="16777215" />
+		</property>
+		<property name="fixChange" type="string">
+			<column name="fix_change" length="16777215" />
+		</property>
 		<property name="reveretedStatus" type="string">
-            <column name="revereted_status" length="65535" />
-        </property>
-        <property name="changeFileCount" type="java.lang.Integer">
-            <column name="changefile_count" />
-        </property>
-        <property name="revertFileCount" type="java.lang.Integer">
-            <column name="revertfile_count" />
-        </property>
-    </class>
+			<column name="revereted_status" length="65535" />
+		</property>
+		<property name="failFilelist" type="string">
+			<column name="fail_filelist" length="65535" />
+		</property>
+		<property name="passFilelist" type="string">
+			<column name="pass_filelist" length="65535" />
+		</property>
+		<property name="changefileCount" type="int">
+			<column name="changefile_count" not-null="true" />
+		</property>
+		<property name="revertfileCount" type="int">
+			<column name="revertfile_count" not-null="true" />
+		</property>
+	</class>
 </hibernate-mapping>

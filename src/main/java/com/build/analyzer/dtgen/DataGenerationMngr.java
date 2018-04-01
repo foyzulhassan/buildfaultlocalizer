@@ -56,17 +56,26 @@ public class DataGenerationMngr {
 					/// Gradlepatch gradlepatch = new Gradlepatch();
 					Gradlebuildfixdata buildfixdata = new Gradlebuildfixdata();
 
-					buildfixdata.setRow(projectsGradle.get(index).getRowId());
+					buildfixdata.setRow(projectsGradle.get(p1index).getRowId());
+					buildfixdata.setF1row(projectsGradle.get(index).getRowId());
+					buildfixdata.setF2row(projectsGradle.get(f2index).getRowId());
 					buildfixdata.setGitCommit(projectsGradle.get(p1index).getGitTriggerCommit());
 					buildfixdata.setGitFailintroCommit(projectsGradle.get(index).getGitTriggerCommit());
 					buildfixdata.setGitLastfailCommit(projectsGradle.get(f2index).getGitTriggerCommit());
-					buildfixdata.setGitLastfailCommit(projectsGradle.get(f2index).getGitTriggerCommit());
+					buildfixdata.setGitFixCommit(projectsGradle.get(p2index).getGitTriggerCommit());
 					buildfixdata.setGhProjectName(projectsGradle.get(index).getGhProjectName());
 					buildfixdata.setGitBranch(projectsGradle.get(index).getGitBranch());
 					buildfixdata.setBlLog(projectsGradle.get(index).getBlLog());
 					buildfixdata.setFailChange(null);
 					buildfixdata.setFixChange(null);
-
+					buildfixdata.setReveretedStatus(null);
+					buildfixdata.setChangefileCount(0);
+					buildfixdata.setRevertfileCount(0);
+					buildfixdata.setFailFilelist(null);
+					buildfixdata.setPassFilelist(null);
+					buildfixdata.setBlLargelog(null);
+					
+					
 					buildfixdatalist.add(buildfixdata);
 
 				}
@@ -83,6 +92,9 @@ public class DataGenerationMngr {
 		int findindex = -1;
 		int i = 0;
 
+		if(index<0 || index>=projectsGradle.size())
+			return findindex;
+		
 		Travistorrent project = projectsGradle.get(index);
 		i = index + 1;
 
@@ -106,6 +118,9 @@ public class DataGenerationMngr {
 		int findindex = -1;
 		int i = 0;
 
+		if(index<0 || index>=projectsGradle.size())
+			return findindex;
+		
 		Travistorrent project = projectsGradle.get(index);
 		i = index - 1;
 
@@ -132,6 +147,9 @@ public class DataGenerationMngr {
 	private int getNextSameProjPassBuildIndex(int index, List<Travistorrent> projectsGradle) {
 		int findindex = -1;
 		int i = 0;
+		
+		if(index<0 || index>=projectsGradle.size())
+			return findindex;
 
 		Travistorrent project = projectsGradle.get(index);
 		i = index + 1;
@@ -158,6 +176,9 @@ public class DataGenerationMngr {
 		int findindex = -1;
 		int i = 0;
 
+		if(index<0 || index>=projectsGradle.size())
+			return findindex;
+		
 		Travistorrent project = projectsGradle.get(index);
 		i = index - 1;
 

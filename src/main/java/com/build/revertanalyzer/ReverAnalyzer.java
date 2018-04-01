@@ -9,6 +9,22 @@ import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.tree.ITree;
 
 public class ReverAnalyzer {
+	
+	
+	public String getChangeFileList(Map<String, List<Action>> filechangemap)
+	{
+		 StringBuilder str = new StringBuilder();
+		
+		Iterator<Entry<String, List<Action>>> it = filechangemap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, List<Action>> entry = (Entry<String, List<Action>>) it.next();
+			String key = entry.getKey();
+			str.append(key);
+			str.append(";");			
+		}
+		
+		return str.toString();
+	}
 
 	public boolean isCodeRevereted(Map<String, List<Action>> failchangemap, Map<String, List<Action>> fixchangemap) {
 		boolean reverted = false;
@@ -86,9 +102,21 @@ public class ReverAnalyzer {
 
 			while (node1.getParent() != null && node2.getParent() != null) {
 				node1 = node1.getParent();
-				node2 = node1.getParent();
+				node2 = node2.getParent();
+				
+				if(node1.getLabel()==null && node2.getLabel()!=null)
+				{
+					matchfound = false;
+					break;
+				}
+				
+				else if(node1.getLabel()!=null && node2.getLabel()==null)
+				{
+					matchfound = false;
+					break;
+				}
 
-				if (node1.getLabel().equals(node2.getLabel())) {
+				if (node1.getLabel()!=null && node2.getLabel()!=null && node1.getLabel().equals(node2.getLabel())) {
 					matchfound = true;
 				} else {
 					matchfound = false;
