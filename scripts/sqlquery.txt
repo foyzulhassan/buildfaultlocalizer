@@ -1,0 +1,8 @@
+SELECT gh_project_name, avg(fulllogdual_mrr) as FullLogMRR, avg(fulllogdual_map) as FullLogMAP, avg(filterlogdual_mrr) as FilterLogMRR, avg(filterlogdual_map) FilterLogMAP from travistorrent.gradlebuildfixdata where length(f2pass_filelist)>0 and bl_log IS NOT NULL group by gh_project_name
+
+
+delete FROM gradlebuildfixdata WHERE bl_log NOT LIKE '%* What went wrong:%';
+
+delete FROM gradlebuildfixdata WHERE length(fail_filelist)<=0;
+
+delete FROM gradlebuildfixdata WHERE length(pass_filelist)<=0;

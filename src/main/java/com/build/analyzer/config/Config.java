@@ -34,10 +34,11 @@ public class Config {
     public static String logDir3 = "/media/AutoBuilder3/log_mining_db3/"; 
     
     public static int trainCount = 135; 
-    public static int topNSimilarity= 5; 
+    public static int topNSimilarity= 100; 
     
     public static String failedfolder = workDir + "failedfolder/"; 
     
+    public static String tempFolder="temp/";
     
     /*
      * This Configs are used for parsing patern

@@ -30,7 +30,7 @@ public class DBActionExecutorChangeData {
 			String hql = "FROM Gradlebuildfixdata gp";
 
 			Query query = session.createQuery(hql);
-			//query.setMaxResults(5);
+			//query.setMaxResults(50);
 
 			results = query.list();
 

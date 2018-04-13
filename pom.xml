@@ -104,34 +104,34 @@
 			<artifactId>jta</artifactId>
 			<version>1.1</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.github.gumtreediff</groupId> -->
-<!-- 			<artifactId>core</artifactId> -->
-<!-- 			<version>2.1.0</version> -->
-<!-- 			<scope>system</scope> -->
-<!-- 			<systemPath>${project.basedir}/src/main/resources/repo/core-2.1.0-SNAPSHOT.jar</systemPath> -->
-<!-- 		</dependency> -->
-<!-- 	 	<dependency> -->
-<!-- 			<groupId>com.github.gumtreediff</groupId> -->
-<!-- 			<artifactId>client</artifactId> -->
-<!-- 			<version>2.1.0</version> -->
-<!-- 			<scope>system</scope> -->
-<!-- 			<systemPath>${project.basedir}/src/main/resources/repo/client-2.1.0-SNAPSHOT.jar</systemPath> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.github.gumtreediff</groupId> -->
-<!-- 			<artifactId>client</artifactId> -->
-<!-- 			<version>2.1.0</version> -->
-<!-- 			<scope>system</scope> -->
-<!-- 			<systemPath>${project.basedir}/src/main/resources/repo/client-2.1.0-SNAPSHOT.jar</systemPath> -->
-<!-- 		</dependency>  -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.github.gumtreediff</groupId> -->
-<!-- 			<artifactId>gen.jdt</artifactId> -->
-<!-- 			<version>2.1.0</version> -->
-<!-- 			<scope>system</scope> -->
-<!-- 			<systemPath>${project.basedir}/src/main/resources/repo/gen.jdt-2.1.0-SNAPSHOT.jar</systemPath> -->
-<!-- 		</dependency>  -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.github.gumtreediff</groupId> -->
+		<!-- <artifactId>core</artifactId> -->
+		<!-- <version>2.1.0</version> -->
+		<!-- <scope>system</scope> -->
+		<!-- <systemPath>${project.basedir}/src/main/resources/repo/core-2.1.0-SNAPSHOT.jar</systemPath> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.github.gumtreediff</groupId> -->
+		<!-- <artifactId>client</artifactId> -->
+		<!-- <version>2.1.0</version> -->
+		<!-- <scope>system</scope> -->
+		<!-- <systemPath>${project.basedir}/src/main/resources/repo/client-2.1.0-SNAPSHOT.jar</systemPath> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.github.gumtreediff</groupId> -->
+		<!-- <artifactId>client</artifactId> -->
+		<!-- <version>2.1.0</version> -->
+		<!-- <scope>system</scope> -->
+		<!-- <systemPath>${project.basedir}/src/main/resources/repo/client-2.1.0-SNAPSHOT.jar</systemPath> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.github.gumtreediff</groupId> -->
+		<!-- <artifactId>gen.jdt</artifactId> -->
+		<!-- <version>2.1.0</version> -->
+		<!-- <scope>system</scope> -->
+		<!-- <systemPath>${project.basedir}/src/main/resources/repo/gen.jdt-2.1.0-SNAPSHOT.jar</systemPath> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -223,6 +223,44 @@
 			<groupId>org.eclipse.jgit</groupId>
 			<artifactId>org.eclipse.jgit.archive</artifactId>
 			<version>4.7.1.201706071930-r</version>
+		</dependency>
+		<!-- START - Lucene Dependencies -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>4.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-common</artifactId>
+			<version>4.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>4.4.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers</artifactId>
+			<version>3.5.0</version>
+		</dependency>
+		<!-- END - Lucene Dependencies -->
+		<dependency>
+			<groupId>com.github.wumpz</groupId>
+			<artifactId>diffutils</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>google-diff-match-patch</artifactId>
+			<version>20121119-1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.1</version>
 		</dependency>
 	</dependencies>
 	<build>

@@ -40,7 +40,11 @@ import com.build.analyzer.diff.gradle.GradleChange;
 import com.build.analyzer.diff.gradle.GradlePatchGenMngr;
 import com.build.analyzer.diff.java.JavaPatchGenMngr;
 import com.build.analyzer.entity.CommitChange;
+import com.build.analyzer.entity.Gradlebuildfixdata;
 import com.build.analyzer.entity.Gradlepatch;
+import com.build.docsimilarity.DocumentSimilarity;
+import com.build.keyword.Keyword;
+import com.build.keyword.TermExtractor;
 
 //import edu.utsa.data.DataResultsHolder;
 //import edu.utsa.data.DataStatsHolder;
@@ -148,6 +152,257 @@ public class CommitAnalyzer {
 
 	}
 
+	public Map<String, Double> getLogTreeSimilarityMap(String ID, long rowid, Gradlebuildfixdata fixdata,
+			boolean islarge) {
+
+		String logcontent = "";
+		File f1 = null;
+		File f2 = null;
+		int index = 0;
+
+		Map<String, String> filemap = new HashMap<String, String>();
+		Map<String, Double> filteredmap = new HashMap<String, Double>();
+
+		if (islarge)
+			logcontent = fixdata.getBlLargelog();
+		else
+			logcontent = fixdata.getFailChange();
+
+		// try {
+		// if(logcontent!=null && logcontent.length()>0)
+		// {
+		// List<Keyword> keywords=TermExtractor.guessFromString(logcontent);
+		// logcontent=getAllContent(keywords);
+		// }
+		//
+		// } catch (IOException e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
+
+		try {
+			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+
+			RevTree tree = commit.getTree();
+
+			// TreeWalk treeWalk = new TreeWalk(repository);
+			// treeWalk.addTree(tree);
+			// treeWalk.setRecursive(false);
+			// treeWalk.setPostOrderTraversal(false);
+
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			// treeWalk.setRecursive(true);
+
+			while (treeWalk.next()) {
+				// System.out.println("found:" + treeWalk.getPathString());
+
+				if (treeWalk.isSubtree()) {
+					// System.out.println("dir: " + treeWalk.getPathString());
+					treeWalk.enterSubtree();
+				}
+
+				else if (treeWalk.getPathString().contains(".java") || treeWalk.getPathString().contains(".gradle")) {
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+
+					// and then one can the loader to read the file
+					// loader.copyTo(System.out);
+
+					byte[] butestr = loader.getBytes();
+
+					String str = new String(butestr);
+
+					if (str != null && str.length() > 0) {
+						List<Keyword> keywords = TermExtractor.guessFromString(str);
+						str = getAllContent(keywords);
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					index++;
+
+					filemap.put(treeWalk.getPathString(), sourcefile);
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+				}
+
+			}
+
+			ArrayList<String> files = new ArrayList<String>();
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				files.add(entry.getValue());
+			}
+
+			// log file content
+			files.add(f1.toString());
+
+			DocumentSimilarity docsim = new DocumentSimilarity(files);
+
+			// find similarity in between source file and log file
+			Map<String, Double> simMap = docsim.findSimilarityMap(files);
+
+			// simmap.put(treeWalk.getPathString(), simval);
+
+			int count = 0;
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				if (simMap.containsKey(entry.getValue())) {
+					filteredmap.put(entry.getKey(), simMap.get(entry.getValue()));
+				}
+			}
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				File f = new File(entry.getValue());
+				if (f.exists()) {
+					boolean flag = f.delete();
+
+				}
+
+			}
+
+			treeWalk.reset();
+			f1.delete();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		return filteredmap;
+
+	}
+
+	public Map<String, List<Action>> extractChangeInBetweenCommit(String ID1, String ID2) {
+
+		Map<String, List<Action>> filechangemap = new HashMap<String, List<Action>>();
+		GradlePatchGenMngr gradlechgmgr = new GradlePatchGenMngr();
+		JavaPatchGenMngr javachngmsr = new JavaPatchGenMngr();
+
+		try {
+			ObjectId objectid1 = repository.resolve(ID1);
+			ObjectId objectid2 = repository.resolve(ID2);
+
+			if (objectid2 == null)
+				return null;
+
+			if (objectid1 == null)
+				return null;
+
+			RevCommit commit1 = rw.parseCommit(objectid1);
+			RevCommit commit2 = rw.parseCommit(objectid2);
+
+			/// System.out.println(commit.getFullMessage());
+
+			// RevCommit parent = rw.parseCommit(commit.getParent(0).getId());
+
+			DiffFormatter df = commitAnalyzingUtils.setDiffFormatter(repository, true);
+
+			List<DiffEntry> diffs = df.scan(commit1.getTree(), commit2.getTree());
+
+			for (DiffEntry diff : diffs) {
+
+				if (diff.getNewPath().contains(".gradle")) {
+
+					String currentContent = getFileContentAtCommit(ID2, diff);
+					String previousContent = getFileContentAtCommit(ID1, diff);
+
+					// String currentContent =
+					// commitAnalyzingUtils.getContentOnCommit(repository, diff,
+					// commit2);
+					// String previousContent =
+					// commitAnalyzingUtils.getContentOnCommit(repository, diff,
+					// commit1);
+
+					File f1 = commitAnalyzingUtils.writeContentInFile("g1.gradle", currentContent);
+					File f2 = commitAnalyzingUtils.writeContentInFile("g2.gradle", previousContent);
+
+					if (f1 != null && f2 != null) {
+						try {
+
+							// gradlechgmgr.generatePatch(f2.toString(),
+							// f1.toString());
+							List<Action> changes = new ArrayList<Action>();
+
+							changes = gradlechgmgr.getGradleChanges(f2.toString(), f1.toString());
+
+							if (changes != null)
+								filechangemap.put(diff.getNewPath(), changes);
+
+							// gradleChanges = gradleChanges + change;
+
+							f1.delete();
+							f2.delete();
+						}
+
+						catch (Exception e) {
+							System.out.println("Exception Parent Commit ID:" + ID1 + "Exception Child Commit ID:" + ID2
+									+ ">>>" + e.getMessage());
+
+						}
+
+					}
+				} else if (diff.getNewPath().contains(".java")) {
+
+					String currentContent = getFileContentAtCommit(ID2, diff);
+					String previousContent = getFileContentAtCommit(ID1, diff);
+					// String currentContent =
+					// commitAnalyzingUtils.getContentOnCommit(repository, diff,
+					// commit2);
+					// String previousContent =
+					// commitAnalyzingUtils.getContentOnCommit(repository, diff,
+					// commit1);
+
+					File f1 = commitAnalyzingUtils.writeContentInFile("j1.java", currentContent);
+					File f2 = commitAnalyzingUtils.writeContentInFile("j2.java", previousContent);
+
+					if (f1 != null && f2 != null) {
+						try {
+
+							// gradlechgmgr.generatePatch(f2.toString(),
+							// f1.toString());
+							List<Action> changes = javachngmsr.getJavaChanges(f2.toString(), f1.toString());
+
+							if (changes.size() > 0)
+								filechangemap.put(diff.getNewPath(), changes);
+
+							// gradleChanges = gradleChanges + change;
+
+							f1.delete();
+							f2.delete();
+						}
+
+						catch (Exception e) {
+							System.out.println("Exception Parent Commit ID:" + ID1 + "Exception Child Commit ID:" + ID2
+									+ ">>>" + e.getMessage());
+
+						}
+
+					}
+
+				}
+
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return filechangemap;
+	}
+
 	public void extractGradleFileChange(String ID) {
 		// File debug = new File("debug-" + ID + ".txt");
 
@@ -203,110 +458,6 @@ public class CommitAnalyzer {
 			System.out.println(e.getMessage());
 		}
 
-	}
-
-	public Map<String, List<Action>> extractChangeInBetweenCommit(String ID1, String ID2) {
-
-		Map<String, List<Action>> filechangemap = new HashMap<String, List<Action>>();
-		GradlePatchGenMngr gradlechgmgr = new GradlePatchGenMngr();
-		JavaPatchGenMngr javachngmsr = new JavaPatchGenMngr();
-
-		try {
-			ObjectId objectid1 = repository.resolve(ID1);
-			ObjectId objectid2 = repository.resolve(ID2);
-
-			if (objectid2 == null)
-				return null;
-
-			if (objectid1 == null)
-				return null;
-
-			RevCommit commit1 = rw.parseCommit(objectid1);
-			RevCommit commit2 = rw.parseCommit(objectid2);
-
-			/// System.out.println(commit.getFullMessage());
-
-			// RevCommit parent = rw.parseCommit(commit.getParent(0).getId());
-
-			DiffFormatter df = commitAnalyzingUtils.setDiffFormatter(repository, true);
-
-			List<DiffEntry> diffs = df.scan(commit1.getTree(), commit2.getTree());
-
-			for (DiffEntry diff : diffs) {
-
-				if (diff.getNewPath().contains(".gradle")) {
-
-					String currentContent = getFileContentAtCommit(ID2, diff);
-					String previousContent = getFileContentAtCommit(ID1,diff);
-
-					//String currentContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit2);
-					//String previousContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit1);
-
-					File f1 = commitAnalyzingUtils.writeContentInFile("g1.gradle", currentContent);
-					File f2 = commitAnalyzingUtils.writeContentInFile("g2.gradle", previousContent);
-
-					if (f1 != null && f2 != null) {
-						try {
-
-							// gradlechgmgr.generatePatch(f2.toString(),
-							// f1.toString());
-							List<Action> changes = gradlechgmgr.getGradleChanges(f2.toString(), f1.toString());
-							filechangemap.put(diff.getNewPath(), changes);
-
-							// gradleChanges = gradleChanges + change;
-
-							f1.delete();
-							f2.delete();
-						}
-
-						catch (Exception e) {
-							System.out.println("Exception Parent Commit ID:" + ID1 + "Exception Child Commit ID:" + ID2
-									+ ">>>" + e.getMessage());
-
-						}
-
-					}
-				} else if (diff.getNewPath().contains(".java")) {
-					
-					String currentContent = getFileContentAtCommit(ID2, diff);
-					String previousContent = getFileContentAtCommit(ID1,diff);
-					//String currentContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit2);
-					//String previousContent = commitAnalyzingUtils.getContentOnCommit(repository, diff, commit1);
-
-					File f1 = commitAnalyzingUtils.writeContentInFile("j1.java", currentContent);
-					File f2 = commitAnalyzingUtils.writeContentInFile("j2.java", previousContent);
-
-					if (f1 != null && f2 != null) {
-						try {
-
-							// gradlechgmgr.generatePatch(f2.toString(),
-							// f1.toString());
-							List<Action> changes = javachngmsr.getJavaChanges(f2.toString(), f1.toString());
-							filechangemap.put(diff.getNewPath(), changes);
-
-							// gradleChanges = gradleChanges + change;
-
-							f1.delete();
-							f2.delete();
-						}
-
-						catch (Exception e) {
-							System.out.println("Exception Parent Commit ID:" + ID1 + "Exception Child Commit ID:" + ID2
-									+ ">>>" + e.getMessage());
-
-						}
-
-					}
-
-				}
-
-			}
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-
-		return filechangemap;
 	}
 
 	// convert InputStream to String
@@ -1005,5 +1156,18 @@ public class CommitAnalyzer {
 
 	public void setRw(RevWalk rw) {
 		this.rw = rw;
+	}
+
+	public String getAllContent(List<Keyword> keywords) {
+
+		StringBuilder strbuilder = new StringBuilder();
+
+		for (int in = 0; in < keywords.size(); in++) {
+			strbuilder.append(keywords.get(in).getStem());
+			strbuilder.append(" ");
+		}
+
+		return strbuilder.toString();
+
 	}
 }

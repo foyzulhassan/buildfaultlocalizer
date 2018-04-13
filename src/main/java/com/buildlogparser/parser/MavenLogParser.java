@@ -11,7 +11,6 @@ import com.build.analyzer.config.Config;
 
 import edu.utsa.buildlogparser.util.StringFilter;
 
-
 public class MavenLogParser extends BaseLogParser {
 
 	public MavenLogParser() {
@@ -58,7 +57,7 @@ public class MavenLogParser extends BaseLogParser {
 					keepLastLine.set(Config.lineCountWithoutErrorTag - 1, line);
 				}
 
-				else if (keepLastLine.size() <=Config.lineCountWithoutErrorTag - 1) {
+				else if (keepLastLine.size() <= Config.lineCountWithoutErrorTag - 1) {
 					keepLastLine.add(indexat, line);
 				}
 

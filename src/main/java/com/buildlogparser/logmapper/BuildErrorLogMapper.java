@@ -11,8 +11,6 @@ import com.buildlogparser.parser.BaseLogParser;
 import com.buildlogparser.parser.GradleLogParser;
 import com.buildlogparser.parser.MavenLogParser;
 
-
-
 public class BuildErrorLogMapper {
 
 	public void updateBuildErrorLogForAllProject() {
@@ -51,6 +49,56 @@ public class BuildErrorLogMapper {
 			}
 			System.out.println("Done for Row#: " + index);
 		}
+	}
+
+	public String updateBuildErrorFullLogForProject(long ID) {
+
+		String strlog = "";
+
+		DBActionExecutor dbobj = new DBActionExecutor();
+
+		Travistorrent travisproj = dbobj.getEntityWithRowId(ID);
+
+		String buildlogfilestr = getBuildLogFilePath(travisproj);
+
+		File buildlogfile = new File(buildlogfilestr);
+
+		if (buildlogfile.exists() && !buildlogfile.isDirectory()) {
+
+			strlog = getErrorFullText(travisproj, buildlogfilestr);
+
+		} else {
+			System.out.println("File Not Found: " + buildlogfilestr);
+		}
+
+		return strlog;
+	}
+	
+	public String updateBuildErrorDifferentialLogForProject(long passID, long f2ID) {
+
+		String strlog = "";
+
+		DBActionExecutor dbobj = new DBActionExecutor();
+
+		Travistorrent travispassproj = dbobj.getEntityWithRowId(passID);
+		Travistorrent travisfailproj = dbobj.getEntityWithRowId(f2ID);	
+		
+
+		String buildlogpassfilestr = getBuildLogFilePath(travispassproj);
+		String buildlogfailfilestr = getBuildLogFilePath(travisfailproj);		
+
+		File buildlogpassfile = new File(buildlogpassfilestr);
+		File buildlogfailfile = new File(buildlogfailfilestr);
+
+		if (buildlogpassfile.exists() && !buildlogpassfile.isDirectory() && buildlogfailfile.exists() && !buildlogfailfile.isDirectory()) {
+
+			strlog = getDiferentialLogText(travispassproj, buildlogpassfilestr,buildlogfailfilestr);
+
+		} else {
+			System.out.println("File Not Found: " + buildlogpassfilestr+buildlogfailfilestr);
+		}
+
+		return strlog;
 	}
 
 	public void updateBatchBuildErrorFailProjects() {
@@ -284,6 +332,59 @@ public class BuildErrorLogMapper {
 		}
 
 		return errorstringbuilder.toString();
+	}
+
+	private String getErrorFullText(Travistorrent travisproj, String buildlogfilestr) {
+		String strlog = "";
+
+		if (travisproj.getTrLogAnalyzer().toLowerCase().contains("maven")
+				|| travisproj.getTrLogAnalyzer().toLowerCase().contains("mvn")) {
+			BaseLogParser logparser = new MavenLogParser("maven", buildlogfilestr);
+
+			strlog = logparser.getFullBuildLog();
+		}
+
+		else if (travisproj.getTrLogAnalyzer().toLowerCase().contains("gradle")
+				|| travisproj.getTrLogAnalyzer().toLowerCase().contains("gradlew")) {
+			BaseLogParser logparser = new GradleLogParser("gradle", buildlogfilestr);
+
+			strlog = logparser.getFullBuildLog();
+		}
+
+		else if (travisproj.getTrLogAnalyzer().toLowerCase().contains("ant")) {
+			BaseLogParser logparser = new AntLogParser("ant", buildlogfilestr);
+
+			strlog = logparser.getFullBuildLog();
+		}
+
+		return strlog;
+	}
+	
+	
+	private String getDiferentialLogText(Travistorrent travisproj, String buildlogpassfilestr, String buildlogfailfilestr) {
+		String strlog = "";
+
+		if (travisproj.getTrLogAnalyzer().toLowerCase().contains("maven")
+				|| travisproj.getTrLogAnalyzer().toLowerCase().contains("mvn")) {
+			BaseLogParser logparser = new MavenLogParser("maven", buildlogpassfilestr);
+
+			strlog = logparser.getFullBuildLog();
+		}
+
+		else if (travisproj.getTrLogAnalyzer().toLowerCase().contains("gradle")
+				|| travisproj.getTrLogAnalyzer().toLowerCase().contains("gradlew")) {
+			BaseLogParser logparser = new GradleLogParser("gradle", buildlogpassfilestr);
+
+			strlog = logparser.getDifferentialBuildLog(buildlogpassfilestr, buildlogfailfilestr);
+		}
+
+		else if (travisproj.getTrLogAnalyzer().toLowerCase().contains("ant")) {
+			BaseLogParser logparser = new AntLogParser("ant", buildlogpassfilestr);
+
+			strlog = logparser.getFullBuildLog();
+		}
+
+		return strlog;
 	}
 
 }

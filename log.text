@@ -1,0 +1,657 @@
+Using worker: ruby4.worker.travis-ci.org:ruby-3
+
+$ cd ~/builds
+$ git clone --depth=100 --quiet git://github.com/spockframework/spock.git spockframework/spock
+$ cd spockframework/spock
+$ git checkout -qf 8441b73c6b9e9064128b08349313da761c32a0c2
+$ rvm use default
+Using /home/vagrant/.rvm/gems/ruby-1.9.3-p194(B
+Running /home/vagrant/.rvm/hooks/after_use(B
+$ ruby --version
+ruby 1.9.3p194 (2012-04-20 revision 35410) [i686-linux]
+$ gem --version
+1.8.24
+$ ./gradlew clean build
+Downloading http://services.gradle.org/distributions/gradle-1.1-bin.zip
+......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+Unzipping /home/travis/.gradle/wrapper/dists/gradle-1.1-bin/13d7lnhcrghv2i5e54el41jpgr/gradle-1.1-bin.zip to /home/travis/.gradle/wrapper/dists/gradle-1.1-bin/13d7lnhcrghv2i5e54el41jpgr
+Set executable permissions for: /home/travis/.gradle/wrapper/dists/gradle-1.1-bin/13d7lnhcrghv2i5e54el41jpgr/gradle-1.1/bin/gradle
+ > Resolving dependencies 'classpath' > Resolving dependencies ':classpath' > Resolving dependencies 'classpath' > Resolving dependencies 'classpath' > Resolving dependencies ':spock-core:classpath' > Resolving dependencies 'classpath' > Resolving dependencies ':spock-guice:classpath' > Resolving dependencies ':spock-maven:classpath' > Resolving dependencies ':spock-specs:classpath' > Resolving dependencies ':spock-spring:classpath' > Resolving dependencies ':spock-tapestry:classpath' > Resolving dependencies ':spock-unitils:classpath'> Building > :spock-core:clean:spock-core:clean 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-guice:clean:spock-guice:clean 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-maven:clean:spock-maven:clean 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-specs:clean:spock-specs:clean 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-spring:clean:spock-spring:clean 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-tapestry:clean:spock-tapestry:clean 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-unitils:clean:spock-unitils:clean 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile':spock-core:compileJava
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/org/codehaus/groovy/groovy-all/1.8.6/groovy-all-1.8.6.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 7 KB/29 KB downloaded29 KB/29 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/junit/junit-dep/4.10/junit-dep-4.10.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 2 KB/2 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 766 B/766 B downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/org/hamcrest/hamcrest-parent/1.3/hamcrest-parent-1.3.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 1 KB/1 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/org/apache/ant/ant/1.8.2/ant-1.8.2.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 7 KB/9 KB downloaded9 KB/9 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/org/apache/ant/ant-parent/1.8.2/ant-parent-1.8.2.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 4 KB/4 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/asm/asm/3.2/asm-3.2.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 264 B/264 B downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/asm/asm-parent/3.2/asm-parent-3.2.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 4 KB/4 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 1 KB/1 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 2 KB/2 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/org/objenesis/objenesis-parent/1.2/objenesis-parent-1.2.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 2 KB/10 KB downloaded10 KB/10 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.2/ant-launcher-1.8.2.pom
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile' > 2 KB/2 KB downloaded
+> Building > :spock-core:compileJava > Resolving dependencies ':spock-core:compile'Download http://repo1.maven.org/maven2/org/codehaus/groovy/groovy-all/1.8.6/groovy-all-1.8.6.jar
+> Building > :spock-core:compileJava > 7 KB/5.88 MB downloaded14 KB/5.88 MB downloaded35 KB/5.88 MB downloaded65 KB/5.88 MB downloaded8 KB/5.88 MB downloaded9 KB/5.88 MB downloaded72 KB/5.88 MB downloaded112 KB/5.88 MB downloaded6 KB/5.88 MB downloaded22 KB/5.88 MB downloaded30 KB/5.88 MB downloaded45 KB/5.88 MB downloaded62 KB/5.88 MB downloaded226 KB/5.88 MB downloaded90 KB/5.88 MB downloaded317 KB/5.88 MB downloaded43 KB/5.88 MB downloaded407 KB/5.88 MB downloaded70 KB/5.88 MB downloaded534 KB/5.88 MB downloaded71 KB/5.88 MB downloaded90 KB/5.88 MB downloaded654 KB/5.88 MB downloaded74 KB/5.88 MB downloaded91 KB/5.88 MB downloaded755 KB/5.88 MB downloaded819 KB/5.88 MB downloaded45 KB/5.88 MB downloaded909 KB/5.88 MB downloaded32 KB/5.88 MB downloaded52 KB/5.88 MB downloaded1016 KB/5.88 MB downloaded.05 MB/5.88 MB downloaded12 MB/5.88 MB downloaded8 MB/5.88 MB downloaded20 MB/5.88 MB downloaded3 MB/5.88 MB downloaded5 MB/5.88 MB downloaded8 MB/5.88 MB downloaded34 MB/5.88 MB downloaded40 MB/5.88 MB downloaded6 MB/5.88 MB downloaded53 MB/5.88 MB downloaded9 MB/5.88 MB downloaded65 MB/5.88 MB downloaded71 MB/5.88 MB downloaded8 MB/5.88 MB downloaded9 MB/5.88 MB downloaded85 MB/5.88 MB downloaded8 MB/5.88 MB downloaded9 MB/5.88 MB downloaded90 MB/5.88 MB downloaded6 MB/5.88 MB downloaded8 MB/5.88 MB downloaded2.04 MB/5.88 MB downloaded10 MB/5.88 MB downloaded6 MB/5.88 MB downloaded23 MB/5.88 MB downloaded5 MB/5.88 MB downloaded8 MB/5.88 MB downloaded31 MB/5.88 MB downloaded8 MB/5.88 MB downloaded40 MB/5.88 MB downloaded1 MB/5.88 MB downloaded3 MB/5.88 MB downloaded5 MB/5.88 MB downloaded51 MB/5.88 MB downloaded3 MB/5.88 MB downloaded4 MB/5.88 MB downloaded60 MB/5.88 MB downloaded7 MB/5.88 MB downloaded8 MB/5.88 MB downloaded9 MB/5.88 MB downloaded70 MB/5.88 MB downloaded1 MB/5.88 MB downloaded3 MB/5.88 MB downloaded4 MB/5.88 MB downloaded5 MB/5.88 MB downloaded7 MB/5.88 MB downloaded8 MB/5.88 MB downloaded9 MB/5.88 MB downloaded82 MB/5.88 MB downloaded3 MB/5.88 MB downloaded9 MB/5.88 MB downloaded96 MB/5.88 MB downloaded7 MB/5.88 MB downloaded9 MB/5.88 MB downloaded3.05 MB/5.88 MB downloaded7 MB/5.88 MB downloaded13 MB/5.88 MB downloaded5 MB/5.88 MB downloaded8 MB/5.88 MB downloaded9 MB/5.88 MB downloaded20 MB/5.88 MB downloaded1 MB/5.88 MB downloaded2 MB/5.88 MB downloaded5 MB/5.88 MB downloaded6 MB/5.88 MB downloaded7 MB/5.88 MB downloaded8 MB/5.88 MB downloaded34 MB/5.88 MB downloaded8 MB/5.88 MB downloaded9 MB/5.88 MB downloaded41 MB/5.88 MB downloaded2 MB/5.88 MB downloaded4 MB/5.88 MB downloaded7 MB/5.88 MB downloaded8 MB/5.88 MB downloaded52 MB/5.88 MB downloaded3 MB/5.88 MB downloaded4 MB/5.88 MB downloaded5 MB/5.88 MB downloaded61 MB/5.88 MB downloaded3 MB/5.88 MB downloaded9 MB/5.88 MB downloaded70 MB/5.88 MB downloaded1 MB/5.88 MB downloaded8 MB/5.88 MB downloaded80 MB/5.88 MB downloaded1 MB/5.88 MB downloaded2 MB/5.88 MB downloaded3 MB/5.88 MB downloaded4 MB/5.88 MB downloaded5 MB/5.88 MB downloaded7 MB/5.88 MB downloaded8 MB/5.88 MB downloaded9 MB/5.88 MB downloaded90 MB/5.88 MB downloaded1 MB/5.88 MB downloaded2 MB/5.88 MB downloaded8 MB/5.88 MB downloaded9 MB/5.88 MB downloaded4.01 MB/5.88 MB downloaded2 MB/5.88 MB downloaded3 MB/5.88 MB downloaded4 MB/5.88 MB downloaded6 MB/5.88 MB downloaded7 MB/5.88 MB downloaded8 MB/5.88 MB downloaded9 MB/5.88 MB downloaded11 MB/5.88 MB downloaded2 MB/5.88 MB downloaded4 MB/5.88 MB downloaded5 MB/5.88 MB downloaded6 MB/5.88 MB downloaded7 MB/5.88 MB downloaded22 MB/5.88 MB downloaded8 MB/5.88 MB downloaded34 MB/5.88 MB downloaded41 MB/5.88 MB downloaded7 MB/5.88 MB downloaded53 MB/5.88 MB downloaded9 MB/5.88 MB downloaded61 MB/5.88 MB downloaded7 MB/5.88 MB downloaded74 MB/5.88 MB downloaded80 MB/5.88 MB downloaded6 MB/5.88 MB downloaded92 MB/5.88 MB downloaded5 MB/5.88 MB downloaded5.01 MB/5.88 MB downloaded7 MB/5.88 MB downloaded14 MB/5.88 MB downloaded20 MB/5.88 MB downloaded3 MB/5.88 MB downloaded9 MB/5.88 MB downloaded31 MB/5.88 MB downloaded3 MB/5.88 MB downloaded4 MB/5.88 MB downloaded40 MB/5.88 MB downloaded6 MB/5.88 MB downloaded7 MB/5.88 MB downloaded9 MB/5.88 MB downloaded55 MB/5.88 MB downloaded62 MB/5.88 MB downloaded4 MB/5.88 MB downloaded6 MB/5.88 MB downloaded7 MB/5.88 MB downloaded74 MB/5.88 MB downloaded80 MB/5.88 MB downloaded6 MB/5.88 MB downloaded8 MB/5.88 MB downloaded
+> Building > :spock-core:compileJavaDownload http://repo1.maven.org/maven2/junit/junit-dep/4.10/junit-dep-4.10.jar
+> Building > :spock-core:compileJava > 7 KB/228 KB downloaded51 KB/228 KB downloaded83 KB/228 KB downloaded116 KB/228 KB downloaded49 KB/228 KB downloaded82 KB/228 KB downloaded92 KB/228 KB downloaded200 KB/228 KB downloaded7 KB/228 KB downloaded15 KB/228 KB downloaded22 KB/228 KB downloaded8 KB/228 KB downloaded
+> Building > :spock-core:compileJavaDownload http://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+> Building > :spock-core:compileJava > 7 KB/43 KB downloaded43 KB/43 KB downloaded
+> Building > :spock-core:compileJavaDownload http://repo1.maven.org/maven2/org/apache/ant/ant/1.8.2/ant-1.8.2.jar
+> Building > :spock-core:compileJava > 7 KB/1.84 MB downloaded39 KB/1.84 MB downloaded49 KB/1.84 MB downloaded56 KB/1.84 MB downloaded62 KB/1.84 MB downloaded9 KB/1.84 MB downloaded76 KB/1.84 MB downloaded82 KB/1.84 MB downloaded9 KB/1.84 MB downloaded96 KB/1.84 MB downloaded105 KB/1.84 MB downloaded10 KB/1.84 MB downloaded6 KB/1.84 MB downloaded25 KB/1.84 MB downloaded30 KB/1.84 MB downloaded6 KB/1.84 MB downloaded43 KB/1.84 MB downloaded50 KB/1.84 MB downloaded8 KB/1.84 MB downloaded63 KB/1.84 MB downloaded72 KB/1.84 MB downloaded236 KB/1.84 MB downloaded300 KB/1.84 MB downloaded9 KB/1.84 MB downloaded16 KB/1.84 MB downloaded24 KB/1.84 MB downloaded31 KB/1.84 MB downloaded9 KB/1.84 MB downloaded46 KB/1.84 MB downloaded53 KB/1.84 MB downloaded9 KB/1.84 MB downloaded67 KB/1.84 MB downloaded74 KB/1.84 MB downloaded81 KB/1.84 MB downloaded7 KB/1.84 MB downloaded94 KB/1.84 MB downloaded403 KB/1.84 MB downloaded8 KB/1.84 MB downloaded16 KB/1.84 MB downloaded21 KB/1.84 MB downloaded8 KB/1.84 MB downloaded34 KB/1.84 MB downloaded40 KB/1.84 MB downloaded8 KB/1.84 MB downloaded57 KB/1.84 MB downloaded64 KB/1.84 MB downloaded71 KB/1.84 MB downloaded535 KB/1.84 MB downloaded52 KB/1.84 MB downloaded60 KB/1.84 MB downloaded8 KB/1.84 MB downloaded75 KB/1.84 MB downloaded82 KB/1.84 MB downloaded92 KB/1.84 MB downloaded600 KB/1.84 MB downloaded64 KB/1.84 MB downloaded74 KB/1.84 MB downloaded82 KB/1.84 MB downloaded91 KB/1.84 MB downloaded755 KB/1.84 MB downloaded68 KB/1.84 MB downloaded75 KB/1.84 MB downloaded82 KB/1.84 MB downloaded9 KB/1.84 MB downloaded96 KB/1.84 MB downloaded803 KB/1.84 MB downloaded67 KB/1.84 MB downloaded79 KB/1.84 MB downloaded943 KB/1.84 MB downloaded56 KB/1.84 MB downloaded65 KB/1.84 MB downloaded1.00 MB/1.84 MB downloaded1 MB/1.84 MB downloaded2 MB/1.84 MB downloaded3 MB/1.84 MB downloaded4 MB/1.84 MB downloaded5 MB/1.84 MB downloaded11 MB/1.84 MB downloaded4 MB/1.84 MB downloaded5 MB/1.84 MB downloaded6 MB/1.84 MB downloaded8 MB/1.84 MB downloaded9 MB/1.84 MB downloaded20 MB/1.84 MB downloaded6 MB/1.84 MB downloaded32 MB/1.84 MB downloaded5 MB/1.84 MB downloaded6 MB/1.84 MB downloaded8 MB/1.84 MB downloaded9 MB/1.84 MB downloaded40 MB/1.84 MB downloaded1 MB/1.84 MB downloaded2 MB/1.84 MB downloaded3 MB/1.84 MB downloaded4 MB/1.84 MB downloaded5 MB/1.84 MB downloaded6 MB/1.84 MB downloaded52 MB/1.84 MB downloaded4 MB/1.84 MB downloaded5 MB/1.84 MB downloaded6 MB/1.84 MB downloaded7 MB/1.84 MB downloaded8 MB/1.84 MB downloaded9 MB/1.84 MB downloaded60 MB/1.84 MB downloaded1 MB/1.84 MB downloaded8 MB/1.84 MB downloaded9 MB/1.84 MB downloaded75 MB/1.84 MB downloaded6 MB/1.84 MB downloaded7 MB/1.84 MB downloaded8 MB/1.84 MB downloaded9 MB/1.84 MB downloaded84 MB/1.84 MB downloaded
+> Building > :spock-core:compileJavaDownload http://repo1.maven.org/maven2/asm/asm/3.2/asm-3.2.jar
+> Building > :spock-core:compileJava > 7 KB/42 KB downloaded42 KB/42 KB downloaded
+> Building > :spock-core:compileJavaDownload http://repo1.maven.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2.jar
+> Building > :spock-core:compileJava > 6 KB/319 KB downloaded25 KB/319 KB downloaded58 KB/319 KB downloaded78 KB/319 KB downloaded83 KB/319 KB downloaded9 KB/319 KB downloaded96 KB/319 KB downloaded103 KB/319 KB downloaded10 KB/319 KB downloaded8 KB/319 KB downloaded82 KB/319 KB downloaded96 KB/319 KB downloaded202 KB/319 KB downloaded66 KB/319 KB downloaded80 KB/319 KB downloaded9 KB/319 KB downloaded96 KB/319 KB downloaded303 KB/319 KB downloaded10 KB/319 KB downloaded7 KB/319 KB downloaded9 KB/319 KB downloaded
+> Building > :spock-core:compileJavaDownload http://repo1.maven.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2.jar
+> Building > :spock-core:compileJava > 7 KB/35 KB downloaded35 KB/35 KB downloaded
+> Building > :spock-core:compileJavaDownload http://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.2/ant-launcher-1.8.2.jar
+> Building > :spock-core:compileJava > 7 KB/12 KB downloaded12 KB/12 KB downloaded
+> Building > :spock-core:compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.5
+> Building > :spock-core:compileJavaNote: Some input files use or override a deprecated API.
+> Building > :spock-core:compileJavaNote: Recompile with -Xlint:deprecation for details.
+> Building > :spock-core:compileJava1 warning
+> Building > :spock-core:compileJava > :spock-core:compileGroovy > Resolving dependencies ':spock-core:groovyCopy' > Resolving dependencies ':spock-core:groovyCopy':spock-core:compileGroovy
+> Building > :spock-core:processResources:spock-core:processResources
+> Building > :spock-core:classes:spock-core:classes
+> Building > :spock-core:jar:spock-core:jar
+> Building > :spock-core:javadoc:spock-core:javadoc
+> Building > :spock-core:javadocJar:spock-core:javadocJar
+> Building > :spock-core:sourcesJar:spock-core:sourcesJar
+> Building > :spock-core:signArchives:spock-core:signArchives 
+> BuildingSKIPPED
+> Building
+> Building > :spock-core:assemble:spock-core:assemble
+> Building > :spock-core:compileTestJava:spock-core:compileTestJava 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-core:compileTestGroovy:spock-core:compileTestGroovy 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-core:processTestResources:spock-core:processTestResources 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-core:testClasses:spock-core:testClasses 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-core:test > Resolving dependencies ':spock-core:testRuntime':spock-core:test
+> Building > :spock-core:check:spock-core:check
+> Building > :spock-core:build:spock-core:build
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile':spock-guice:compileJava
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile'Download http://repo1.maven.org/maven2/com/google/inject/guice/3.0/guice-3.0.pom
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile' > 7 KB/7 KB downloaded
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile'Download http://repo1.maven.org/maven2/com/google/inject/guice-parent/3.0/guice-parent-3.0.pom
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile' > 7 KB/12 KB downloaded12 KB/12 KB downloaded
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile'Download http://repo1.maven.org/maven2/com/google/google/5/google-5.pom
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile' > 2 KB/2 KB downloaded
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile'Download http://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.pom
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile' > 363 B/363 B downloaded
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile'Download http://repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1.pom
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile' > 612 B/612 B downloaded
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile'Download http://repo1.maven.org/maven2/org/sonatype/sisu/inject/cglib/2.2.1-v20090111/cglib-2.2.1-v20090111.pom
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile' > 1 KB/4 KB downloaded4 KB/4 KB downloaded
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile'Download http://repo1.maven.org/maven2/org/sonatype/forge/forge-parent/6/forge-parent-6.pom
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile' > 6 KB/10 KB downloaded10 KB/10 KB downloaded
+> Building > :spock-guice:compileJava > Resolving dependencies ':spock-guice:compile'Download http://repo1.maven.org/maven2/com/google/inject/guice/3.0/guice-3.0.jar
+> Building > :spock-guice:compileJava > 7 KB/693 KB downloaded14 KB/693 KB downloaded42 KB/693 KB downloaded88 KB/693 KB downloaded152 KB/693 KB downloaded216 KB/693 KB downloaded80 KB/693 KB downloaded324 KB/693 KB downloaded64 KB/693 KB downloaded428 KB/693 KB downloaded92 KB/693 KB downloaded515 KB/693 KB downloaded44 KB/693 KB downloaded64 KB/693 KB downloaded628 KB/693 KB downloaded92 KB/693 KB downloaded3 KB/693 KB downloaded
+> Building > :spock-guice:compileJavaDownload http://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar
+> Building > :spock-guice:compileJava > 4 KB/4 KB downloaded
+> Building > :spock-guice:compileJavaDownload http://repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar
+> Building > :spock-guice:compileJava > 2 KB/2 KB downloaded
+> Building > :spock-guice:compileJavaDownload http://repo1.maven.org/maven2/org/sonatype/sisu/inject/cglib/2.2.1-v20090111/cglib-2.2.1-v20090111.jar
+> Building > :spock-guice:compileJava > 7 KB/272 KB downloaded1 KB/272 KB downloaded116 KB/272 KB downloaded80 KB/272 KB downloaded240 KB/272 KB downloaded72 KB/272 KB downloaded
+> Building > :spock-guice:compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.5
+> Building > :spock-guice:compileJava1 warning
+> Building > :spock-guice:compileJava > :spock-guice:compileGroovy:spock-guice:compileGroovy 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-guice:processResources:spock-guice:processResources 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-guice:classes:spock-guice:classes
+> Building > :spock-guice:jar:spock-guice:jar
+> Building > :spock-guice:javadoc:spock-guice:javadoc
+> Building > :spock-guice:javadocJar:spock-guice:javadocJar
+> Building > :spock-guice:sourcesJar:spock-guice:sourcesJar
+> Building > :spock-guice:signArchives:spock-guice:signArchives 
+> BuildingSKIPPED
+> Building
+> Building > :spock-guice:assemble:spock-guice:assemble
+> Building > :spock-guice:compileTestJava:spock-guice:compileTestJava 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-guice:compileTestGroovy > Resolving dependencies ':spock-guice:testCompile' > Resolving dependencies ':spock-guice:groovyCopy' > Resolving dependencies ':spock-guice:groovyCopy':spock-guice:compileTestGroovy
+> Building > :spock-guice:processTestResources:spock-guice:processTestResources 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-guice:testClasses:spock-guice:testClasses
+> Building > :spock-guice:test > Resolving dependencies ':spock-guice:testRuntime' > 1 test completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed10 tests completed:spock-guice:test
+> Building > :spock-guice:check:spock-guice:check
+> Building > :spock-guice:build:spock-guice:build
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile':spock-maven:compileJava
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/surefire/surefire-junit47/2.11/surefire-junit47-2.11.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 4 KB/4 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/surefire/surefire-providers/2.11/surefire-providers-2.11.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 2 KB/2 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/surefire/surefire/2.11/surefire-2.11.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 7 KB/11 KB downloaded11 KB/11 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-parent/20/maven-parent-20.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 7 KB/24 KB downloaded15 KB/24 KB downloaded24 KB/24 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/apache/9/apache-9.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 7 KB/14 KB downloaded14 KB/14 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-plugin-api/2.0/maven-plugin-api-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 601 B/601 B downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven/2.0/maven-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 7 KB/8 KB downloaded8 KB/8 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-project/2.0/maven-project-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-core/2.0/maven-core-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 5 KB/5 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-utils/1.5.7/plexus-utils-1.5.7.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 7 KB/7 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/codehaus/plexus/plexus/2.0.2/plexus-2.0.2.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 7 KB/11 KB downloaded11 KB/11 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/surefire/common-junit48/2.11/common-junit48-2.11.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 2 KB/2 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/surefire/surefire-api/2.11/surefire-api-2.11.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 2 KB/2 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-profile/2.0/maven-profile-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-model/2.0/maven-model-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 2 KB/2 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-artifact-manager/2.0/maven-artifact-manager-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-artifact/2.0/maven-artifact-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 723 B/723 B downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-container-default/1.0-alpha-8/plexus-container-default-1.0-alpha-8.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 4 KB/7 KB downloaded7 KB/7 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-settings/2.0/maven-settings-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-file/1.0-alpha-5/wagon-file-1.0-alpha-5.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 5 KB/5 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/2.0/maven-plugin-parameter-documenter-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/1.0-alpha-5/wagon-http-lightweight-1.0-alpha-5.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 5 KB/5 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0/maven-reporting-api-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting/2.0/maven-reporting-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 504 B/504 B downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 4 KB/4 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-repository-metadata/2.0/maven-repository-metadata-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-error-diagnostics/2.0/maven-error-diagnostics-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 812 B/812 B downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-plugin-registry/2.0/maven-plugin-registry-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/commons-cli/commons-cli/1.0/commons-cli-1.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 2 KB/2 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-plugin-descriptor/2.0/maven-plugin-descriptor-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.0-alpha-4/plexus-interactivity-api-1.0-alpha-4.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 6 KB/6 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/maven-monitor/2.0/maven-monitor-2.0.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 400 B/400 B downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-ssh/1.0-alpha-5/wagon-ssh-1.0-alpha-5.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 4 KB/6 KB downloaded6 KB/6 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/surefire/common-junit4/2.11/common-junit4-2.11.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/classworlds/classworlds/1.1-alpha-2/classworlds-1.1-alpha-2.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 3 KB/3 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/doxia/doxia-sink-api/1.0-alpha-4/doxia-sink-api-1.0-alpha-4.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/com/jcraft/jsch/0.1.23/jsch-0.1.23.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 485 B/485 B downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/surefire/common-junit3/2.11/common-junit3-2.11.pom
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile' > 1 KB/1 KB downloaded
+> Building > :spock-maven:compileJava > Resolving dependencies ':spock-maven:compile'Download http://repo1.maven.org/maven2/org/apache/maven/surefire/surefire-junit47/2.11/surefire-junit47-2.11.jar
+> Building > :spock-maven:compileJava > 7 KB/44 KB downloaded14 KB/44 KB downloaded8 KB/44 KB downloaded26 KB/44 KB downloaded31 KB/44 KB downloaded5 KB/44 KB downloaded44 KB/44 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-plugin-api/2.0/maven-plugin-api-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/9 KB downloaded9 KB/9 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-project/2.0/maven-project-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/102 KB downloaded14 KB/102 KB downloaded35 KB/102 KB downloaded65 KB/102 KB downloaded6 KB/102 KB downloaded102 KB/102 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-core/2.0/maven-core-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/132 KB downloaded45 KB/132 KB downloaded109 KB/132 KB downloaded32 KB/132 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-utils/1.5.7/plexus-utils-1.5.7.jar
+> Building > :spock-maven:compileJava > 7 KB/259 KB downloaded51 KB/259 KB downloaded63 KB/259 KB downloaded127 KB/259 KB downloaded80 KB/259 KB downloaded203 KB/259 KB downloaded19 KB/259 KB downloaded36 KB/259 KB downloaded59 KB/259 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/surefire/surefire-api/2.11/surefire-api-2.11.jar
+> Building > :spock-maven:compileJava > 7 KB/156 KB downloaded1 KB/156 KB downloaded135 KB/156 KB downloaded56 KB/156 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/surefire/common-junit3/2.11/common-junit3-2.11.jar
+> Building > :spock-maven:compileJava > 7 KB/11 KB downloaded11 KB/11 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/surefire/common-junit4/2.11/common-junit4-2.11.jar
+> Building > :spock-maven:compileJava > 7 KB/13 KB downloaded13 KB/13 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/surefire/common-junit48/2.11/common-junit48-2.11.jar
+> Building > :spock-maven:compileJava > 7 KB/23 KB downloaded23 KB/23 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-model/2.0/maven-model-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/76 KB downloaded62 KB/76 KB downloaded76 KB/76 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/classworlds/classworlds/1.1-alpha-2/classworlds-1.1-alpha-2.jar
+> Building > :spock-maven:compileJava > 7 KB/36 KB downloaded25 KB/36 KB downloaded36 KB/36 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-container-default/1.0-alpha-8/plexus-container-default-1.0-alpha-8.jar
+> Building > :spock-maven:compileJava > 7 KB/190 KB downloaded1 KB/190 KB downloaded122 KB/190 KB downloaded78 KB/190 KB downloaded90 KB/190 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-profile/2.0/maven-profile-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/29 KB downloaded29 KB/29 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-artifact/2.0/maven-artifact-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/76 KB downloaded1 KB/76 KB downloaded6 KB/76 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar
+> Building > :spock-maven:compileJava > 7 KB/50 KB downloaded50 KB/50 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-repository-metadata/2.0/maven-repository-metadata-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/20 KB downloaded20 KB/20 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-artifact-manager/2.0/maven-artifact-manager-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/49 KB downloaded49 KB/49 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-settings/2.0/maven-settings-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/42 KB downloaded42 KB/42 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-file/1.0-alpha-5/wagon-file-1.0-alpha-5.jar
+> Building > :spock-maven:compileJava > 5 KB/5 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/2.0/maven-plugin-parameter-documenter-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/17 KB downloaded17 KB/17 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/1.0-alpha-5/wagon-http-lightweight-1.0-alpha-5.jar
+> Building > :spock-maven:compileJava > 7 KB/7 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/doxia/doxia-sink-api/1.0-alpha-4/doxia-sink-api-1.0-alpha-4.jar
+> Building > :spock-maven:compileJava > 4 KB/4 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0/maven-reporting-api-2.0.jar
+> Building > :spock-maven:compileJava > 1 KB/6 KB downloaded6 KB/6 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-error-diagnostics/2.0/maven-error-diagnostics-2.0.jar
+> Building > :spock-maven:compileJava > 4 KB/10 KB downloaded10 KB/10 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-plugin-registry/2.0/maven-plugin-registry-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/24 KB downloaded24 KB/24 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/commons-cli/commons-cli/1.0/commons-cli-1.0.jar
+> Building > :spock-maven:compileJava > 7 KB/29 KB downloaded29 KB/29 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-plugin-descriptor/2.0/maven-plugin-descriptor-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/32 KB downloaded32 KB/32 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.0-alpha-4/plexus-interactivity-api-1.0-alpha-4.jar
+> Building > :spock-maven:compileJava > 7 KB/13 KB downloaded13 KB/13 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/maven-monitor/2.0/maven-monitor-2.0.jar
+> Building > :spock-maven:compileJava > 7 KB/7 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/com/jcraft/jsch/0.1.23/jsch-0.1.23.jar
+> Building > :spock-maven:compileJava > 7 KB/113 KB downloaded66 KB/113 KB downloaded113 KB/113 KB downloaded
+> Building > :spock-maven:compileJavaDownload http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-ssh/1.0-alpha-5/wagon-ssh-1.0-alpha-5.jar
+> Building > :spock-maven:compileJava > 7 KB/32 KB downloaded32 KB/32 KB downloaded
+> Building > :spock-maven:compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.5
+> Building > :spock-maven:compileJava1 warning
+> Building > :spock-maven:compileJava > :spock-maven:compileGroovy:spock-maven:compileGroovy 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-maven:processResources:spock-maven:processResources
+> Building > :spock-maven:classes:spock-maven:classes
+> Building > :spock-maven:jar:spock-maven:jar
+> Building > :spock-maven:javadoc:spock-maven:javadoc 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-maven:javadocJar:spock-maven:javadocJar
+> Building > :spock-maven:sourcesJar:spock-maven:sourcesJar
+> Building > :spock-maven:signArchives:spock-maven:signArchives 
+> BuildingSKIPPED
+> Building
+> Building > :spock-maven:assemble:spock-maven:assemble
+> Building > :spock-maven:compileTestJava:spock-maven:compileTestJava 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-maven:compileTestGroovy:spock-maven:compileTestGroovy 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-maven:processTestResources:spock-maven:processTestResources 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-maven:testClasses:spock-maven:testClasses 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-maven:test > Resolving dependencies ':spock-maven:testRuntime':spock-maven:test
+> Building > :spock-maven:check:spock-maven:check
+> Building > :spock-maven:build:spock-maven:build
+> Building > :spock-specs:compileJava:spock-specs:compileJava 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-specs:compileGroovy:spock-specs:compileGroovy 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-specs:processResources:spock-specs:processResources 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-specs:classes:spock-specs:classes 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-specs:jar:spock-specs:jar
+> Building > :spock-specs:javadoc:spock-specs:javadoc 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-specs:javadocJar:spock-specs:javadocJar
+> Building > :spock-specs:sourcesJar:spock-specs:sourcesJar
+> Building > :spock-specs:signArchives:spock-specs:signArchives 
+> BuildingSKIPPED
+> Building
+> Building > :spock-specs:assemble:spock-specs:assemble
+> Building > :spock-specs:compileTestJava > Resolving dependencies ':spock-specs:testCompile':spock-specs:compileTestJava
+> Building > :spock-specs:compileTestJavawarning: [options] bootstrap class path not set in conjunction with -source 1.5
+> Building > :spock-specs:compileTestJava1 warning
+> Building > :spock-specs:compileTestJava > :spock-specs:compileTestGroovy > Resolving dependencies ':spock-specs:groovyCopy' > Resolving dependencies ':spock-specs:groovyCopy':spock-specs:compileTestGroovy
+> Building > :spock-specs:processTestResources:spock-specs:processTestResources
+> Building > :spock-specs:testClasses:spock-specs:testClasses
+> Building > :spock-specs:test > Resolving dependencies ':spock-specs:testRuntime':spock-specs:test
+> Building > :spock-specs:test > Resolving dependencies ':spock-specs:testRuntime'Download http://repo1.maven.org/maven2/com/h2database/h2/1.3.164/h2-1.3.164.pom
+> Building > :spock-specs:test > Resolving dependencies ':spock-specs:testRuntime' > 670 B/670 B downloaded
+> Building > :spock-specs:test > Resolving dependencies ':spock-specs:testRuntime'Download http://repo1.maven.org/maven2/com/h2database/h2/1.3.164/h2-1.3.164.jar
+> Building > :spock-specs:test > 7 KB/1.21 MB downloaded14 KB/1.21 MB downloaded8 KB/1.21 MB downloaded35 KB/1.21 MB downloaded9 KB/1.21 MB downloaded63 KB/1.21 MB downloaded5 KB/1.21 MB downloaded129 KB/1.21 MB downloaded93 KB/1.21 MB downloaded257 KB/1.21 MB downloaded79 KB/1.21 MB downloaded343 KB/1.21 MB downloaded70 KB/1.21 MB downloaded86 KB/1.21 MB downloaded400 KB/1.21 MB downloaded16 KB/1.21 MB downloaded33 KB/1.21 MB downloaded47 KB/1.21 MB downloaded58 KB/1.21 MB downloaded74 KB/1.21 MB downloaded91 KB/1.21 MB downloaded507 KB/1.21 MB downloaded71 KB/1.21 MB downloaded95 KB/1.21 MB downloaded618 KB/1.21 MB downloaded37 KB/1.21 MB downloaded701 KB/1.21 MB downloaded29 KB/1.21 MB downloaded49 KB/1.21 MB downloaded62 KB/1.21 MB downloaded76 KB/1.21 MB downloaded840 KB/1.21 MB downloaded60 KB/1.21 MB downloaded76 KB/1.21 MB downloaded92 KB/1.21 MB downloaded907 KB/1.21 MB downloaded29 KB/1.21 MB downloaded45 KB/1.21 MB downloaded60 KB/1.21 MB downloaded79 KB/1.21 MB downloaded93 KB/1.21 MB downloaded1010 KB/1.21 MB downloaded.00 MB/1.21 MB downloaded2 MB/1.21 MB downloaded4 MB/1.21 MB downloaded5 MB/1.21 MB downloaded7 MB/1.21 MB downloaded9 MB/1.21 MB downloaded13 MB/1.21 MB downloaded7 MB/1.21 MB downloaded9 MB/1.21 MB downloaded21 MB/1.21 MB downloaded
+> Building > :spock-specs:test > 1 test completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed10 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed20 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed30 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed40 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed50 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed60 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed70 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed80 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed90 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed100 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed10 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed20 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed30 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed40 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed50 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed60 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed70 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed80 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed90 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed200 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed10 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed20 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed30 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed40 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed50 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed60 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed70 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed80 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed90 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed300 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed10 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed20 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed30 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed40 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed50 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed60 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed70 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed80 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed90 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed400 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed10 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed20 tests completed1 tests completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed30 tests completed1 tests completed2 tests completed, 1 skipped3 tests completed, 1 skipped4 tests completed, 2 skipped5 tests completed, 2 skipped6 tests completed, 2 skipped7 tests completed, 2 skipped8 tests completed, 2 skipped9 tests completed, 2 skipped40 tests completed, 2 skipped1 tests completed, 2 skipped2 tests completed, 2 skipped3 tests completed, 2 skipped4 tests completed, 2 skipped5 tests completed, 2 skipped6 tests completed, 2 skipped7 tests completed, 2 skipped8 tests completed, 2 skipped9 tests completed, 2 skipped50 tests completed, 2 skipped1 tests completed, 2 skipped2 tests completed, 2 skipped3 tests completed, 2 skipped4 tests completed, 2 skipped5 tests completed, 2 skipped6 tests completed, 2 skipped7 tests completed, 2 skipped8 tests completed, 2 skipped9 tests completed, 2 skipped60 tests completed, 2 skipped1 tests completed, 2 skipped2 tests completed, 2 skipped3 tests completed, 2 skipped4 tests completed, 2 skipped5 tests completed, 2 skipped6 tests completed, 2 skipped7 tests completed, 2 skipped8 tests completed, 2 skipped9 tests completed, 2 skipped70 tests completed, 2 skipped1 tests completed, 2 skipped2 tests completed, 2 skipped3 tests completed, 2 skipped4 tests completed, 2 skipped5 tests completed, 2 skipped6 tests completed, 2 skipped7 tests completed, 2 skipped8 tests completed, 2 skipped9 tests completed, 2 skipped80 tests completed, 2 skipped1 tests completed, 2 skipped2 tests completed, 2 skipped3 tests completed, 2 skipped4 tests completed, 2 skipped5 tests completed, 2 skipped6 tests completed, 2 skipped7 tests completed, 2 skipped8 tests completed, 2 skipped9 tests completed, 2 skipped90 tests completed, 2 skipped1 tests completed, 2 skipped2 tests completed, 2 skipped3 tests completed, 2 skipped4 tests completed, 2 skipped5 tests completed, 2 skipped6 tests completed, 2 skipped7 tests completed, 2 skipped8 tests completed, 2 skipped9 tests completed, 2 skipped500 tests completed, 2 skipped1 tests completed, 2 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped10 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped20 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped30 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped40 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped50 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped60 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped70 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped80 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped90 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped600 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped10 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped20 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped30 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped40 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped50 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped60 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped70 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped80 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped90 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped700 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped10 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped20 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped30 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped40 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped50 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped60 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped70 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped80 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped90 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 3 skipped7 tests completed, 3 skipped8 tests completed, 3 skipped9 tests completed, 3 skipped800 tests completed, 3 skipped1 tests completed, 3 skipped2 tests completed, 3 skipped3 tests completed, 3 skipped4 tests completed, 3 skipped5 tests completed, 3 skipped6 tests completed, 4 skipped7 tests completed, 4 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped10 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped20 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped30 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped40 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped50 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped60 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped70 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped80 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped90 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped900 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped10 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped20 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped30 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped40 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped50 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped60 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped70 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped80 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped90 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped1000 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped10 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped20 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped30 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped40 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped50 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped60 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped70 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped80 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped90 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped100 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped10 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped3 tests completed, 5 skipped4 tests completed, 5 skipped5 tests completed, 5 skipped6 tests completed, 5 skipped7 tests completed, 5 skipped8 tests completed, 5 skipped9 tests completed, 5 skipped20 tests completed, 5 skipped1 tests completed, 5 skipped2 tests completed, 5 skipped > :spock-specs:check:spock-specs:check
+> Building > :spock-specs:build:spock-specs:build
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile':spock-spring:compileJava
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile'Download http://repo1.maven.org/maven2/org/springframework/spring-test/3.1.0.RELEASE/spring-test-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile' > 5 KB/5 KB downloaded
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile'Download http://repo1.maven.org/maven2/org/springframework/spring-parent/3.1.0.RELEASE/spring-parent-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile' > 7 KB/8 KB downloaded8 KB/8 KB downloaded
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile'Download http://repo1.maven.org/maven2/org/springframework/spring-beans/3.1.0.RELEASE/spring-beans-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile' > 2 KB/2 KB downloaded
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile'Download http://repo1.maven.org/maven2/org/springframework/spring-core/3.1.0.RELEASE/spring-core-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile' > 2 KB/2 KB downloaded
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile'Download http://repo1.maven.org/maven2/org/springframework/spring-asm/3.1.0.RELEASE/spring-asm-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile' > 1 KB/1 KB downloaded
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile'Download http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.pom
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile' > 7 KB/17 KB downloaded14 KB/17 KB downloaded7 KB/17 KB downloaded
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile'Download http://repo1.maven.org/maven2/org/apache/commons/commons-parent/5/commons-parent-5.pom
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile' > 7 KB/15 KB downloaded15 KB/15 KB downloaded
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile'Download http://repo1.maven.org/maven2/org/apache/apache/4/apache-4.pom
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile' > 2 KB/4 KB downloaded4 KB/4 KB downloaded
+> Building > :spock-spring:compileJava > Resolving dependencies ':spock-spring:compile'Download http://repo1.maven.org/maven2/org/springframework/spring-test/3.1.0.RELEASE/spring-test-3.1.0.RELEASE.jar
+> Building > :spock-spring:compileJava > 7 KB/224 KB downloaded14 KB/224 KB downloaded21 KB/224 KB downloaded6 KB/224 KB downloaded35 KB/224 KB downloaded65 KB/224 KB downloaded75 KB/224 KB downloaded108 KB/224 KB downloaded72 KB/224 KB downloaded224 KB/224 KB downloaded
+> Building > :spock-spring:compileJavaDownload http://repo1.maven.org/maven2/org/springframework/spring-beans/3.1.0.RELEASE/spring-beans-3.1.0.RELEASE.jar
+> Building > :spock-spring:compileJava > 7 KB/575 KB downloaded1 KB/575 KB downloaded135 KB/575 KB downloaded62 KB/575 KB downloaded75 KB/575 KB downloaded239 KB/575 KB downloaded59 KB/575 KB downloaded74 KB/575 KB downloaded87 KB/575 KB downloaded351 KB/575 KB downloaded415 KB/575 KB downloaded79 KB/575 KB downloaded513 KB/575 KB downloaded27 KB/575 KB downloaded50 KB/575 KB downloaded65 KB/575 KB downloaded75 KB/575 KB downloaded
+> Building > :spock-spring:compileJavaDownload http://repo1.maven.org/maven2/org/springframework/spring-asm/3.1.0.RELEASE/spring-asm-3.1.0.RELEASE.jar
+> Building > :spock-spring:compileJava > 7 KB/51 KB downloaded51 KB/51 KB downloaded
+> Building > :spock-spring:compileJavaDownload http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar
+> Building > :spock-spring:compileJava > 7 KB/59 KB downloaded59 KB/59 KB downloaded
+> Building > :spock-spring:compileJavaDownload http://repo1.maven.org/maven2/org/springframework/spring-core/3.1.0.RELEASE/spring-core-3.1.0.RELEASE.jar
+> Building > :spock-spring:compileJava > 7 KB/432 KB downloaded1 KB/432 KB downloaded113 KB/432 KB downloaded30 KB/432 KB downloaded94 KB/432 KB downloaded258 KB/432 KB downloaded84 KB/432 KB downloaded304 KB/432 KB downloaded24 KB/432 KB downloaded46 KB/432 KB downloaded67 KB/432 KB downloaded86 KB/432 KB downloaded408 KB/432 KB downloaded30 KB/432 KB downloaded2 KB/432 KB downloaded
+> Building > :spock-spring:compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.5
+> Building > :spock-spring:compileJava1 warning
+> Building > :spock-spring:compileJava > :spock-spring:compileGroovy:spock-spring:compileGroovy 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-spring:processResources:spock-spring:processResources
+> Building > :spock-spring:classes:spock-spring:classes
+> Building > :spock-spring:jar:spock-spring:jar
+> Building > :spock-spring:javadoc:spock-spring:javadoc 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-spring:javadocJar:spock-spring:javadocJar
+> Building > :spock-spring:sourcesJar:spock-spring:sourcesJar
+> Building > :spock-spring:signArchives:spock-spring:signArchives 
+> BuildingSKIPPED
+> Building
+> Building > :spock-spring:assemble:spock-spring:assemble
+> Building > :spock-spring:compileTestJava:spock-spring:compileTestJava 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile':spock-spring:compileTestGroovy
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-context/3.1.0.RELEASE/spring-context-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile' > 7 KB/7 KB downloaded
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-jdbc/3.1.0.RELEASE/spring-jdbc-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile' > 3 KB/3 KB downloaded
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-tx/3.1.0.RELEASE/spring-tx-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile' > 3 KB/3 KB downloaded
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-aop/3.1.0.RELEASE/spring-aop-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile' > 2 KB/2 KB downloaded
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-expression/3.1.0.RELEASE/spring-expression-3.1.0.RELEASE.pom
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile' > 1 KB/1 KB downloaded
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-context/3.1.0.RELEASE/spring-context-3.1.0.RELEASE.jar
+> Building > :spock-spring:compileTestGroovy > 2 KB/810 KB downloaded14 KB/810 KB downloaded35 KB/810 KB downloaded65 KB/810 KB downloaded129 KB/810 KB downloaded93 KB/810 KB downloaded226 KB/810 KB downloaded43 KB/810 KB downloaded60 KB/810 KB downloaded80 KB/810 KB downloaded97 KB/810 KB downloaded316 KB/810 KB downloaded40 KB/810 KB downloaded60 KB/810 KB downloaded79 KB/810 KB downloaded91 KB/810 KB downloaded408 KB/810 KB downloaded24 KB/810 KB downloaded34 KB/810 KB downloaded48 KB/810 KB downloaded67 KB/810 KB downloaded81 KB/810 KB downloaded97 KB/810 KB downloaded511 KB/810 KB downloaded25 KB/810 KB downloaded48 KB/810 KB downloaded64 KB/810 KB downloaded77 KB/810 KB downloaded90 KB/810 KB downloaded604 KB/810 KB downloaded15 KB/810 KB downloaded31 KB/810 KB downloaded45 KB/810 KB downloaded61 KB/810 KB downloaded78 KB/810 KB downloaded742 KB/810 KB downloaded61 KB/810 KB downloaded78 KB/810 KB downloaded91 KB/810 KB downloaded803 KB/810 KB downloaded10 KB/810 KB downloaded
+> Building > :spock-spring:compileTestGroovyDownload http://repo1.maven.org/maven2/org/springframework/spring-jdbc/3.1.0.RELEASE/spring-jdbc-3.1.0.RELEASE.jar
+> Building > :spock-spring:compileTestGroovy > 7 KB/392 KB downloaded1 KB/392 KB downloaded113 KB/392 KB downloaded35 KB/392 KB downloaded49 KB/392 KB downloaded62 KB/392 KB downloaded226 KB/392 KB downloaded52 KB/392 KB downloaded70 KB/392 KB downloaded87 KB/392 KB downloaded351 KB/392 KB downloaded79 KB/392 KB downloaded92 KB/392 KB downloaded
+> Building > :spock-spring:compileTestGroovyDownload http://repo1.maven.org/maven2/org/springframework/spring-tx/3.1.0.RELEASE/spring-tx-3.1.0.RELEASE.jar
+> Building > :spock-spring:compileTestGroovy > 7 KB/240 KB downloaded1 KB/240 KB downloaded106 KB/240 KB downloaded70 KB/240 KB downloaded234 KB/240 KB downloaded40 KB/240 KB downloaded
+> Building > :spock-spring:compileTestGroovyDownload http://repo1.maven.org/maven2/org/springframework/spring-aop/3.1.0.RELEASE/spring-aop-3.1.0.RELEASE.jar
+> Building > :spock-spring:compileTestGroovy > 7 KB/323 KB downloaded1 KB/323 KB downloaded116 KB/323 KB downloaded62 KB/323 KB downloaded210 KB/323 KB downloaded57 KB/323 KB downloaded304 KB/323 KB downloaded23 KB/323 KB downloaded
+> Building > :spock-spring:compileTestGroovyDownload http://repo1.maven.org/maven2/org/springframework/spring-expression/3.1.0.RELEASE/spring-expression-3.1.0.RELEASE.jar
+> Building > :spock-spring:compileTestGroovy > 7 KB/172 KB downloaded1 KB/172 KB downloaded135 KB/172 KB downloaded72 KB/172 KB downloaded
+> Building > :spock-spring:compileTestGroovy > Resolving dependencies ':spock-spring:groovyCopy' > Resolving dependencies ':spock-spring:groovyCopy' > :spock-spring:processTestResources:spock-spring:processTestResources
+> Building > :spock-spring:testClasses:spock-spring:testClasses
+> Building > :spock-spring:test > Resolving dependencies ':spock-spring:testRuntime':spock-spring:test
+> Building > :spock-spring:test > Resolving dependencies ':spock-spring:testRuntime'Download http://repo1.maven.org/maven2/log4j/log4j/1.2.16/log4j-1.2.16.pom
+> Building > :spock-spring:test > Resolving dependencies ':spock-spring:testRuntime' > 7 KB/19 KB downloaded14 KB/19 KB downloaded9 KB/19 KB downloaded
+> Building > :spock-spring:test > Resolving dependencies ':spock-spring:testRuntime'Download http://repo1.maven.org/maven2/log4j/log4j/1.2.16/log4j-1.2.16.jar
+> Building > :spock-spring:test > 7 KB/470 KB downloaded19 KB/470 KB downloaded72 KB/470 KB downloaded3 KB/470 KB downloaded130 KB/470 KB downloaded45 KB/470 KB downloaded74 KB/470 KB downloaded91 KB/470 KB downloaded210 KB/470 KB downloaded30 KB/470 KB downloaded49 KB/470 KB downloaded59 KB/470 KB downloaded86 KB/470 KB downloaded350 KB/470 KB downloaded97 KB/470 KB downloaded416 KB/470 KB downloaded70 KB/470 KB downloaded
+> Building > :spock-spring:test > 1 test completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed10 tests completed1 tests completed2 tests completed > :spock-spring:check:spock-spring:check
+> Building > :spock-spring:build:spock-spring:build
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile':spock-tapestry:compileJava
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/org/apache/tapestry/tapestry-ioc/5.3.2/tapestry-ioc-5.3.2.pom
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile' > 1 KB/1 KB downloaded
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/org/apache/tapestry/tapestry5-annotations/5.3.2/tapestry5-annotations-5.3.2.pom
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile' > 413 B/413 B downloaded
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/org/apache/tapestry/plastic/5.3.2/plastic-5.3.2.pom
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile' > 621 B/621 B downloaded
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.pom
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile' > 2 KB/2 KB downloaded
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/org/slf4j/slf4j-parent/1.6.1/slf4j-parent-1.6.1.pom
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile' > 7 KB/9 KB downloaded9 KB/9 KB downloaded
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.pom
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile' > 1 KB/1 KB downloaded
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/org/apache/tapestry/tapestry-func/5.3.2/tapestry-func-5.3.2.pom
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile' > 779 B/779 B downloaded
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/log4j/log4j/1.2.14/log4j-1.2.14.pom
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile' > 2 KB/2 KB downloaded
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/javassist/javassist/3.12.1.GA/javassist-3.12.1.GA.pom
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile' > 5 KB/5 KB downloaded
+> Building > :spock-tapestry:compileJava > Resolving dependencies ':spock-tapestry:compile'Download http://repo1.maven.org/maven2/org/apache/tapestry/tapestry-ioc/5.3.2/tapestry-ioc-5.3.2.jar
+> Building > :spock-tapestry:compileJava > 7 KB/509 KB downloaded14 KB/509 KB downloaded35 KB/509 KB downloaded66 KB/509 KB downloaded8 KB/509 KB downloaded85 KB/509 KB downloaded115 KB/509 KB downloaded62 KB/509 KB downloaded83 KB/509 KB downloaded203 KB/509 KB downloaded15 KB/509 KB downloaded30 KB/509 KB downloaded45 KB/509 KB downloaded309 KB/509 KB downloaded27 KB/509 KB downloaded47 KB/509 KB downloaded60 KB/509 KB downloaded77 KB/509 KB downloaded89 KB/509 KB downloaded406 KB/509 KB downloaded20 KB/509 KB downloaded37 KB/509 KB downloaded50 KB/509 KB downloaded68 KB/509 KB downloaded87 KB/509 KB downloaded500 KB/509 KB downloaded9 KB/509 KB downloaded
+> Building > :spock-tapestry:compileJavaDownload http://repo1.maven.org/maven2/org/apache/tapestry/tapestry5-annotations/5.3.2/tapestry5-annotations-5.3.2.jar
+> Building > :spock-tapestry:compileJava > 7 KB/10 KB downloaded10 KB/10 KB downloaded
+> Building > :spock-tapestry:compileJavaDownload http://repo1.maven.org/maven2/org/apache/tapestry/plastic/5.3.2/plastic-5.3.2.jar
+> Building > :spock-tapestry:compileJava > 7 KB/478 KB downloaded49 KB/478 KB downloaded93 KB/478 KB downloaded115 KB/478 KB downloaded79 KB/478 KB downloaded202 KB/478 KB downloaded19 KB/478 KB downloaded83 KB/478 KB downloaded347 KB/478 KB downloaded411 KB/478 KB downloaded44 KB/478 KB downloaded64 KB/478 KB downloaded78 KB/478 KB downloaded
+> Building > :spock-tapestry:compileJavaDownload http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar
+> Building > :spock-tapestry:compileJava > 7 KB/24 KB downloaded24 KB/24 KB downloaded
+> Building > :spock-tapestry:compileJavaDownload http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar
+> Building > :spock-tapestry:compileJava > 7 KB/9 KB downloaded9 KB/9 KB downloaded
+> Building > :spock-tapestry:compileJavaDownload http://repo1.maven.org/maven2/org/apache/tapestry/tapestry-func/5.3.2/tapestry-func-5.3.2.jar
+> Building > :spock-tapestry:compileJava > 7 KB/58 KB downloaded58 KB/58 KB downloaded
+> Building > :spock-tapestry:compileJavaDownload http://repo1.maven.org/maven2/javassist/javassist/3.12.1.GA/javassist-3.12.1.GA.jar
+> Building > :spock-tapestry:compileJava > 7 KB/629 KB downloaded1 KB/629 KB downloaded120 KB/629 KB downloaded6 KB/629 KB downloaded90 KB/629 KB downloaded252 KB/629 KB downloaded66 KB/629 KB downloaded86 KB/629 KB downloaded350 KB/629 KB downloaded66 KB/629 KB downloaded84 KB/629 KB downloaded400 KB/629 KB downloaded17 KB/629 KB downloaded81 KB/629 KB downloaded501 KB/629 KB downloaded24 KB/629 KB downloaded88 KB/629 KB downloaded629 KB/629 KB downloaded
+> Building > :spock-tapestry:compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.5
+> Building > :spock-tapestry:compileJava1 warning
+> Building > :spock-tapestry:compileJava > :spock-tapestry:compileGroovy:spock-tapestry:compileGroovy 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-tapestry:processResources:spock-tapestry:processResources
+> Building > :spock-tapestry:classes:spock-tapestry:classes
+> Building > :spock-tapestry:jar:spock-tapestry:jar
+> Building > :spock-tapestry:javadoc:spock-tapestry:javadoc 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-tapestry:javadocJar:spock-tapestry:javadocJar
+> Building > :spock-tapestry:sourcesJar:spock-tapestry:sourcesJar
+> Building > :spock-tapestry:signArchives:spock-tapestry:signArchives 
+> BuildingSKIPPED
+> Building
+> Building > :spock-tapestry:assemble:spock-tapestry:assemble
+> Building > :spock-tapestry:compileTestJava > Resolving dependencies ':spock-tapestry:testCompile':spock-tapestry:compileTestJava
+> Building > :spock-tapestry:compileTestJavawarning: [options] bootstrap class path not set in conjunction with -source 1.5
+> Building > :spock-tapestry:compileTestJava1 warning
+> Building > :spock-tapestry:compileTestJava > :spock-tapestry:compileTestGroovy > Resolving dependencies ':spock-tapestry:groovyCopy' > Resolving dependencies ':spock-tapestry:groovyCopy':spock-tapestry:compileTestGroovy
+> Building > :spock-tapestry:processTestResources:spock-tapestry:processTestResources 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-tapestry:testClasses:spock-tapestry:testClasses
+> Building > :spock-tapestry:test > Resolving dependencies ':spock-tapestry:testRuntime' > 1 test completed2 tests completed3 tests completed4 tests completed5 tests completed6 tests completed7 tests completed8 tests completed9 tests completed10 tests completed:spock-tapestry:test
+> Building > :spock-tapestry:check:spock-tapestry:check
+> Building > :spock-tapestry:build:spock-tapestry:build
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile':spock-unitils:compileJava
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile'Download http://repo1.maven.org/maven2/org/unitils/unitils-core/3.3/unitils-core-3.3.pom
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile' > 2 KB/2 KB downloaded
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile'Download http://repo1.maven.org/maven2/org/unitils/unitils/3.3/unitils-3.3.pom
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile' > 5 KB/5 KB downloaded
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile'Download http://repo1.maven.org/maven2/org/sonatype/oss/oss-parent/7/oss-parent-7.pom
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile' > 4 KB/4 KB downloaded
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile'Download http://repo1.maven.org/maven2/commons-collections/commons-collections/3.2/commons-collections-3.2.pom
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile' > 7 KB/10 KB downloaded10 KB/10 KB downloaded
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile'Download http://repo1.maven.org/maven2/ognl/ognl/2.6.9/ognl-2.6.9.pom
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile' > 792 B/792 B downloaded
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile'Download http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1/commons-logging-1.1.pom
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile' > 6 KB/6 KB downloaded
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile'Download http://repo1.maven.org/maven2/commons-lang/commons-lang/2.3/commons-lang-2.3.pom
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile' > 1 KB/10 KB downloaded0 KB/10 KB downloaded
+> Building > :spock-unitils:compileJava > Resolving dependencies ':spock-unitils:compile'Download http://repo1.maven.org/maven2/org/unitils/unitils-core/3.3/unitils-core-3.3.jar
+> Building > :spock-unitils:compileJava > 7 KB/157 KB downloaded16 KB/157 KB downloaded8 KB/157 KB downloaded38 KB/157 KB downloaded42 KB/157 KB downloaded81 KB/157 KB downloaded145 KB/157 KB downloaded57 KB/157 KB downloaded
+> Building > :spock-unitils:compileJavaDownload http://repo1.maven.org/maven2/commons-collections/commons-collections/3.2/commons-collections-3.2.jar
+> Building > :spock-unitils:compileJava > 7 KB/557 KB downloaded43 KB/557 KB downloaded62 KB/557 KB downloaded6 KB/557 KB downloaded71 KB/557 KB downloaded8 KB/557 KB downloaded88 KB/557 KB downloaded98 KB/557 KB downloaded106 KB/557 KB downloaded15 KB/557 KB downloaded25 KB/557 KB downloaded35 KB/557 KB downloaded83 KB/557 KB downloaded206 KB/557 KB downloaded22 KB/557 KB downloaded43 KB/557 KB downloaded307 KB/557 KB downloaded26 KB/557 KB downloaded43 KB/557 KB downloaded60 KB/557 KB downloaded76 KB/557 KB downloaded9 KB/557 KB downloaded93 KB/557 KB downloaded408 KB/557 KB downloaded26 KB/557 KB downloaded44 KB/557 KB downloaded508 KB/557 KB downloaded54 KB/557 KB downloaded7 KB/557 KB downloaded
+> Building > :spock-unitils:compileJavaDownload http://repo1.maven.org/maven2/ognl/ognl/2.6.9/ognl-2.6.9.jar
+> Building > :spock-unitils:compileJava > 7 KB/164 KB downloaded1 KB/164 KB downloaded116 KB/164 KB downloaded64 KB/164 KB downloaded
+> Building > :spock-unitils:compileJavaDownload http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1/commons-logging-1.1.jar
+> Building > :spock-unitils:compileJava > 7 KB/51 KB downloaded51 KB/51 KB downloaded
+> Building > :spock-unitils:compileJavaDownload http://repo1.maven.org/maven2/commons-lang/commons-lang/2.3/commons-lang-2.3.jar
+> Building > :spock-unitils:compileJava > 7 KB/239 KB downloaded61 KB/239 KB downloaded3 KB/239 KB downloaded127 KB/239 KB downloaded91 KB/239 KB downloaded239 KB/239 KB downloaded
+> Building > :spock-unitils:compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.5
+> Building > :spock-unitils:compileJava1 warning
+> Building > :spock-unitils:compileJava > :spock-unitils:compileGroovy:spock-unitils:compileGroovy 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-unitils:processResources:spock-unitils:processResources 
+> BuildingUP-TO-DATE
+> Building
+> Building > :spock-unitils:classes:spock-unitils:classes
+> Building > :spock-unitils:jar:spock-unitils:jar
+> Building > :spock-unitils:javadoc:spock-unitils:javadoc
+> Building > :spock-unitils:javadocJar:spock-unitils:javadocJar
+> Building > :spock-unitils:sourcesJar:spock-unitils:sourcesJar
+> Building > :spock-unitils:signArchives:spock-unitils:signArchives 
+> BuildingSKIPPED
+> Building
+> Building > :spock-unitils:assemble:spock-unitils:assemble
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile':spock-unitils:compileTestJava
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/unitils/unitils-dbunit/3.3/unitils-dbunit-3.3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 1 KB/1 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/unitils/unitils-database/3.3/unitils-database-3.3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 1 KB/1 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/dbunit/dbunit/2.2.2/dbunit-2.2.2.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 7 KB/17 KB downloaded14 KB/17 KB downloaded7 KB/17 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-jdbc/2.5.2/spring-jdbc-2.5.2.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 2 KB/2 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/unitils/unitils-dbmaintainer/3.3/unitils-dbmaintainer-3.3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 2 KB/2 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 6 KB/9 KB downloaded9 KB/9 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/junit-addons/junit-addons/1.4/junit-addons-1.4.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 626 B/626 B downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/poi/poi/2.5.1-final-20040804/poi-2.5.1-final-20040804.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 191 B/191 B downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.4.3/slf4j-api-1.4.3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 2 KB/2 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/slf4j/slf4j-parent/1.4.3/slf4j-parent-1.4.3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 7 KB/7 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.4.3/slf4j-nop-1.4.3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 1 KB/1 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-beans/2.5.2/spring-beans-2.5.2.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 2 KB/2 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-context/2.5.2/spring-context-2.5.2.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 3 KB/3 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-core/2.5.2/spring-core-2.5.2.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 1 KB/2 KB downloaded2 KB/2 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/springframework/spring-tx/2.5.2/spring-tx-2.5.2.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 3 KB/3 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/hibernate/hibernate/3.2.5.ga/hibernate-3.2.5.ga.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 3 KB/3 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/commons-pool/commons-pool/1.3/commons-pool-1.3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 5 KB/5 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 150 B/150 B downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 153 B/153 B downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 7 KB/19 KB downloaded14 KB/19 KB downloaded9 KB/19 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/asm/asm-attrs/1.5.3/asm-attrs-1.5.3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 821 B/821 B downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/dom4j/dom4j/1.6.1/dom4j-1.6.1.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 6 KB/6 KB downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 230 B/230 B downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/cglib/cglib/2.1_3/cglib-2.1_3.pom
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile' > 373 B/373 B downloaded
+> Building > :spock-unitils:compileTestJava > Resolving dependencies ':spock-unitils:testCompile'Download http://repo1.maven.org/maven2/org/unitils/unitils-dbunit/3.3/unitils-dbunit-3.3.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/39 KB downloaded18 KB/39 KB downloaded39 KB/39 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/unitils/unitils-database/3.3/unitils-database-3.3.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/22 KB downloaded22 KB/22 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/springframework/spring-core/2.5.2/spring-core-2.5.2.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/275 KB downloaded28 KB/275 KB downloaded35 KB/275 KB downloaded41 KB/275 KB downloaded9 KB/275 KB downloaded63 KB/275 KB downloaded71 KB/275 KB downloaded9 KB/275 KB downloaded135 KB/275 KB downloaded99 KB/275 KB downloaded263 KB/275 KB downloaded75 KB/275 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/springframework/spring-beans/2.5.2/spring-beans-2.5.2.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/467 KB downloaded1 KB/467 KB downloaded118 KB/467 KB downloaded82 KB/467 KB downloaded246 KB/467 KB downloaded310 KB/467 KB downloaded34 KB/467 KB downloaded98 KB/467 KB downloaded462 KB/467 KB downloaded7 KB/467 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/springframework/spring-context/2.5.2/spring-context-2.5.2.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/454 KB downloaded1 KB/454 KB downloaded123 KB/454 KB downloaded58 KB/454 KB downloaded222 KB/454 KB downloaded46 KB/454 KB downloaded67 KB/454 KB downloaded331 KB/454 KB downloaded61 KB/454 KB downloaded80 KB/454 KB downloaded98 KB/454 KB downloaded414 KB/454 KB downloaded54 KB/454 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/springframework/spring-tx/2.5.2/spring-tx-2.5.2.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/221 KB downloaded56 KB/221 KB downloaded106 KB/221 KB downloaded55 KB/221 KB downloaded86 KB/221 KB downloaded90 KB/221 KB downloaded210 KB/221 KB downloaded21 KB/221 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/springframework/spring-jdbc/2.5.2/spring-jdbc-2.5.2.jar
+> Building > :spock-unitils:compileTestJava > 6 KB/302 KB downloaded35 KB/302 KB downloaded43 KB/302 KB downloaded62 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded8 KB/302 KB downloaded9 KB/302 KB downloaded71 KB/302 KB downloaded6 KB/302 KB downloaded9 KB/302 KB downloaded81 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded8 KB/302 KB downloaded9 KB/302 KB downloaded92 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded8 KB/302 KB downloaded9 KB/302 KB downloaded101 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded8 KB/302 KB downloaded9 KB/302 KB downloaded10 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded8 KB/302 KB downloaded9 KB/302 KB downloaded23 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded9 KB/302 KB downloaded30 KB/302 KB downloaded2 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded8 KB/302 KB downloaded9 KB/302 KB downloaded40 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded6 KB/302 KB downloaded8 KB/302 KB downloaded9 KB/302 KB downloaded52 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded9 KB/302 KB downloaded60 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded9 KB/302 KB downloaded70 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded80 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded6 KB/302 KB downloaded7 KB/302 KB downloaded9 KB/302 KB downloaded90 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded6 KB/302 KB downloaded7 KB/302 KB downloaded200 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded6 KB/302 KB downloaded7 KB/302 KB downloaded9 KB/302 KB downloaded10 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded7 KB/302 KB downloaded9 KB/302 KB downloaded20 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded7 KB/302 KB downloaded9 KB/302 KB downloaded30 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded7 KB/302 KB downloaded40 KB/302 KB downloaded3 KB/302 KB downloaded5 KB/302 KB downloaded6 KB/302 KB downloaded7 KB/302 KB downloaded50 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded4 KB/302 KB downloaded6 KB/302 KB downloaded7 KB/302 KB downloaded9 KB/302 KB downloaded60 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded4 KB/302 KB downloaded6 KB/302 KB downloaded7 KB/302 KB downloaded9 KB/302 KB downloaded70 KB/302 KB downloaded2 KB/302 KB downloaded4 KB/302 KB downloaded6 KB/302 KB downloaded7 KB/302 KB downloaded80 KB/302 KB downloaded2 KB/302 KB downloaded3 KB/302 KB downloaded6 KB/302 KB downloaded92 KB/302 KB downloaded3 KB/302 KB downloaded7 KB/302 KB downloaded9 KB/302 KB downloaded302 KB/302 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar
+> Building > :spock-unitils:compileTestJava > 6 KB/986 KB downloaded39 KB/986 KB downloaded58 KB/986 KB downloaded83 KB/986 KB downloaded102 KB/986 KB downloaded20 KB/986 KB downloaded84 KB/986 KB downloaded248 KB/986 KB downloaded312 KB/986 KB downloaded40 KB/986 KB downloaded404 KB/986 KB downloaded57 KB/986 KB downloaded521 KB/986 KB downloaded85 KB/986 KB downloaded649 KB/986 KB downloaded74 KB/986 KB downloaded85 KB/986 KB downloaded749 KB/986 KB downloaded806 KB/986 KB downloaded70 KB/986 KB downloaded934 KB/986 KB downloaded84 KB/986 KB downloaded6 KB/986 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.jar
+> Building > :spock-unitils:compileTestJava > 4 KB/121 KB downloaded8 KB/121 KB downloaded14 KB/121 KB downloaded24 KB/121 KB downloaded36 KB/121 KB downloaded58 KB/121 KB downloaded88 KB/121 KB downloaded121 KB/121 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/junit-addons/junit-addons/1.4/junit-addons-1.4.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/52 KB downloaded45 KB/52 KB downloaded52 KB/52 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/poi/poi/2.5.1-final-20040804/poi-2.5.1-final-20040804.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/783 KB downloaded51 KB/783 KB downloaded115 KB/783 KB downloaded65 KB/783 KB downloaded80 KB/783 KB downloaded92 KB/783 KB downloaded206 KB/783 KB downloaded23 KB/783 KB downloaded36 KB/783 KB downloaded50 KB/783 KB downloaded63 KB/783 KB downloaded77 KB/783 KB downloaded90 KB/783 KB downloaded306 KB/783 KB downloaded20 KB/783 KB downloaded69 KB/783 KB downloaded87 KB/783 KB downloaded403 KB/783 KB downloaded16 KB/783 KB downloaded33 KB/783 KB downloaded47 KB/783 KB downloaded60 KB/783 KB downloaded524 KB/783 KB downloaded88 KB/783 KB downloaded652 KB/783 KB downloaded91 KB/783 KB downloaded755 KB/783 KB downloaded83 KB/783 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.4.3/slf4j-api-1.4.3.jar
+> Building > :spock-unitils:compileTestJava > 2 KB/14 KB downloaded14 KB/14 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/dbunit/dbunit/2.2.2/dbunit-2.2.2.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/430 KB downloaded69 KB/430 KB downloaded101 KB/430 KB downloaded15 KB/430 KB downloaded28 KB/430 KB downloaded40 KB/430 KB downloaded204 KB/430 KB downloaded26 KB/430 KB downloaded42 KB/430 KB downloaded54 KB/430 KB downloaded69 KB/430 KB downloaded320 KB/430 KB downloaded84 KB/430 KB downloaded430 KB/430 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/203 KB downloaded1 KB/203 KB downloaded113 KB/203 KB downloaded26 KB/203 KB downloaded90 KB/203 KB downloaded203 KB/203 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/asm/asm-attrs/1.5.3/asm-attrs-1.5.3.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/16 KB downloaded16 KB/16 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar
+> Building > :spock-unitils:compileTestJava > 6 KB/306 KB downloaded45 KB/306 KB downloaded89 KB/306 KB downloaded133 KB/306 KB downloaded97 KB/306 KB downloaded216 KB/306 KB downloaded29 KB/306 KB downloaded42 KB/306 KB downloaded60 KB/306 KB downloaded74 KB/306 KB downloaded87 KB/306 KB downloaded99 KB/306 KB downloaded306 KB/306 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/433 KB downloaded1 KB/433 KB downloaded118 KB/433 KB downloaded32 KB/433 KB downloaded48 KB/433 KB downloaded60 KB/433 KB downloaded75 KB/433 KB downloaded89 KB/433 KB downloaded202 KB/433 KB downloaded15 KB/433 KB downloaded33 KB/433 KB downloaded46 KB/433 KB downloaded64 KB/433 KB downloaded77 KB/433 KB downloaded93 KB/433 KB downloaded357 KB/433 KB downloaded77 KB/433 KB downloaded400 KB/433 KB downloaded31 KB/433 KB downloaded3 KB/433 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/cglib/cglib/2.1_3/cglib-2.1_3.jar
+> Building > :spock-unitils:compileTestJava > 2 KB/275 KB downloaded6 KB/275 KB downloaded11 KB/275 KB downloaded9 KB/275 KB downloaded32 KB/275 KB downloaded43 KB/275 KB downloaded8 KB/275 KB downloaded65 KB/275 KB downloaded73 KB/275 KB downloaded8 KB/275 KB downloaded109 KB/275 KB downloaded18 KB/275 KB downloaded65 KB/275 KB downloaded8 KB/275 KB downloaded232 KB/275 KB downloaded66 KB/275 KB downloaded75 KB/275 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/hibernate/hibernate/3.2.5.ga/hibernate-3.2.5.ga.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/2.15 MB downloaded58 KB/2.15 MB downloaded82 KB/2.15 MB downloaded103 KB/2.15 MB downloaded67 KB/2.15 MB downloaded231 KB/2.15 MB downloaded54 KB/2.15 MB downloaded69 KB/2.15 MB downloaded87 KB/2.15 MB downloaded303 KB/2.15 MB downloaded19 KB/2.15 MB downloaded83 KB/2.15 MB downloaded407 KB/2.15 MB downloaded20 KB/2.15 MB downloaded34 KB/2.15 MB downloaded48 KB/2.15 MB downloaded63 KB/2.15 MB downloaded80 KB/2.15 MB downloaded97 KB/2.15 MB downloaded514 KB/2.15 MB downloaded78 KB/2.15 MB downloaded642 KB/2.15 MB downloaded706 KB/2.15 MB downloaded70 KB/2.15 MB downloaded834 KB/2.15 MB downloaded59 KB/2.15 MB downloaded923 KB/2.15 MB downloaded75 KB/2.15 MB downloaded1000 KB/2.15 MB downloaded14 KB/2.15 MB downloaded.01 MB/2.15 MB downloaded5 MB/2.15 MB downloaded11 MB/2.15 MB downloaded8 MB/2.15 MB downloaded24 MB/2.15 MB downloaded6 MB/2.15 MB downloaded8 MB/2.15 MB downloaded30 MB/2.15 MB downloaded6 MB/2.15 MB downloaded9 MB/2.15 MB downloaded40 MB/2.15 MB downloaded2 MB/2.15 MB downloaded3 MB/2.15 MB downloaded5 MB/2.15 MB downloaded51 MB/2.15 MB downloaded4 MB/2.15 MB downloaded5 MB/2.15 MB downloaded6 MB/2.15 MB downloaded8 MB/2.15 MB downloaded9 MB/2.15 MB downloaded61 MB/2.15 MB downloaded2 MB/2.15 MB downloaded4 MB/2.15 MB downloaded6 MB/2.15 MB downloaded7 MB/2.15 MB downloaded9 MB/2.15 MB downloaded70 MB/2.15 MB downloaded2 MB/2.15 MB downloaded3 MB/2.15 MB downloaded5 MB/2.15 MB downloaded6 MB/2.15 MB downloaded8 MB/2.15 MB downloaded84 MB/2.15 MB downloaded6 MB/2.15 MB downloaded8 MB/2.15 MB downloaded9 MB/2.15 MB downloaded91 MB/2.15 MB downloaded2 MB/2.15 MB downloaded8 MB/2.15 MB downloaded2.01 MB/2.15 MB downloaded3 MB/2.15 MB downloaded4 MB/2.15 MB downloaded5 MB/2.15 MB downloaded7 MB/2.15 MB downloaded9 MB/2.15 MB downloaded11 MB/2.15 MB downloaded2 MB/2.15 MB downloaded5 MB/2.15 MB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/unitils/unitils-dbmaintainer/3.3/unitils-dbmaintainer-3.3.jar
+> Building > :spock-unitils:compileTestJava > 7 KB/59 KB downloaded39 KB/59 KB downloaded53 KB/59 KB downloaded9 KB/59 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/commons-pool/commons-pool/1.3/commons-pool-1.3.jar
+> Building > :spock-unitils:compileTestJava > 4 KB/60 KB downloaded39 KB/60 KB downloaded60 KB/60 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar
+> Building > :spock-unitils:compileTestJava > 2 KB/118 KB downloaded36 KB/118 KB downloaded51 KB/118 KB downloaded65 KB/118 KB downloaded79 KB/118 KB downloaded93 KB/118 KB downloaded106 KB/118 KB downloaded18 KB/118 KB downloaded
+> Building > :spock-unitils:compileTestJavaDownload http://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.4.3/slf4j-nop-1.4.3.jar
+> Building > :spock-unitils:compileTestJava > 5 KB/5 KB downloaded
+> Building > :spock-unitils:compileTestJavawarning: [options] bootstrap class path not set in conjunction with -source 1.5
+> Building > :spock-unitils:compileTestJava1 warning
+> Building > :spock-unitils:compileTestJava > :spock-unitils:compileTestGroovy > Resolving dependencies ':spock-unitils:groovyCopy' > Resolving dependencies ':spock-unitils:groovyCopy':spock-unitils:compileTestGroovy
+> Building > :spock-unitils:processTestResources:spock-unitils:processTestResources
+> Building > :spock-unitils:testClasses:spock-unitils:testClasses
+> Building > :spock-unitils:test > Resolving dependencies ':spock-unitils:testRuntime' > 1 test completed2 tests completed:spock-unitils:test
+> Building > :spock-unitils:check:spock-unitils:check
+> Building > :spock-unitils:build:spock-unitils:build
+> Building
+> BuildingBUILD SUCCESSFUL
+> Building
+> Building
+> BuildingTotal time: 35 hrs 10 mins 9.272 secs
+> Building
+Done. Build script exited with: 0

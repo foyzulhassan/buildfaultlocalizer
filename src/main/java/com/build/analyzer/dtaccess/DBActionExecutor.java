@@ -41,6 +41,7 @@ public class DBActionExecutor {
 		Travistorrent travis = null;
 
 		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
+		int rowid1=(int)rowid;
 
 		Transaction tx = null;
 		try {
@@ -48,7 +49,7 @@ public class DBActionExecutor {
 
 			String hql = "FROM Travistorrent Tr WHERE Tr.rowId = :row";
 			Query query = session.createQuery(hql);
-			query.setParameter("row", rowid);
+			query.setParameter("row", rowid1);
 			List results = query.list();
 
 			if (!results.isEmpty()) {
