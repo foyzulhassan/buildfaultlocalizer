@@ -89,6 +89,10 @@ public final class DocumentReader
 
                 if (!buffer.isEmpty()) { // Not empty string at this point
                     // Split into words
+                	buffer=buffer.replace(".", " ");
+                	buffer=buffer.replace("&gt", "");
+                	buffer=buffer.replace("&lt", "");
+                	buffer=buffer.replace("/", " ");
                     String [] procWords = buffer.split(" ");
                     if (hyphenate != null)
                         // Merge into FRONT of first word

@@ -11,8 +11,8 @@ public class TestRanking {
 		
 		ArrayList<String> candidates=new ArrayList<String>();
 		
-		candidates.add("A1");
 		candidates.add("A");
+		candidates.add("B");
 		candidates.add("B1");
 		candidates.add("C1");
 		candidates.add("D");
@@ -22,8 +22,16 @@ public class TestRanking {
 		candidates.add("C");
 		candidates.add("E");
 		
-		String myStrings[];
-		myStrings = new String[] { "A", "B", "C","D","E","F" };
+		//String myStrings[];
+		//myStrings = new String[] { "A"};
+		
+		String myString="B;A;C";
+		
+		String[] myStrings = myString.split(";");		
+		
+		int pos=rc.getTopN(candidates, myStrings);
+		
+		System.out.println(pos);
 		
 		double map=rc.getMeanAveragePrecision(candidates, myStrings);
 		

@@ -39,6 +39,7 @@ public class MainClass {
 
 		System.out.println("Enter an integer: ");
 		int inputid = cin.nextInt();
+		//int inputid=5;
 
 		if (inputid == 1) {
 			dataFiltering();
@@ -48,6 +49,8 @@ public class MainClass {
 			genDifferentialBuildLog();
 		} else if (inputid == 4) {
 			generateSimilarity();
+			generateSimilarityDifferentialLog();
+			genSimDifferentialLogOnChange();
 		} else if (inputid == 5) {
 			generateSimilarityDifferentialLog();
 		} else if (inputid == 6) {

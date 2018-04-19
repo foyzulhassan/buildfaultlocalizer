@@ -2,6 +2,7 @@ package com.build.keyword;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import org.apache.lucene.analysis.en.PorterStemFilter;
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.standard.ClassicFilter;
 import org.apache.lucene.analysis.standard.ClassicTokenizer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.util.Version;
 
@@ -28,7 +30,7 @@ public class TermExtractor {
 		try {
 
 			// tokenize
-			 tokenStream = new ClassicTokenizer(Version.LUCENE_36, new StringReader(term));
+			 tokenStream = new ClassicTokenizer();
 			// stem
 			tokenStream = new PorterStemFilter(tokenStream);
 
@@ -85,17 +87,24 @@ public class TermExtractor {
 			input = input.replaceAll("(?:'(?:[tdsm]|[vr]e|ll))+\\b", "");
 
 			// tokenize input
-			tokenStream = new ClassicTokenizer(Version.LUCENE_36, new StringReader(input));
+			tokenStream = new ClassicTokenizer();
 			// to lowercase
-			tokenStream = new LowerCaseFilter(Version.LUCENE_36,tokenStream);
+			tokenStream = new LowerCaseFilter(tokenStream);
 			// remove dots from acronyms (and "'s" but already done manually
 			// above)
 			tokenStream = new ClassicFilter(tokenStream);
 			// convert any char to ASCII
 			tokenStream = new ASCIIFoldingFilter(tokenStream);
+			
+			List<String> stopwords=new ArrayList<String>();
+			
+			stopwords.add("a");
+			stopwords.add("the");
 			// remove english stop words
-			tokenStream = new StopFilter(Version.LUCENE_36, tokenStream, EnglishAnalyzer.getDefaultStopSet());
+			tokenStream = new StopFilter(tokenStream,StopFilter.makeStopSet(stopwords, false));
+			//new StopFileter()
 
+			//tokenStream = new StopFilter()
 			List<Keyword> keywords = new LinkedList<Keyword>();
 			CharTermAttribute token = tokenStream.getAttribute(CharTermAttribute.class);
 			tokenStream.reset();

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.build.keyword.Keyword;
+import com.build.keyword.TermExtractor;
 import com.build.logdiff.LogDiff;
 
 public abstract class BaseLogParser {
@@ -85,15 +87,19 @@ public abstract class BaseLogParser {
 				line = line.replaceAll("\u001B\\[[\\d;]*[^\\d;]", "");
 				line = line.replaceFirst("> Loading", "");
 				line = line.replaceAll("[^\\x00-\\x7F]", "");
+				line = line.replaceAll("&lt", "");
+				line = line.replaceAll("&gt", "");
 
 				// If line length is over 3000 character we can consider those
 				// as noise
-				if (line.length() < 3000) {
+				if (line.length() < 4000 && line.length()>0) {
 					passtextlist.add(line);
 				}
+				
 			}
 
 			fileReader.close();
+			bufferedReader.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -113,18 +119,33 @@ public abstract class BaseLogParser {
 
 				// If line length is over 3000 character we can consider those
 				// as noise
-				if (line.length() < 3000) {
+				if(line.contains("testIsoStandardCurrencies FAILED"))
+				{
+					int testabc=1;
+				}
+				if (line.length() < 4000 && line.length()>0) {
 					failtextlist.add(line);
 				}
 			}
 
 			fileReader.close();
+			bufferedReader.close();
+
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		String str=LogDiff.getLogDiff(passtextlist, failtextlist);
+		
+//		List<Keyword> keywords = null;
+//		try {
+//			keywords = TermExtractor.guessFromString(str);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		str=TermExtractor.getAllContent(keywords);
 
 		return str;
 	}

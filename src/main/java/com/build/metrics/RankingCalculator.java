@@ -45,67 +45,75 @@ public class RankingCalculator {
 	}
 	
 	public int getTopN(ArrayList<String> rankedfiles, String[] actualfiles) {
-		int firstindex = 0;
+		int firstindex = 9999999;
 		int fileindex = 0;
-		int tindex = 0;
-		boolean match = false;
 
+		fileindex = 0;
 		while (fileindex < actualfiles.length) {
+			int tindex = 0;
 			while (tindex < rankedfiles.size()) {
-				String file = rankedfiles.get(tindex);
-				if (file.equals(actualfiles[fileindex])) {
-					firstindex = tindex + 1;
-					match = true;
-					break;
-				}
-				tindex++;
-			}
 
-			if (match) {
-				break;
+				String file = rankedfiles.get(tindex);
+
+				if (file.equals(actualfiles[fileindex])) {
+					if (firstindex > tindex) {
+						firstindex = tindex;
+						break;
+					}
+				}
+
+				tindex++;
 			}
 
 			fileindex++;
 		}
 
-		return firstindex;
+		return firstindex+1;
 	}
 
 	public double getMeanAverageReciprocal(ArrayList<String> rankedfiles, String[] actualfiles) {
-		List<Double> precissions = new ArrayList<Double>();
+//		List<Double> precissions = new ArrayList<Double>();
+//		double avg = 0.0;
+//
+//		for (int index = 0; index < actualfiles.length; index++) {
+//			int fileindex = 0;
+//			boolean matcheflag = false;
+//
+//			while (fileindex < rankedfiles.size()) {
+//
+//				if (rankedfiles.get(fileindex).equals(actualfiles[index])) {
+//
+//					matcheflag = true;
+//					index=999999;
+//					break;
+//				}
+//				fileindex++;
+//			}
+//
+//			if (matcheflag) {
+//				Double precession = (double) ((double)1.00 / (double)(fileindex+1));
+//				precissions.add(precession);
+//				avg=precession;
+//				
+//				break;
+//			}
+//
+//		}
+//
+//		double sum = 0.0;
+//		for (int index = 0; index < precissions.size(); index++) {
+//			sum = sum + precissions.get(index);
+//		}
+
+//		if (actualfiles.length > 0)
+//			avg = (double) (sum / actualfiles.length);
+		
 		double avg = 0.0;
 
-		for (int index = 0; index < actualfiles.length; index++) {
-			int fileindex = 0;
-			boolean matcheflag = false;
-
-			while (fileindex < rankedfiles.size()) {
-
-				if (rankedfiles.get(fileindex).equals(actualfiles[index])) {
-
-					matcheflag = true;
-					index=999999;
-					break;
-				}
-				fileindex++;
-			}
-
-			if (matcheflag) {
-				Double precession = (double) ((double)1 / (double)(fileindex+1));
-				precissions.add(precession);
-				break;
-			}
-
-		}
-
-		double sum = 0.0;
-		for (int index = 0; index < precissions.size(); index++) {
-			sum = sum + precissions.get(index);
-		}
-
-		if (actualfiles.length > 0)
-			avg = (double) (sum / actualfiles.length);
-
+		int topn=getTopN(rankedfiles,actualfiles);
+		
+		avg = (double) ((double)1.00 / (double)(topn));
+		
 		return avg;
 	}
 

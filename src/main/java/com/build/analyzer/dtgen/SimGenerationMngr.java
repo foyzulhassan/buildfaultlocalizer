@@ -1,5 +1,6 @@
 package com.build.analyzer.dtgen;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,14 +45,14 @@ public class SimGenerationMngr {
 				e.printStackTrace();
 			}
 
-			Map<String, Double> simmap = cmtanalyzer.getLogTreeSimilarityMap(proj.getGitLastfailCommit(),
+			Map<String, Double> simmap = cmtanalyzer.getLogTreeSimilarityMapV2(proj.getGitLastfailCommit(),
 					proj.getF2row(), proj, true);
 
 			Map<String, Double> sortedsimmap = sortByValue(simmap);
 
 			ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
 
-			String actualfixfile = proj.getPassFilelist();
+			String actualfixfile = proj.getF2passFilelist();
 
 			String[] actualfixs = actualfixfile.split(";");	
 
@@ -145,6 +146,12 @@ public class SimGenerationMngr {
 		RankingCalculator rankmetric=new RankingCalculator();
 
 		List<Gradlebuildfixdata> projects = dbexec.getRows();
+		
+//		List<Gradlebuildfixdata> projects=new ArrayList<Gradlebuildfixdata>();
+//		projects.clear();		
+//		Gradlebuildfixdata gproject = dbexec.getEntityWithRowId(444640);
+//		projects.add(gproject);
+		
 		for (int index = 0; index < projects.size(); index++) {
 			// for (int index = 0; index < projects.size(); index++) {
 			Gradlebuildfixdata proj = projects.get(index);
@@ -163,14 +170,14 @@ public class SimGenerationMngr {
 				e.printStackTrace();
 			}
 
-			Map<String, Double> simmap = cmtanalyzer.getLogTreeSimilarityMap(proj.getGitLastfailCommit(),
+			Map<String, Double> simmap = cmtanalyzer.getLogTreeSimilarityMapV2(proj.getGitLastfailCommit(),
 					proj.getF2row(), proj, false);
 
 			Map<String, Double> sortedsimmap = sortByValue(simmap);
 
 			ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
 
-			String actualfixfile = proj.getPassFilelist();
+			String actualfixfile = proj.getF2passFilelist();
 
 			String[] actualfixs = actualfixfile.split(";");			
 
@@ -195,6 +202,12 @@ public class SimGenerationMngr {
 		RankingCalculator rankmetric=new RankingCalculator();
 
 		List<Gradlebuildfixdata> projects = dbexec.getRows();
+		
+//		List<Gradlebuildfixdata> projects=new ArrayList<Gradlebuildfixdata>();
+//		projects.clear();		
+//		Gradlebuildfixdata gproject = dbexec.getEntityWithRowId((long)444640);
+//		projects.add(gproject);
+		
 		for (int index = 0; index < projects.size(); index++) {
 			// for (int index = 0; index < projects.size(); index++) {
 			Gradlebuildfixdata proj = projects.get(index);
@@ -213,17 +226,20 @@ public class SimGenerationMngr {
 				e.printStackTrace();
 			}
 
-			Map<String, Double> simmap = cmtanalyzer.getLogTreeSimilarityMap(proj.getGitLastfailCommit(),
+			Map<String, Double> simmap = cmtanalyzer.getLogTreeSimilarityMapV2(proj.getGitLastfailCommit(),
 					proj.getF2row(), proj, false);
-
 			
 
-			String actualfixfile = proj.getPassFilelist();
-			String failintrofiles = proj.getFailFilelist();
-
-			String[] actualfixs = actualfixfile.split(";");		
+			String actualfixfile = proj.getF2passFilelist();
+			String failintrofiles = proj.getFailFilelist();	
+			
+			//This code to inhance
+			List<String> recentchangefile=cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),proj.getGitLastfailCommit());
+			failintrofiles=getCommaSeperated(recentchangefile);
+			///
+			
 			String[] failfixs = failintrofiles.split(";");
-			
+			String[] actualfixs = actualfixfile.split(";");		
 			
 			// Fail Introducing file change are geeting extra weight
 			for (String name : simmap.keySet()) {
@@ -232,13 +248,27 @@ public class SimGenerationMngr {
 				while (failindex < failfixs.length) {
 
 					if (name.equals(failfixs[failindex])) {
-						Double val = simmap.get(name) + 0.2 * simmap.get(name);
+						Double val = simmap.get(name) + 0.5 * simmap.get(name);
 						simmap.put(name, val);
 						break;
 					}
 					failindex++;
 				}
 			}
+			
+			String difflog = proj.getFailChange();
+
+			for (String name : simmap.keySet()) {
+
+				File f = new File(name);
+
+				if (difflog.contains(f.getName())) {
+					Double val = simmap.get(name) + 0.9 * simmap.get(name);
+					simmap.put(name, val);
+				}
+
+			}
+			
 			
 			Map<String, Double> sortedsimmap = sortByValue(simmap);
 
@@ -320,6 +350,21 @@ public class SimGenerationMngr {
 		{
 			strbuilder.append(keywords.get(in).getStem());
 			strbuilder.append(" ");			
+		}
+		
+		return strbuilder.toString();
+		
+	}
+	
+	public String getCommaSeperated(List<String> list)
+	{
+		
+		StringBuilder strbuilder=new StringBuilder();
+		
+		for(int in=0;in<list.size();in++)
+		{
+			strbuilder.append(list.get(in));
+			strbuilder.append(";");			
 		}
 		
 		return strbuilder.toString();

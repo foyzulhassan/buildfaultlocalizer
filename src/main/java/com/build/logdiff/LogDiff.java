@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.text.diff.EditScript;
 import org.apache.commons.text.diff.StringsComparator;
@@ -65,8 +67,10 @@ public class LogDiff {
 		List<DiffRow> rows = null;
 		try {
 			rows = generator.generateDiffRows(
-					Arrays.asList("This is a test senctence.", "This is the second line.", "ABC","And here is the finish." ),
-					Arrays.asList("This is a test for diffutils.", "This is the second line.", "And here is the finish."));
+					Arrays.asList("This is a test senctence.", "This is the second line.", "ABC",
+							"And here is the finish."),
+					Arrays.asList("This is a test for diffutils senctence shakil.", "This is the second line.",
+							"And here is the finish."));
 		} catch (DiffException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -75,20 +79,26 @@ public class LogDiff {
 		System.out.println("|original|new|");
 		System.out.println("|--------|---|");
 		for (DiffRow row : rows) {
-			//System.out.println("|" + row.getOldLine() + "|" + row.getNewLine() + "|");
+			System.out.println("|" + row.getOldLine() + "|" + row.getNewLine() + "|");
+			// row.
+			if (row.getOldLine().length() >= 0 && row.getNewLine().length() >= 0) {
 
-			if (row.getOldLine().length()>= 0 && row.getNewLine().length() <= 0) {
-				
-				String str=row.getOldLine();
-				str=str.replace("<span class=\"editOldInline\">", "");
-				str=str.replace("</span>", "");				
-				System.out.println("NEW LINES----------->" +str);
+				String str = row.getOldLine();
+				str = str.replace("<span class=\"editOldInline\">", "");
+				str = str.replace("</span>", "");
+				System.out.println("NEW LINES----------->" + str);
+
+				List<String> inserted = getTagValues(row.getNewLine());
+
+				for (int i = 0; i < inserted.size(); i++) {
+					System.out.println(inserted.get(i));
+				}
+
 			}
 		}
 
 	}
-	
-	
+
 	public static String getLogDiff(List<String> passlines, List<String> faillines) {
 
 		StringBuilder strbuilder = new StringBuilder();
@@ -103,18 +113,90 @@ public class LogDiff {
 			e.printStackTrace();
 		}
 
+		String cascadedstr="";
 		for (DiffRow row : rows) {
 			if (row.getOldLine().length() <= 0 && row.getNewLine().length() >= 0) {
-				
-				String str=row.getNewLine();
-				str=str.replace("<span class=\"editNewInline\">", "");
-				str=str.replace("</span>", "");				
+
+				String str = row.getNewLine();
+				str=cascadedstr+str;
+				str = str.replace("<span class=\"editNewInline\">", "");
+				str = str.replace("</span>", "");
 				strbuilder.append(str);
 				strbuilder.append("\n");
+				cascadedstr="";
+
+			} else if (row.getOldLine().length() >= 0 && row.getNewLine().length() >= 0) {
+				List<String> inserted = getTagValues(cascadedstr+row.getNewLine());
+				boolean match = false;
+
+				int i=0;
+				while(i < inserted.size()) {
+					if ((inserted.get(i).length() > 15 || inserted.size()>2)) {
+						//strbuilder.append(inserted.get(i));
+						//strbuilder.append(" ");
+						match = true;
+						break;
+					}
+					i++;
+				}
+
+				if (match) {
+					String str = cascadedstr+row.getNewLine();
+					str = str.replace("<span class=\"editNewInline\">", "");
+					str = str.replace("</span>", "");
+					strbuilder.append(str);
+					strbuilder.append("\n");
+					cascadedstr="";
+				}
+				else if(row.getNewLine().contains("<span class=\"editNewInline\">") && !row.getNewLine().contains("</span>"))
+				{
+					cascadedstr=cascadedstr+row.getNewLine();
+				}		
+				
+				else if((cascadedstr+row.getNewLine().toLowerCase()).contains("fail"))
+				{
+					String str = row.getNewLine();
+					str = str.replace("<span class=\"editNewInline\">", "");
+					str = str.replace("</span>", "");
+					strbuilder.append(str);
+					strbuilder.append("\n");
+					cascadedstr="";
+				}
 			}
 		}
 
 		return strbuilder.toString();
+	}
+
+	private static final Pattern TAG_REGEX = Pattern.compile("<span class=\"editNewInline\">(.+?)</span>");
+	private static final Pattern TAG_REGEX1 = Pattern.compile("<span class=\"editNewInline\">(.+?)</span>");
+	private static final Pattern TAG_REGEX2 = Pattern.compile("<span class=\"editNewInline\">(.+?)");
+
+	private static List<String> getTagValues(final String str) {
+		final List<String> tagValues = new ArrayList<String>();
+		Matcher matcher = TAG_REGEX.matcher(str);
+		while (matcher.find()) {
+			tagValues.add(matcher.group(1));
+		}
+		
+		if(tagValues.size()<=0)
+		{
+			matcher = TAG_REGEX1.matcher(str);
+			while (matcher.find()) {
+				tagValues.add(matcher.group(1));
+			}
+			
+		}
+		return tagValues;
+	}
+	
+	private static List<String> getStartTagValues(final String str) {
+		final List<String> tagValues = new ArrayList<String>();
+		Matcher matcher = TAG_REGEX2.matcher(str);
+		while (matcher.find()) {
+			tagValues.add(matcher.group(1));
+		}		
+		return tagValues;
 	}
 
 }

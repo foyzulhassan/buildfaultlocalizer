@@ -1,5 +1,6 @@
 package com.build.analyzer.dtgen;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -107,8 +108,8 @@ public class CommitChangeExtractor {
 			
 			String strlog=logmapper.updateBuildErrorFullLogForProject(projects.get(index).getF2row());
 			
-			//List<Keyword> keywords=TermExtractor.guessFromString(strlog);
-			//strlog=TermExtractor.getAllContent(keywords);
+			List<Keyword> keywords=TermExtractor.guessFromString(strlog);
+			strlog=TermExtractor.getAllContent(keywords);
 			
 			projects.get(index).setBlLargelog(strlog);
 
@@ -126,6 +127,11 @@ public class CommitChangeExtractor {
 		//ReverAnalyzer revertcheker = new ReverAnalyzer();
 
 		List<Gradlebuildfixdata> projects = dbexec.getRows();
+		
+//		List<Gradlebuildfixdata> projects=new ArrayList<Gradlebuildfixdata>();
+//		projects.clear();		
+//		Gradlebuildfixdata gproject = dbexec.getEntityWithRowId((long)444640);
+//		projects.add(gproject);
 
 		for (int index = 0; index < projects.size(); index++) {
 			Gradlebuildfixdata proj = projects.get(index);
@@ -136,8 +142,9 @@ public class CommitChangeExtractor {
 //			String lastfailcommit = proj.getGitLastfailCommit();
 //			String passcommit = proj.getGitFixCommit();
 //
-//			String project = proj.getGhProjectName();
-//			project = project.replace('/', '@');
+			String project = proj.getGhProjectName();
+			project = project.replace('/', '@');
+			System.out.println(project);
 //			// project="D:\\test\\appsly-android-rest";
 //			CommitAnalyzer cmtanalyzer = null;
 //
