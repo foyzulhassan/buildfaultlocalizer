@@ -74,7 +74,7 @@ public class BuildErrorLogMapper {
 		return strlog;
 	}
 	
-	public String updateBuildErrorDifferentialLogForProject(long passID, long f2ID) {
+	public String updateBuildErrorDifferentialLogForProject(long passID, long f2ID,boolean issame) {
 
 		String strlog = "";
 
@@ -92,7 +92,7 @@ public class BuildErrorLogMapper {
 
 		if (buildlogpassfile.exists() && !buildlogpassfile.isDirectory() && buildlogfailfile.exists() && !buildlogfailfile.isDirectory()) {
 
-			strlog = getDiferentialLogText(travispassproj, buildlogpassfilestr,buildlogfailfilestr);
+			strlog = getDiferentialLogText(travispassproj, buildlogpassfilestr,buildlogfailfilestr,issame);
 
 		} else {
 			System.out.println("File Not Found: " + buildlogpassfilestr+buildlogfailfilestr);
@@ -361,7 +361,7 @@ public class BuildErrorLogMapper {
 	}
 	
 	
-	private String getDiferentialLogText(Travistorrent travisproj, String buildlogpassfilestr, String buildlogfailfilestr) {
+	private String getDiferentialLogText(Travistorrent travisproj, String buildlogpassfilestr, String buildlogfailfilestr,boolean issame) {
 		String strlog = "";
 
 		if (travisproj.getTrLogAnalyzer().toLowerCase().contains("maven")
@@ -375,7 +375,10 @@ public class BuildErrorLogMapper {
 				|| travisproj.getTrLogAnalyzer().toLowerCase().contains("gradlew")) {
 			BaseLogParser logparser = new GradleLogParser("gradle", buildlogpassfilestr);
 
-			strlog = logparser.getDifferentialBuildLog(buildlogpassfilestr, buildlogfailfilestr);
+			
+			strlog = logparser.getDifferentialBuildLog(buildlogpassfilestr, buildlogfailfilestr,issame);
+			
+				
 		}
 
 		else if (travisproj.getTrLogAnalyzer().toLowerCase().contains("ant")) {

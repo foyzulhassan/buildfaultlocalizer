@@ -108,8 +108,8 @@ public class CommitChangeExtractor {
 			
 			String strlog=logmapper.updateBuildErrorFullLogForProject(projects.get(index).getF2row());
 			
-			List<Keyword> keywords=TermExtractor.guessFromString(strlog);
-			strlog=TermExtractor.getAllContent(keywords);
+			//List<Keyword> keywords=TermExtractor.guessFromString(strlog);
+			//strlog=TermExtractor.getAllContent(keywords);
 			
 			projects.get(index).setBlLargelog(strlog);
 
@@ -187,9 +187,13 @@ public class CommitChangeExtractor {
 			BuildErrorLogMapper logmapper = new BuildErrorLogMapper();
 
 			String strlog = logmapper.updateBuildErrorDifferentialLogForProject(projects.get(index).getRow(),
-					projects.get(index).getF2row());
+					projects.get(index).getF2row(),false);
+			
+			String strlogsame = logmapper.updateBuildErrorDifferentialLogForProject(projects.get(index).getRow(),
+					projects.get(index).getF2row(),true);
 
 			projects.get(index).setFailChange(strlog);
+			projects.get(index).setFixChange(strlogsame);
 
 		}
 

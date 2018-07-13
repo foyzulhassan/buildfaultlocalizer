@@ -8,7 +8,7 @@
 		catalog="travistorrent" optimistic-lock="version">
 		<!--For Local Test -->
 		<!--<class name="com.build.analyzer.entity.Mavenpatch" table="mavenpatch" 
-			catalog="travisci" optimistic-lock="version"> -->
+			catalog="travisci" optimistic-lock="version">--> 
 		<id name="row" type="long">
 			<column name="row" />
 			<generator class="assigned" />

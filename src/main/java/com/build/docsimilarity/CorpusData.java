@@ -181,6 +181,9 @@ public final class CorpusData
                 wordIndex.scaleProcessedWord(invDocFreq);
         } // While words in the document to pre-process
     }
+    
+    
+    
     public CorpusData(ArrayList<String> files, double minSignificantValue) throws Exception
     {
         if (files.size() < 2)

@@ -43,3 +43,7 @@ ALTER TABLE gradlebuildfixdata ADD fulllogdual_map DOUBLE AFTER fulllogdual_mrr;
 
 ALTER TABLE gradlebuildfixdata ADD filterlogdual_mrr DOUBLE AFTER filterlogdual_pos;
 ALTER TABLE gradlebuildfixdata ADD filterlogdual_map DOUBLE AFTER filterlogdual_mrr;
+
+
+//This column is for BuildLog fail part with similarity value
+ALTER TABLE gradlebuildfixdata ADD failpart_sim MEDIUMTEXT AFTER fix_change;

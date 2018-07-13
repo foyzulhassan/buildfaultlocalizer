@@ -71,7 +71,7 @@ public abstract class BaseLogParser {
 		return strbuild.toString();
 	}
 	
-	public String getDifferentialBuildLog(String passlogfile, String faillogfile) {
+	public String getDifferentialBuildLog(String passlogfile, String faillogfile,boolean issame) {
 
 		List<String> passtextlist = new ArrayList<String>();
 		List<String> failtextlist = new ArrayList<String>();
@@ -136,7 +136,16 @@ public abstract class BaseLogParser {
 			e.printStackTrace();
 		}
 		
-		String str=LogDiff.getLogDiff(passtextlist, failtextlist);
+		String str="";
+		if(!issame)
+		{
+			str=LogDiff.getLogDiff(passtextlist, failtextlist);
+		}
+		else
+		{
+			str=LogDiff.getLogSame(passtextlist, failtextlist);
+		}
+	
 		
 //		List<Keyword> keywords = null;
 //		try {

@@ -167,6 +167,77 @@ public class LogDiff {
 
 		return strbuilder.toString();
 	}
+	
+	public static String getLogSame(List<String> passlines, List<String> faillines) {
+
+		StringBuilder strbuilder = new StringBuilder();
+
+		DiffRowGenerator generator = DiffRowGenerator.create().showInlineDiffs(true).inlineDiffByWord(true).build();
+
+		List<DiffRow> rows = null;
+		try {
+			rows = generator.generateDiffRows(passlines, faillines);
+		} catch (DiffException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String cascadedstr="";
+		for (DiffRow row : rows) {
+			if (row.getOldLine().length() <= 0 && row.getNewLine().length() >= 0) {
+
+				String str = row.getNewLine();
+				str=cascadedstr+str;
+				str = str.replace("<span class=\"editNewInline\">", "");
+				str = str.replace("</span>", "");
+
+				cascadedstr="";
+
+			} else if (row.getOldLine().length() >= 0 && row.getNewLine().length() >= 0) {
+				List<String> inserted = getTagValues(cascadedstr+row.getNewLine());
+				boolean match = false;
+
+				int i=0;
+				while(i < inserted.size()) {
+					if ((inserted.get(i).length() > 15 || inserted.size()>2)) {
+						//strbuilder.append(inserted.get(i));
+						//strbuilder.append(" ");
+						match = true;
+						break;
+					}
+					i++;
+				}
+
+				if (match) {
+					String str = cascadedstr+row.getNewLine();
+					str = str.replace("<span class=\"editNewInline\">", "");
+					str = str.replace("</span>", "");
+					cascadedstr="";
+				}
+				else if(row.getNewLine().contains("<span class=\"editNewInline\">") && !row.getNewLine().contains("</span>"))
+				{
+					cascadedstr=cascadedstr+row.getNewLine();
+				}		
+				
+				else if((cascadedstr+row.getNewLine().toLowerCase()).contains("fail"))
+				{
+					String str = row.getNewLine();
+					str = str.replace("<span class=\"editNewInline\">", "");
+					cascadedstr="";
+				}
+				else
+				{
+					String str = cascadedstr+row.getNewLine();
+					strbuilder.append(str);
+					strbuilder.append("\n");
+					cascadedstr="";
+					
+				}
+			}
+		}
+
+		return strbuilder.toString();
+	}
 
 	private static final Pattern TAG_REGEX = Pattern.compile("<span class=\"editNewInline\">(.+?)</span>");
 	private static final Pattern TAG_REGEX1 = Pattern.compile("<span class=\"editNewInline\">(.+?)</span>");

@@ -44,24 +44,28 @@ public class DBActionExecutorChangeData {
 
 		return results;
 	}
-
-	public Gradlebuildfixdata getEntityWithRowId(long rowid) {
-		Gradlebuildfixdata proj = null;
+	
+	public List<Gradlebuildfixdata> getRowsWithID(long rowid) {
 
 		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
+		List<Gradlebuildfixdata> results = null;
 
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
 
-			String hql = "FROM Gradlebuildfixdata Tr WHERE Tr.row = :row";
-			Query query = session.createQuery(hql);
-			query.setParameter("row", rowid);
-			List results = query.list();
+			//// SELECT count(*) FROM travistorrent.travistorrent_27_10_2016
+			//// where gh_lang="java" and (tr_status="errored" or
+			//// tr_status="failed") and (tr_analyzer="java-ant" or
+			//// tr_analyzer="java-maven" or tr_analyzer="java-gradle") and
+			//// bl_log is NULL ;
 
-			if (!results.isEmpty()) {
-				proj = (Gradlebuildfixdata) results.get(0);
-			}
+			String hql = "FROM Gradlebuildfixdata gp";
+
+			Query query = session.createQuery(hql);
+			//query.setMaxResults(50);
+
+			results = query.list();
 
 		} catch (HibernateException e) {
 			if (tx != null)
@@ -71,8 +75,10 @@ public class DBActionExecutorChangeData {
 			session.close();
 		}
 
-		return proj;
+		return results;
 	}
+
+	
 	
 	public void updateBatchExistingRecord(List<Gradlebuildfixdata> projects) {
 		//Travistorrent travis = null;
@@ -90,7 +96,7 @@ public class DBActionExecutorChangeData {
 				session.update(projects.get(index));
 				tx.commit();	
 				
-				
+				System.out.println("Update Project:"+projects.get(index).getGhProjectName());
 			}
 
 		} catch (HibernateException e) {

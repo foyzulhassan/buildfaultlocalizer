@@ -7,8 +7,8 @@
 	<class name="com.build.analyzer.entity.Travistorrent" table="travistorrent_8_2_2017"
 		catalog="travistorrent" optimistic-lock="version">
 
-		<!--For Local Test -->
-		<!--<class name="com.build.analyzer.entity.Travistorrent" table="travistorrent_8_2_2017" 
+	<!--For Local Test -->
+	<!--<class name="com.build.analyzer.entity.Travistorrent" table="travistorrent_8_2_2017" 
 			catalog="travisci" optimistic-lock="version"> -->
 		<id name="rowId" type="java.lang.Integer">
 			<column name="row_id" />

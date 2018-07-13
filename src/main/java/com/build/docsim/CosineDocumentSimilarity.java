@@ -2,6 +2,7 @@ package com.build.docsim;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 import org.apache.commons.io.FileUtils;
@@ -15,13 +16,17 @@ import org.apache.lucene.index.*;
 import org.apache.lucene.store.*;
 import org.apache.lucene.util.*;
 
+import com.build.analyzer.config.Config;
+
 public class CosineDocumentSimilarity {
 
 	public static final String CONTENT = "text";
 
-	private final Set<String> terms = new HashSet<>();
-	private final RealVector v1;
-	private final RealVector v2;
+	private Set<String> terms = new HashSet<>();
+	private RealVector v1 = null;
+	private RealVector v2 = null;
+	private int passlen;
+	private int failen;
 
 	CosineDocumentSimilarity(String s1, String s2) throws IOException {
 		// Directory directory = createIndex(s1, s2);
@@ -29,21 +34,27 @@ public class CosineDocumentSimilarity {
 		RAMDirectory ramDir = new RAMDirectory();
 
 		// Index the full text of both documents
-		//CharArraySet stopword=
-		List<String> stopWords = Arrays.asList(
-			      "a", "an", "and", "are", "as", "at", "be", "but", "by",
-			      "for", "if", "in", "into", "is", "it",
-			      "no", "not", "of", "on", "or", "such",
-			      "that", "the", "their", "then", "there", "these",
-			      "they", "this", "to", "was", "will", "with", "java","build"
-			    );
-		
+		// CharArraySet stopword=
+		List<String> stopWords = Arrays.asList("a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if",
+				"in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then",
+				"there", "these", "they", "this", "to", "was", "will", "with", "java", "build", "auto", "break", "case",
+				"char", "const", "continue", "default", "do", "double", "else", "enum", "extern", "float", "for",
+				"goto", "if", "int", "long", "register", "return", "short", "signed", "sizeof", "static", "struct",
+				"switch", "typedef", "union", "unsigned", "void", "volatile", "while", "abstract", "as", "base", "bool",
+				"byte", "catch", "checked", "class", "decimal", "delegate", "event", "explicit", "false", "finally",
+				"fixed", "foreach", "implicit", "in", "interface", "internal", "is", "lock", "namespace", "new", "null",
+				"object", "operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref",
+				"sbyte", "sealed", "stackalloc", "string", "this", "throw", "true", "try", "typeof", "uint", "ulong",
+				"unchecked", "unsafe", "ushort", "using", "virtual", "build", "download", "time", "Resolving",
+				"dependencies");
+
 		CharArraySet stopSet = new CharArraySet(stopWords, false);
 		Analyzer analyzer = new StandardAnalyzer(stopSet);
-		
+
 		IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
-//		IndexWriter writer = new IndexWriter(ramDir, new StandardAnalyzer(Version.LUCENE_36), true,
-//				IndexWriter.MaxFieldLength.UNLIMITED);
+		// IndexWriter writer = new IndexWriter(ramDir, new
+		// StandardAnalyzer(Version.LUCENE_36), true,
+		// IndexWriter.MaxFieldLength.UNLIMITED);
 		IndexWriter writer = new IndexWriter(ramDir, iwc);
 		Document doc = new Document();
 		doc.add(new Field("text", FileUtils.readFileToString(new File(s1), "UTF-8").replace(".", " "), Field.Store.NO,
@@ -60,21 +71,185 @@ public class CosineDocumentSimilarity {
 		Map<String, Integer> f1 = getTermFrequencies(reader, 0);
 		Map<String, Integer> f2 = getTermFrequencies(reader, 1);
 		reader.close();
-		v1 = toRealVector(f1);		
+		v1 = toRealVector(f1);
 		v2 = toRealVector(f2);
 	}
 
+	public CosineDocumentSimilarity(List<String> buildpasslines, List<String> buildfaillines) {
+		purgeDirectory(new File(Config.luceneDir));
+		FSDirectory fsDir = null;
+		try {
+			fsDir = FSDirectory.open(Paths.get(Config.luceneDir));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+		passlen=buildpasslines.size();
+		failen=buildfaillines.size();
+		
+		List<String> stopWords = Arrays.asList("a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if",
+				"in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then",
+				"there", "these", "they", "this", "to", "was", "will", "with", "java", "build", "auto", "break", "case",
+				"char", "const", "continue", "default", "do", "double", "else", "enum", "extern", "float", "for",
+				"goto", "if", "int", "long", "register", "return", "short", "signed", "sizeof", "static", "struct",
+				"switch", "typedef", "union", "unsigned", "void", "volatile", "while", "abstract", "as", "base", "bool",
+				"byte", "catch", "checked", "class", "decimal", "delegate", "event", "explicit", "false", "finally",
+				"fixed", "foreach", "implicit", "in", "interface", "internal", "is", "lock", "namespace", "new", "null",
+				"object", "operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref",
+				"sbyte", "sealed", "stackalloc", "string", "this", "throw", "true", "try", "typeof", "uint", "ulong",
+				"unchecked", "unsafe", "ushort", "using", "virtual", "build", "download", "time", "Resolving",
+				"dependencies");
+
+		CharArraySet stopSet = new CharArraySet(stopWords, false);
+		Analyzer analyzer = new StandardAnalyzer(stopSet);
+
+		IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+		// IndexWriter writer = new IndexWriter(ramDir, new
+		// StandardAnalyzer(Version.LUCENE_36), true,
+		// IndexWriter.MaxFieldLength.UNLIMITED);
+		IndexWriter writer = null;
+		try {
+			writer = new IndexWriter(fsDir, iwc);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		for (int index = 0; index < buildpasslines.size(); index++) {
+			Document doc = new Document();
+			String s1 = buildpasslines.get(index);
+			doc.add(new Field("text", convertToUTF8(s1), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
+			try {
+				writer.addDocument(doc);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		for (int index = 0; index < buildfaillines.size(); index++) {
+			Document doc = new Document();
+			String s1 = buildfaillines.get(index);
+			doc.add(new Field("text", convertToUTF8(s1), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
+			try {
+				writer.addDocument(doc);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	CosineDocumentSimilarity(String s1, String s2, boolean flag) throws IOException {
+		// Directory directory = createIndex(s1, s2);
+		// IndexReader reader = DirectoryReader.open(directory);
+		// RAMDirectory ramDir = new RAMDirectory();
+		// IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+		purgeDirectory(new File(Config.luceneDir));
+		FSDirectory fsDir = FSDirectory.open(Paths.get(Config.luceneDir));
+
+		// Index the full text of both documents
+		// CharArraySet stopword=
+		List<String> stopWords = Arrays.asList("a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if",
+				"in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then",
+				"there", "these", "they", "this", "to", "was", "will", "with", "java", "build", "auto", "break", "case",
+				"char", "const", "continue", "default", "do", "double", "else", "enum", "extern", "float", "for",
+				"goto", "if", "int", "long", "register", "return", "short", "signed", "sizeof", "static", "struct",
+				"switch", "typedef", "union", "unsigned", "void", "volatile", "while", "abstract", "as", "base", "bool",
+				"byte", "catch", "checked", "class", "decimal", "delegate", "event", "explicit", "false", "finally",
+				"fixed", "foreach", "implicit", "in", "interface", "internal", "is", "lock", "namespace", "new", "null",
+				"object", "operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref",
+				"sbyte", "sealed", "stackalloc", "string", "this", "throw", "true", "try", "typeof", "uint", "ulong",
+				"unchecked", "unsafe", "ushort", "using", "virtual", "build", "download", "time", "Resolving",
+				"dependencies");
+
+		CharArraySet stopSet = new CharArraySet(stopWords, false);
+		Analyzer analyzer = new StandardAnalyzer(stopSet);
+
+		IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+		// IndexWriter writer = new IndexWriter(ramDir, new
+		// StandardAnalyzer(Version.LUCENE_36), true,
+		// IndexWriter.MaxFieldLength.UNLIMITED);
+		IndexWriter writer = new IndexWriter(fsDir, iwc);
+		writer.deleteAll();
+		Document doc = new Document();
+		doc.add(new Field("text", convertToUTF8(s1), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
+		writer.addDocument(doc);
+		doc = new Document();
+		doc.add(new Field("text", convertToUTF8(s2), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
+		writer.addDocument(doc);
+		writer.close();
+
+		IndexReader reader = DirectoryReader.open(fsDir);
+
+		Map<String, Integer> f1 = getTermFrequencies(reader, 0);
+		Map<String, Integer> f2 = getTermFrequencies(reader, 1);
+		reader.close();
+
+		if (f1 != null && f2 != null) {
+			v1 = toRealVector(f1);
+			v2 = toRealVector(f2);
+		} else {
+			v1 = null;
+			v2 = null;
+		}
+
+	}
+
+	public double getCosineSimilarity(int passindex, int failindex) throws IOException {
+		FSDirectory fsDir = FSDirectory.open(Paths.get(Config.luceneDir));
+
+		IndexReader reader = DirectoryReader.open(fsDir);
+
+		Map<String, Integer> f1 = getTermFrequencies(reader, passindex);
+		Map<String, Integer> f2 = getTermFrequencies(reader, passlen+failindex);
+		
+		reader.close();
+
+		if (f1 != null && f2 != null) {
+			v1 = toRealVector(f1);
+			v2 = toRealVector(f2);
+		} else {
+			v1 = null;
+			v2 = null;
+		}
+
+		return getCosineSimilarity();
+
+	}
 
 	double getCosineSimilarity() {
-		return (v1.dotProduct(v2)) / (v1.getNorm() * v2.getNorm());
+
+		if (v1 != null && v2 != null) {
+			return (v1.dotProduct(v2)) / (v1.getNorm() * v2.getNorm());
+
+		} else {
+			return 0.0;
+		}
 	}
 
 	public static double getCosineSimilarity(String s1, String s2) throws IOException {
 		return new CosineDocumentSimilarity(s1, s2).getCosineSimilarity();
 	}
 
+	public static double getCosineSimilarityFromText(String s1, String s2) throws IOException {
+		return new CosineDocumentSimilarity(s1, s2, false).getCosineSimilarity();
+	}
+
 	Map<String, Integer> getTermFrequencies(IndexReader reader, int docId) throws IOException {
 		Terms vector = reader.getTermVector(docId, CONTENT);
+		if (vector == null) {
+			return null;
+		}
 		TermsEnum termsEnum = null;
 		termsEnum = vector.iterator(termsEnum);
 		Map<String, Integer> frequencies = new HashMap<>();
@@ -96,5 +271,29 @@ public class CosineDocumentSimilarity {
 			vector.setEntry(i++, value);
 		}
 		return (RealVector) vector.mapDivide(vector.getL1Norm());
+	}
+
+	// convert from internal Java String format -> UTF-8
+	public static String convertToUTF8(String s) {
+		String out = null;
+		try {
+			out = new String(s.getBytes("UTF-8"), "ISO-8859-1");
+		} catch (java.io.UnsupportedEncodingException e) {
+			return null;
+		}
+		return out;
+	}
+
+	static void purgeDirectory(File dir) {
+		try {
+			for (File file : dir.listFiles()) {
+				if (file.isDirectory())
+					purgeDirectory(file);
+				file.delete();
+			}
+		} catch (NullPointerException e) {
+			System.out.println("Index directory empty. Continue");
+		}
+
 	}
 }

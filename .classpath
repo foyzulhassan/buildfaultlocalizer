@@ -102,6 +102,6 @@
 	<classpathentry kind="lib" path="D:/Researh_Works/ASE_2018/GumTree/gumtree_bin_only/gumtree/lib/websocket-common-9.4.4.v20170414.jar"/>
 	<classpathentry kind="lib" path="D:/Researh_Works/ASE_2018/GumTree/gumtree_bin_only/gumtree/lib/websocket-server-9.4.4.v20170414.jar"/>
 	<classpathentry kind="lib" path="D:/Researh_Works/ASE_2018/GumTree/gumtree_bin_only/gumtree/lib/websocket-servlet-9.4.4.v20170414.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_91"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

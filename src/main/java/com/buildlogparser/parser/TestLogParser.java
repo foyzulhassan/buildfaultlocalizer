@@ -6,7 +6,7 @@ public class TestLogParser {
 		// TODO Auto-generated method stub
 		GradleLogParser parser=new GradleLogParser();
 		
-		String str=parser.getDifferentialBuildLog("D:\\Researh_Works\\ASE_2018\\testing\\1.log", "D:\\Researh_Works\\ASE_2018\\testing\\2.log");
+		String str=parser.getDifferentialBuildLog("D:\\Researh_Works\\ASE_2018\\testing\\1.log", "D:\\Researh_Works\\ASE_2018\\testing\\2.log",false);
 		
 		
 		System.out.println(str);

@@ -28,6 +28,8 @@ package com.build.docsimilarity;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.build.analyzer.entity.*;
 /* This file handles translating a text file into a document map. The map
@@ -277,6 +279,123 @@ public final class DocumentReader
                line; the rest no longer exists. Log it and ignore it */
             if (hyphenate != null)
                 System.out.println("WARNING: Badly formed Row " + travisproj.getRow()+"Project:"+travisproj.getGhProjectName() + ". Hypenated word on last line: " + hyphenate + " ignored");
+        }
+        catch (Exception e) {
+            // Clean up file
+            throw e;
+        }
+        return results;
+    }
+    
+    public HashMap<String, WordCounter> getWordFrequenciesFromDB(Gradlebuildfixdata buildfix, boolean ispass) throws Exception
+    {
+        HashMap<String, WordCounter> results = new HashMap<String, WordCounter>();
+        try {
+            // Open the data file. 
+            /* TRICKY NOTE: Notice the double backslash below. Java uses
+               '\' as an escape character. The first is the esacpe
+               character needed to insert a litteral '\' in the string! */
+//            String directory = new String("data");
+//            String fullName = directory + "\\" + fileName;
+//            _file = new BufferedReader(new FileReader(fullName));
+//            if (_file == null) {
+//                // Failed to open. 
+//                System.out.println("ERROR: File to analyze " + fullName + " not found.");
+//                throw new IOException("ERROR: File to analyze " + fullName + " not found.");
+//            }
+        	
+        	//DBActionExecutor dbobj = new DBActionExecutor();
+        	
+        	String buildlog;
+        	
+        	if(!ispass)
+        	{
+        		buildlog=buildfix.getFailChange();
+        	}
+        	else
+        	{
+        		buildlog=buildfix.getFixChange();
+        	}
+        	
+        	//For Cleanup
+    		String regex="([a-zA-Z]+)(\\d)";    		
+    		Pattern p = Pattern.compile(regex);    		
+    		Matcher m = p.matcher(buildlog);
+    		while (m.find()) {
+    			buildlog = buildlog.replaceAll(m.group(), m.group(1)+" "+m.group(2));   
+    		}    		
+
+        	List<String> buildlogbuffer = new ArrayList<String>(Arrays.asList(buildlog.split("\n")));
+        	
+        	int rowindex=0;
+        	String buffer=null;
+        	
+        	if(buildlogbuffer.size()>0)
+        		buffer=buildlogbuffer.get(rowindex);
+        	
+        	
+          
+            String hyphenate = null; // Word wrapped from previous line
+            boolean haveHyphenate = false; // Word wrapps to the next line
+            while (rowindex<buildlogbuffer.size() && buffer!=null) {
+                /* A dash not by itself at the end of the line indicates
+                   hyphenation
+                   NOTE: Deliberately designed so trailing spaces are treated
+                   as a sign of formatting problems */
+                haveHyphenate = buffer.matches(".*[A-Za-z]-$");
+
+                /* Remove all non-alpha characters and consolidate resulting
+                   whitespace */
+                buffer = buffer.replaceAll("[^A-Za-z ]", " ").trim().replaceAll(" +", " ");
+
+                // Convert to lower case
+                //buffer = buffer.toLowerCase();
+
+                if (!buffer.isEmpty()) { // Not empty string at this point
+                    // Split into words
+                    String [] procWords = buffer.split(" ");
+                    if (hyphenate != null)
+                        // Merge into FRONT of first word
+                        procWords[0] = hyphenate + procWords[0];
+                    hyphenate = null;
+
+                    int index;
+                    for (index = 0; index < procWords.length; index++) {
+                        /* If last word and line is hyphenated, save it for
+                           the next line */
+                        if (haveHyphenate && (index >= procWords.length - 1)) {
+                            hyphenate = procWords[index];
+                            haveHyphenate = false;
+                        }
+                        // Exclude words on the stopwords list
+                        else if (!_stopwords.isStopWord(procWords[index])) {
+                            /* Ignore words consisting of 's'. This is the
+                               remainder of a possessive: [word]'s */
+                            if (!procWords[index].equals("s")) {
+                                // Stem the word from the file
+                               // String stem = _stemmer.getStem(procWords[index]);
+                            	String stem=procWords[index];
+                                // Update count as needed
+                                WordCounter count = results.get(stem);
+                                if (count == null) {
+                                    count = new WordCounter();
+                                    results.put(stem, count);
+                                }
+                                count.increment();
+                            } // Not a single s
+                        } // Not on the list of words to ignore
+                    } // For each word to process
+                } // Have words to process
+                rowindex++;
+                
+                if(rowindex<buildlogbuffer.size())
+                	buffer = buildlogbuffer.get(rowindex);
+            } // While file lines to process
+
+            /* If get to here with a hypenate word set, it was on the last
+               line; the rest no longer exists. Log it and ignore it */
+            if (hyphenate != null)
+                System.out.println("WARNING: Badly formed Row ");
         }
         catch (Exception e) {
             // Clean up file

@@ -26,20 +26,17 @@ public class MainClass {
 
 		System.out.println("Enter your action:");
 
-		System.out
-				.println("1->Data Generation"
-						+ "\n2->Commit Change Analysis and Import Full Log"
-						+ "\n3->Differential Log Analysis and Import"
-						+ "\n4->Perform Fault Localization on Full Log"
-						+ "\n5->Perform Fault Localization on Differenttial Log"
-						+ "\n6->Perform Fault Localization on Differenttial Log + File Change");
+		System.out.println("1->Data Generation" + "\n2->Commit Change Analysis and Import Full Log"
+				+ "\n3->Differential Log Analysis and Import" + "\n4->Perform Fault Localization on Full Log"
+				+ "\n5->Perform Fault Localization on Differenttial Log"
+				+ "\n6->Perform Fault Localization on Differenttial Log + File Change" + "\n7->For Logging");
 
 		// create an object that reads integers:
 		Scanner cin = new Scanner(System.in);
 
 		System.out.println("Enter an integer: ");
 		int inputid = cin.nextInt();
-		//int inputid=5;
+		// int inputid=5;
 
 		if (inputid == 1) {
 			dataFiltering();
@@ -49,12 +46,14 @@ public class MainClass {
 			genDifferentialBuildLog();
 		} else if (inputid == 4) {
 			generateSimilarity();
-			generateSimilarityDifferentialLog();
-			genSimDifferentialLogOnChange();
+			// generateSimilarityDifferentialLog();
+			// genSimDifferentialLogOnChange();
 		} else if (inputid == 5) {
 			generateSimilarityDifferentialLog();
 		} else if (inputid == 6) {
 			genSimDifferentialLogOnChange();
+		} else if (inputid == 7) {
+			genSimDifferentialLogOnChangeForLogging();
 		}
 
 		else {
@@ -106,30 +105,41 @@ public class MainClass {
 
 		try {
 			simgen.simAnalyzerFullLog();
-			//simgen.simAnalyzerFilteredLog();
+			// simgen.simAnalyzerFilteredLog();
 			// simgen.simtesting();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void generateSimilarityDifferentialLog() {
 		SimGenerationMngr simgen = new SimGenerationMngr();
 
 		try {
-			simgen.simAnalyzerDifferemtialLog();			
+			simgen.simAnalyzerDifferemtialLog();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void genSimDifferentialLogOnChange() {
 		SimGenerationMngr simgen = new SimGenerationMngr();
 
 		try {
-			simgen.simAnalyzerDifferemtialLogWithChange();	
+			simgen.simAnalyzerDifferemtialLogWithChange();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private static void genSimDifferentialLogOnChangeForLogging() {
+		SimGenerationMngr simgen = new SimGenerationMngr();
+
+		try {
+			simgen.simAnalyzerDifferemtialLogWithChangeforLogging();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
