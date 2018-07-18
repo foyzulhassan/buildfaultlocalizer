@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
+import com.build.analyzer.config.Config;
 import com.build.analyzer.entity.Gradlebuildfixdata;
 import com.build.docsim.CosineDocumentSimilarity;
 import com.build.docsimilarity.DocWordFreqGenerator;
@@ -130,6 +131,39 @@ public class FilterLogText {
 		for (int index = 0; index < filteredlines.size(); index++) {
 			strbuilder.append(filteredlines.get(index));
 			strbuilder.append("\n");
+		}
+
+		return strbuilder.toString();
+	}
+	
+	public String performFilteringOnSimValue(Gradlebuildfixdata buildfixdata) {
+
+		StringBuilder strbuilder = new StringBuilder();
+
+		String faillog = buildfixdata.getFailPartSim();
+
+		List<String> buildfaillines = new ArrayList<String>(Arrays.asList(faillog.split("\n")));
+
+		for (int failindex = 0; failindex < buildfaillines.size(); failindex++) {
+
+			String strline = buildfaillines.get(failindex);
+
+			// Checking if line has sufficient length
+			if (strline.length() >= Config.lineSimSeperator.length()) {
+
+				String[] strparts = strline.split(Config.lineSimSeperator);
+
+				if (strparts[1] != null && Double.parseDouble(strparts[1]) > Config.thresholdForSimFilter) {
+
+					if (strparts[0] != null) {
+						strbuilder.append(strparts[0]);
+						strbuilder.append("\n");
+					}
+
+				}
+
+			}
+
 		}
 
 		return strbuilder.toString();

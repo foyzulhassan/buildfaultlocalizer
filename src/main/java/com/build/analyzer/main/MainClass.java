@@ -11,7 +11,9 @@ import com.build.analyzer.dtgen.CommitChangeExtractor;
 import com.build.analyzer.dtgen.DataGenerationMngr;
 import com.build.analyzer.dtgen.SimGenerationMngr;
 import com.build.analyzer.entity.Gradlebuildfixdata;
+import com.build.builddependency.BuildDependencyGenerator;
 import com.build.commitanalyzer.CommitAnalyzer;
+import com.build.logfilter.LogFailPartSimGenMgr;
 import com.build.revertanalyzer.ReverAnalyzer;
 import com.github.gumtreediff.actions.model.Action;
 
@@ -29,14 +31,15 @@ public class MainClass {
 		System.out.println("1->Data Generation" + "\n2->Commit Change Analysis and Import Full Log"
 				+ "\n3->Differential Log Analysis and Import" + "\n4->Perform Fault Localization on Full Log"
 				+ "\n5->Perform Fault Localization on Differenttial Log"
-				+ "\n6->Perform Fault Localization on Differenttial Log + File Change" + "\n7->For Logging");
+				+ "\n6->Perform Fault Localization on Differenttial Log + File Change" + "\n7->For Logging"
+				+ "\n8->Log Fail Part Line Similarity Generator"
+				+ "\n9->Perform Fault Localization on Fail Part Log with Similarity Limit");
 
 		// create an object that reads integers:
 		Scanner cin = new Scanner(System.in);
 
 		System.out.println("Enter an integer: ");
 		int inputid = cin.nextInt();
-		// int inputid=5;
 
 		if (inputid == 1) {
 			dataFiltering();
@@ -54,8 +57,15 @@ public class MainClass {
 			genSimDifferentialLogOnChange();
 		} else if (inputid == 7) {
 			genSimDifferentialLogOnChangeForLogging();
+		} else if (inputid == 8) {
+			generateStoreFailPartSimValue();
+		} else if (inputid == 9) {
+			genSimFailLogPartWithSimLimit();
+		} 
+		else if(inputid == 10)
+		{
+			generateBuildDependencyTree();
 		}
-
 		else {
 			CommitChangeExtractor obj = new CommitChangeExtractor();
 			obj.testCommit();
@@ -135,6 +145,17 @@ public class MainClass {
 		}
 	}
 
+	private static void genSimFailLogPartWithSimLimit() {
+		SimGenerationMngr simgen = new SimGenerationMngr();
+
+		try {
+			simgen.simAnalyzerWithFailPartLineSim();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	private static void genSimDifferentialLogOnChangeForLogging() {
 		SimGenerationMngr simgen = new SimGenerationMngr();
 
@@ -144,6 +165,20 @@ public class MainClass {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private static void generateStoreFailPartSimValue() {
+		LogFailPartSimGenMgr failpartsimgen = new LogFailPartSimGenMgr();
+
+		failpartsimgen.generateAndStoreSimilarity();
+
+	}
+	
+	private static void generateBuildDependencyTree()
+	{
+		BuildDependencyGenerator depgenerator=new BuildDependencyGenerator();
+		
+		depgenerator.generateBuildDependency();
 	}
 
 	private static void cleanupResource() {

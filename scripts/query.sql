@@ -45,5 +45,11 @@ ALTER TABLE gradlebuildfixdata ADD filterlogdual_mrr DOUBLE AFTER filterlogdual_
 ALTER TABLE gradlebuildfixdata ADD filterlogdual_map DOUBLE AFTER filterlogdual_mrr;
 
 
-//This column is for BuildLog fail part with similarity value
+%%This column is for BuildLog fail part with similarity value
 ALTER TABLE gradlebuildfixdata ADD failpart_sim MEDIUMTEXT AFTER fix_change;
+
+%%This columns are for performance of failpart_sim results
+use travistorrent
+ALTER TABLE gradlebuildfixdata ADD failpartsim_pos DOUBLE AFTER filterlogdual_mrr;
+ALTER TABLE gradlebuildfixdata ADD failpartsim_mrr DOUBLE AFTER failpartsim_pos;
+ALTER TABLE gradlebuildfixdata ADD failpartsim_map DOUBLE AFTER failpartsim_mrr;

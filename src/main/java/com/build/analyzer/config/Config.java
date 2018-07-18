@@ -80,6 +80,10 @@ public class Config {
 	public static String script = "/home/foyzul/Research/script/" + "build-adv.py";
 
 	/****************************************************************************/
+	
+	public static String lineSimSeperator="<=##=>";
+	public static double thresholdForSimFilter=0.8;
+	
 
 	public static String getLogFilePath(String projname, String filename) {
 		return workDir + "//" + projname + "//" + filename;
@@ -132,5 +136,6 @@ public class Config {
 	
 	//for Lucene
 	public static String luceneDir=workDir+"lucenedir/";
+	public static String luceneDir2=workDir+"lucenedir2/";
 
 }

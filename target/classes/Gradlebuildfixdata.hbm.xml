@@ -49,6 +49,9 @@
         <property name="fixChange" type="string">
             <column name="fix_change" length="16777215" />
         </property>
+         <property name="failPartSim" type="string">
+            <column name="failpart_sim" length="16777215" />
+        </property>
         <property name="reveretedStatus" type="string">
             <column name="revereted_status" length="65535" />
         </property>
@@ -105,6 +108,18 @@
         </property>
         <property name="filterlogdualMap" type="java.lang.Double">
             <column name="filterlogdual_map" precision="22" scale="0" />
+        </property>
+        
+        <property name="failpartsimPos" type="java.lang.Double">
+            <column name="failpartsim_pos" precision="22" scale="0" />
+        </property>
+        
+        <property name="failpartsimMrr" type="java.lang.Double">
+            <column name="failpartsim_mrr" precision="22" scale="0" />
+        </property>
+        
+        <property name="failpartsimMap" type="java.lang.Double">
+            <column name="failpartsim_map" precision="22" scale="0" />
         </property>
     </class>
 </hibernate-mapping>

@@ -311,6 +311,114 @@ public class SimGenerationMngr {
 		dbexec.updateBatchExistingRecord(projects);
 
 	}
+	
+	public void simAnalyzerWithFailPartLineSim() throws Exception {
+		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
+		RankingCalculator rankmetric = new RankingCalculator();
+
+		List<Gradlebuildfixdata> projects = dbexec.getRows();
+
+
+		for (int index = 0; index < projects.size(); index++) {
+			// for (int index = 0; index < projects.size(); index++) {
+			Gradlebuildfixdata proj = projects.get(index);
+
+			//if (proj.getRow() == 183221) {
+
+			String project = proj.getGhProjectName();
+			project = project.replace('/', '@');
+
+			System.out.println(proj.getRow()+"=>"+project);
+
+			CommitAnalyzer cmtanalyzer = null;
+
+			try {
+				cmtanalyzer = new CommitAnalyzer("test", project);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			Map<String, Double> simmap = cmtanalyzer.getFailLogPartTreeSimilarityMap(proj.getGitLastfailCommit(),
+					proj.getF2row(), proj);
+
+			// this map contains from having in common logdiff
+			Map<String, Double> samesimmap = cmtanalyzer.getLogTreeSimilarityMapV2(proj.getGitLastfailCommit(),
+					proj.getF2row(), proj, false, true);
+
+			String actualfixfile = proj.getF2passFilelist();
+			String failintrofiles = proj.getFailFilelist();
+
+			// This code to inhance
+			List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
+					proj.getGitLastfailCommit());
+			failintrofiles = getCommaSeperated(recentchangefile);
+			///
+
+			String[] failfixs = failintrofiles.split(";");
+			String[] actualfixs = actualfixfile.split(";");
+
+			// Files those found for having in common logdiff
+			for (String name : samesimmap.keySet()) {
+
+				if (simmap.containsKey(name)) {
+					Double val = simmap.get(name) - 0.5 * samesimmap.get(name);
+					simmap.put(name, val);
+					break;
+				}
+
+			}
+			///////////////////////////////////////////////////
+
+			// Fail Introducing file change are geeting extra weight
+			for (String name : simmap.keySet()) {
+				int failindex = 0;
+
+				while (failindex < failfixs.length) {
+
+					if (name.equals(failfixs[failindex])) {
+						Double val = simmap.get(name) + 0.5 * simmap.get(name);
+						simmap.put(name, val);
+						break;
+					}
+					failindex++;
+				}
+			}
+
+			String difflog = proj.getFailChange();
+
+			for (String name : simmap.keySet()) {
+
+				File f = new File(name);
+
+				if (difflog.contains(f.getName())) {
+					Double val = simmap.get(name) + 0.9 * simmap.get(name);
+					simmap.put(name, val);
+				}
+
+			}
+
+			Map<String, Double> sortedsimmap = sortByValue(simmap);
+
+			ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
+
+			int topn = rankmetric.getTopN(keys, actualfixs);
+			double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
+			double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+
+			projects.get(index).setFailpartsimPos(topn);
+			projects.get(index).setFailpartsimMrr(mrr);
+			projects.get(index).setFailpartsimMap(map);
+			
+		 // }//for local testing
+
+		}
+
+		SessionGenerator.closeFactory();
+		dbexec = new DBActionExecutorChangeData();
+		dbexec.updateBatchExistingRecord(projects);
+
+	}
 
 	public void simAnalyzerDifferemtialLogWithChangeforLogging() throws Exception {
 

@@ -31,7 +31,16 @@ public class CosineDocumentSimilarity {
 	CosineDocumentSimilarity(String s1, String s2) throws IOException {
 		// Directory directory = createIndex(s1, s2);
 		// IndexReader reader = DirectoryReader.open(directory);
-		RAMDirectory ramDir = new RAMDirectory();
+		//RAMDirectory ramDir = new RAMDirectory();
+		//purgeDirectory(new File(Config.luceneDir2));
+		FSDirectory fsDir1 = null;
+		try {
+			fsDir1 = FSDirectory.open(Paths.get(Config.luceneDir2));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
 		// Index the full text of both documents
 		// CharArraySet stopword=
@@ -52,10 +61,17 @@ public class CosineDocumentSimilarity {
 		Analyzer analyzer = new StandardAnalyzer(stopSet);
 
 		IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+		
+		
 		// IndexWriter writer = new IndexWriter(ramDir, new
 		// StandardAnalyzer(Version.LUCENE_36), true,
 		// IndexWriter.MaxFieldLength.UNLIMITED);
-		IndexWriter writer = new IndexWriter(ramDir, iwc);
+		IndexWriter writer = new IndexWriter(fsDir1, iwc);
+		
+		writer.deleteAll();
+		writer.commit();		
+
+		
 		Document doc = new Document();
 		doc.add(new Field("text", FileUtils.readFileToString(new File(s1), "UTF-8").replace(".", " "), Field.Store.NO,
 				Field.Index.ANALYZED, Field.TermVector.YES));
@@ -64,9 +80,11 @@ public class CosineDocumentSimilarity {
 		doc.add(new Field("text", FileUtils.readFileToString(new File(s2), "UTF-8"), Field.Store.NO,
 				Field.Index.ANALYZED, Field.TermVector.YES));
 		writer.addDocument(doc);
+		writer.commit();		
 		writer.close();
+		
 
-		IndexReader reader = DirectoryReader.open(ramDir);
+		IndexReader reader = DirectoryReader.open(fsDir1);
 
 		Map<String, Integer> f1 = getTermFrequencies(reader, 0);
 		Map<String, Integer> f2 = getTermFrequencies(reader, 1);
@@ -142,6 +160,7 @@ public class CosineDocumentSimilarity {
 		}
 
 		try {
+			writer.commit();
 			writer.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -19,6 +19,7 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	private String blLargelog;
 	private String failChange;
 	private String fixChange;
+	private String failPartSim;
 	private String reveretedStatus;
 	private String failFilelist;
 	private String passFilelist;
@@ -38,6 +39,9 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	private Integer filterlogdualPos;
 	private Double filterlogdualMrr;
 	private Double filterlogdualMap;
+	private Integer failpartsimPos;
+	private Double failpartsimMrr;
+	private Double failpartsimMap;
 
 	public Gradlebuildfixdata() {
 	}
@@ -195,6 +199,14 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 		this.fixChange = fixChange;
 	}
 
+	public String getFailPartSim() {
+		return failPartSim;
+	}
+
+	public void setFailPartSim(String failPartSim) {
+		this.failPartSim = failPartSim;
+	}
+	
 	public String getReveretedStatus() {
 		return this.reveretedStatus;
 	}
@@ -345,6 +357,30 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 
 	public void setFilterlogdualMap(Double filterlogdualMap) {
 		this.filterlogdualMap = filterlogdualMap;
+	}
+	
+	public Integer getFailpartsimPos() {
+		return failpartsimPos;
+	}
+
+	public void setFailpartsimPos(Integer failpartsimPos) {
+		this.failpartsimPos = failpartsimPos;
+	}
+
+	public Double getFailpartsimMrr() {
+		return failpartsimMrr;
+	}
+
+	public void setFailpartsimMrr(Double failpartsimMrr) {
+		this.failpartsimMrr = failpartsimMrr;
+	}
+
+	public Double getFailpartsimMap() {
+		return failpartsimMap;
+	}
+
+	public void setFailpartsimMap(Double failpartsimMap) {
+		this.failpartsimMap = failpartsimMap;
 	}
 
 }

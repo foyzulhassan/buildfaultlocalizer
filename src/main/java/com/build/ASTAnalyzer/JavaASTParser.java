@@ -41,6 +41,27 @@ public class JavaASTParser {
 		
 		return astList;
 	}
+	
+	public List<String> parseJavaMethodDecs(String source) {
+
+		ASTParser parser = ASTParser.newParser(AST.JLS8);
+		parser.setSource(source.toCharArray());
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+		ChangeASTVisitor visitor=new ChangeASTVisitor();
+		try
+		{
+			CompilationUnit unit = (CompilationUnit) parser.createAST(new NullProgressMonitor());	
+			
+			unit.accept(visitor);
+		}catch(Exception e){
+			System.out.println("parseJavaMethodDecs Error:->"+e.getMessage());
+		}
+
+		List<String> astList=visitor.getAstTextList();
+		
+		return astList;
+	}
 
 	public String readFile(File file) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
