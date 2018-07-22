@@ -405,6 +405,8 @@ public class SimGenerationMngr {
 			int topn = rankmetric.getTopN(keys, actualfixs);
 			double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
 			double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+			
+			System.out.println("Mrr="+mrr+" MAP= "+map);
 
 			projects.get(index).setFailpartsimPos(topn);
 			projects.get(index).setFailpartsimMrr(mrr);
@@ -533,6 +535,41 @@ public class SimGenerationMngr {
 				logwriter.printResultLog(project, failcommit, passcommit, actualfixs, difflog, keys);
 			}
 
+		}
+
+	}
+	
+	
+	public void printDifferentLogs() throws Exception {
+
+		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
+	
+		List<Gradlebuildfixdata> projects = dbexec.getRows();
+		LogResultWriter logwriter = new LogResultWriter();
+		
+		
+		int index=0;
+		while(index < projects.size()) {
+			// for (int index = 0; index < projects.size(); index++) {
+			Gradlebuildfixdata proj = projects.get(index);
+
+			String project = proj.getGhProjectName();
+			project = project.replace('/', '@');
+
+			System.out.println(project);			
+			
+			String largelog=proj.getBlLargelog();
+			String failpart=proj.getFailChange();
+			String passpart=proj.getFixChange();
+			String failpartsim=proj.getFailPartSim();
+			String actualfixfile = proj.getF2passFilelist();
+
+			logwriter.printDifferentTypeofLog(index+1,proj.getRow(), project, largelog, failpart, passpart, failpartsim,actualfixfile);
+			
+			if(index>100)
+				break;
+
+			index++;
 		}
 
 	}

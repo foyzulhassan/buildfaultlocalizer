@@ -2,6 +2,7 @@ package com.build.docsim;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -9,7 +10,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.linear.*;
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.en.PorterStemFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
@@ -31,16 +36,16 @@ public class CosineDocumentSimilarity {
 	CosineDocumentSimilarity(String s1, String s2) throws IOException {
 		// Directory directory = createIndex(s1, s2);
 		// IndexReader reader = DirectoryReader.open(directory);
-		//RAMDirectory ramDir = new RAMDirectory();
+		RAMDirectory ramDir = new RAMDirectory();
 		//purgeDirectory(new File(Config.luceneDir2));
-		FSDirectory fsDir1 = null;
-		try {
-			fsDir1 = FSDirectory.open(Paths.get(Config.luceneDir2));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		//FSDirectory fsDir1 = null;
+//		try {
+//			fsDir1 = FSDirectory.open(Paths.get(Config.luceneDir2));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
 
 		// Index the full text of both documents
 		// CharArraySet stopword=
@@ -66,25 +71,30 @@ public class CosineDocumentSimilarity {
 		// IndexWriter writer = new IndexWriter(ramDir, new
 		// StandardAnalyzer(Version.LUCENE_36), true,
 		// IndexWriter.MaxFieldLength.UNLIMITED);
-		IndexWriter writer = new IndexWriter(fsDir1, iwc);
+		IndexWriter writer = new IndexWriter(ramDir, iwc);
 		
-		writer.deleteAll();
-		writer.commit();		
+		//writer.deleteAll();
+		//writer.commit();		
 
 		
-		Document doc = new Document();
-		doc.add(new Field("text", FileUtils.readFileToString(new File(s1), "UTF-8").replace(".", " "), Field.Store.NO,
+		Document doc = new Document();		
+		String str1=FileUtils.readFileToString(new File(s1), "UTF-8");	
+		str1=removeStopWordsAndStem(str1);		
+		doc.add(new Field("text",str1 , Field.Store.NO,
 				Field.Index.ANALYZED, Field.TermVector.YES));
 		writer.addDocument(doc);
+		
 		doc = new Document();
-		doc.add(new Field("text", FileUtils.readFileToString(new File(s2), "UTF-8"), Field.Store.NO,
+		String str2=FileUtils.readFileToString(new File(s2), "UTF-8");	
+		str2=removeStopWordsAndStem(str2);		
+		doc.add(new Field("text", str2, Field.Store.NO,
 				Field.Index.ANALYZED, Field.TermVector.YES));
 		writer.addDocument(doc);
-		writer.commit();		
+	//	writer.commit();		
 		writer.close();
 		
 
-		IndexReader reader = DirectoryReader.open(fsDir1);
+		IndexReader reader = DirectoryReader.open(ramDir);
 
 		Map<String, Integer> f1 = getTermFrequencies(reader, 0);
 		Map<String, Integer> f2 = getTermFrequencies(reader, 1);
@@ -137,7 +147,13 @@ public class CosineDocumentSimilarity {
 
 		for (int index = 0; index < buildpasslines.size(); index++) {
 			Document doc = new Document();
-			String s1 = buildpasslines.get(index);
+			String s1 = null;
+			try {
+				s1 = removeStopWordsAndStem(buildpasslines.get(index));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			doc.add(new Field("text", convertToUTF8(s1), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
 			try {
 				writer.addDocument(doc);
@@ -149,7 +165,13 @@ public class CosineDocumentSimilarity {
 
 		for (int index = 0; index < buildfaillines.size(); index++) {
 			Document doc = new Document();
-			String s1 = buildfaillines.get(index);
+			String s1 = null;
+			try {
+				s1 = removeStopWordsAndStem(buildfaillines.get(index));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			doc.add(new Field("text", convertToUTF8(s1), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
 			try {
 				writer.addDocument(doc);
@@ -315,4 +337,47 @@ public class CosineDocumentSimilarity {
 		}
 
 	}
+	
+	public static String removeStopWordsAndStem(String input) throws IOException 
+	{
+
+		String strinput=input.replaceAll("\\.", " \\. ");
+		
+		String[] stop_word={"auto", "break","case", "char","const","continue","default","do","double","else","enum",
+				"extern", "float", "for", "goto", "if", "int", "long", "register", "return", "short", "signed", "sizeof",
+				"static", "struct", "switch", "typedef", "union", "unsigned", "void", "volatile", "while","abstract","as" ,"base",
+				"bool", "byte", "catch", "checked", "class", "decimal", "delegate", "event", "explicit", "false", "finally",
+				"fixed", "foreach", "implicit", "in" , "interface", "internal", "is", "lock", "namespace", "new", "null"
+				, "object", "operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref",
+				"sbyte", "sealed", "stackalloc", "string", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked"
+				, "unsafe", "ushort", "using", "virtual", "gt" };
+		ArrayList<String> stopWords = new ArrayList<String>();
+		
+		for (int k=0;k<stop_word.length;k++)
+			stopWords.add(stop_word[k]);
+		
+		StandardTokenizer tokenStream1 = new StandardTokenizer();
+		tokenStream1.setReader(new StringReader(strinput));
+		
+		TokenStream tokenStream =  tokenStream1;
+	    tokenStream = new StopFilter(tokenStream, StandardAnalyzer.STOP_WORDS_SET);
+	    tokenStream = new StopFilter(tokenStream, StopFilter.makeStopSet(stopWords));
+	    tokenStream = new PorterStemFilter(tokenStream);
+	    StringBuilder sb = new StringBuilder();
+	    CharTermAttribute token = tokenStream.getAttribute(CharTermAttribute.class);
+	   
+	    tokenStream.reset();
+	    while (tokenStream.incrementToken()) {
+	        if (sb.length() > 0) {
+	            sb.append(" ");
+	        }
+	        sb.append(token.toString());
+	    }
+	    tokenStream.end();
+	    tokenStream.close();  
+	  
+	    
+	    return sb.toString();
+	}
+
 }

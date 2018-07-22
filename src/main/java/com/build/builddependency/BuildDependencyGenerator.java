@@ -15,9 +15,11 @@ public class BuildDependencyGenerator {
 
 		StringMenupulator strmenu = new StringMenupulator();
 
-		File f1 = new File(
-				"D:\\Researh_Works\\ASE_2018\\dependency_analysis\\Sample_Project\\spockframework\\spock\\spock-guice\\guice.gradle");
+//		File f1 = new File(
+//				"D:\\Researh_Works\\ASE_2018\\dependency_analysis\\Sample_Project\\spockframework\\spock\\spock-guice\\guice.gradle");
 
+		File f1 = new File("D:\\Researh_Works\\ASE_2018\\dependency_analysis\\Sample_Project\\build1.gradle");
+		
 		List<String> strlist = TextFileReaderWriter.GetFileContentByLine(f1.toString());
 		for (int index = 0; index < strlist.size(); index++) {
 			String str = strlist.get(index);
@@ -29,7 +31,7 @@ public class BuildDependencyGenerator {
 
 		TreeContext tsrc = GradlePatchGenMngr.getSubProjList(strlist);
 
-		//System.out.println(tsrc.toString());
+		System.out.println(tsrc.toString());
 
 	}
 

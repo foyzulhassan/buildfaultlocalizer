@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.builder.AstBuilder;
@@ -712,7 +713,7 @@ public class GradlePatchGenMngr {
 
 		}
 
-		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0]);
+		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0],"root");
 
 		for (ASTNode node : nodes) {
 			node.visit(visitordep);
@@ -725,13 +726,18 @@ public class GradlePatchGenMngr {
 			System.out.println(subproj);
 		}
 		
-		List<String> projdeps=visitordep.getProjdependency();
+		Map<String,List<String>> projdeps=visitordep.getProjectDependencyies();
 		
 		System.out.println("Project Dependencies");
-		for(String projdep: projdeps)
+		
+		for(String key:projdeps.keySet())
 		{
-			System.out.println(projdep);
+			System.out.println("Dependency for Subproject: "+key);
+			List<String> deps=projdeps.get(key);
+			
+			System.out.println(deps);
 		}
+		
 
 
 		List<SASTNode> astList = visitordep.getNodes();

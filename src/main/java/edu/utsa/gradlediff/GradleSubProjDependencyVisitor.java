@@ -2,10 +2,12 @@ package edu.utsa.gradlediff;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.CodeVisitorSupport;
@@ -31,6 +33,7 @@ import org.codehaus.groovy.ast.expr.MapEntryExpression;
 import org.codehaus.groovy.ast.expr.MapExpression;
 import org.codehaus.groovy.ast.expr.MethodCallExpression;
 import org.codehaus.groovy.ast.expr.MethodPointerExpression;
+import org.codehaus.groovy.ast.expr.NamedArgumentListExpression;
 import org.codehaus.groovy.ast.expr.NotExpression;
 import org.codehaus.groovy.ast.expr.PostfixExpression;
 import org.codehaus.groovy.ast.expr.PrefixExpression;
@@ -82,29 +85,32 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 	private TreeContext context;
 	List<SASTNode> astList = new ArrayList<SASTNode>();
 
-	List<String> subprojects=new ArrayList<>();
-	
+	List<String> subprojects = new ArrayList<>();
+
+	private String parentProject;
+
+	private Map<String, List<String>> projectDependencyies;
+
+	public Map<String, List<String>> getProjectDependencyies() {
+		return projectDependencyies;
+	}
+
 	public List<String> getSubprojects() {
 		return subprojects;
 	}
 
-	List<String> projdependency=new ArrayList<>();
-	
-	
+	// List<String> projdependency = new ArrayList<>();
+	//
+	// public List<String> getProjdependency() {
+	// return projdependency;
+	// }
 
-	public List<String> getProjdependency() {
-		return projdependency;
-	}
-
-	public GradleSubProjDependencyVisitor() {
-		trees = new HashMap<>();
-
-	}
-
-	public GradleSubProjDependencyVisitor(ASTNode parent) {
+	public GradleSubProjDependencyVisitor(ASTNode parent, String strparent) {
 
 		SASTNode node = new SASTNode(null, parent, TypeUtil.getExpressionType(parent));
 		astList.add(node);
+		this.parentProject = strparent;
+		this.projectDependencyies = new HashMap<String, List<String>>();
 	}
 
 	@Override
@@ -194,19 +200,16 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 
 		if (call.getNodeMetaData("lbl") == null)
 			call.setNodeMetaData("lbl", call.getMethodAsString());
-		
-		if(call.getMethodAsString().equals("include"))
-		{
+
+		if (call.getMethodAsString().equals("include")) {
 			Expression argumentsinfo = call.getArguments();
 			if (argumentsinfo != null && argumentsinfo instanceof ArgumentListExpression) {
 				ArgumentListExpression ale = (ArgumentListExpression) argumentsinfo;
 				if (ale != null) {
 					List<Expression> expressions = ale.getExpressions();
-					
-					for(Expression expr: expressions)
-					{
-						if(expr != null && expr instanceof ConstantExpression)
-						{
+
+					for (Expression expr : expressions) {
+						if (expr != null && expr instanceof ConstantExpression) {
 							subprojects.add(expr.getText());
 						}
 					}
@@ -214,53 +217,66 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 				}
 			}
 		}
-		
-		if(call.getMethodAsString().equals("compile") || call.getMethodAsString().equals("testCompile"))
-		{
-			Expression argumentsinfo = call.getArguments();
-			if (argumentsinfo != null && argumentsinfo instanceof ArgumentListExpression) {
-				ArgumentListExpression ale = (ArgumentListExpression) argumentsinfo;
-				if (ale != null) {
-					List<Expression> expressions = ale.getExpressions();
-					
-					for(Expression expr: expressions)
-					{
-						if(expr != null && expr instanceof MethodCallExpression)
-						{
-							MethodCallExpression methodexp=(MethodCallExpression) expr;
-							
-							if(methodexp.getMethodAsString().equals("project"))
-							{
-								Expression argumentsinfo2 = methodexp.getArguments();
-								if (argumentsinfo2 != null && argumentsinfo2 instanceof ArgumentListExpression) {
-									ArgumentListExpression ale2 = (ArgumentListExpression) argumentsinfo2;
-									if (ale != null) {
-										List<Expression> expressions2 = ale2.getExpressions();
-										
-										for(Expression expr2: expressions2)
-										{
-											if(expr2 != null && expr2 instanceof ConstantExpression)
-											{
-												projdependency.add(expr2.getText());
-											}
-										}
 
-									}
-								}
-								
-							}
-						}
-					}
+		// This part is for compile or testCompile Project Start
+		if ((call.getMethodAsString().equals("compile") || call.getMethodAsString().equals("testCompile"))
+				&& call.getNodeMetaData("visited") == null) {
+			List<String> dependency = getCompileTestCompileDependency(call);
 
-				}
+			if (dependency != null & dependency.size() > 0) {
+				Map<String, List<String>> deps = new HashMap<String, List<String>>();
+				deps.put(parentProject, dependency);
+				mergeDependencyMap(deps);
+
 			}
 		}
+
+		// This part is for compile or testCompile Project End
+
+		// This part is for following case
+		// project(':app') {
+		// dependencies {
+		// compile project(':common'), project(':api')
+		// compile 'org.apache.logging.log4j:log4j-core:2.6.2'
+		// }
+		if (call.getMethodAsString().equals("project")) {
+			Map<String, List<String>> mapdependency = getProjectDependencyForCompile(call);
+		}
+		
+		if ((call.getMethodAsString().equals("provided"))
+				&& call.getNodeMetaData("visited") == null) {
+			List<String> dependency = getProvidedDependency(call);
+
+			if (dependency != null & dependency.size() > 0) {
+				Map<String, List<String>> deps = new HashMap<String, List<String>>();
+				deps.put(parentProject, dependency);
+				mergeDependencyMap(deps);
+
+			}
+		}
+
+		if ((call.getMethodAsString().equals("runtime") || call.getMethodAsString().equals("testRuntime"))
+				&& call.getNodeMetaData("visited") == null) {
+			List<String> dependency = getRuntimeTestRuntimeDependency(call);
+
+			if (dependency != null & dependency.size() > 0) {
+				Map<String, List<String>> deps = new HashMap<String, List<String>>();
+				deps.put(parentProject, dependency);
+				mergeDependencyMap(deps);
+
+			}
+		}
+		
 
 		super.visitMethodCallExpression(call);
 
 	}
 
-	
+	private void getStatements() {
+		// TODO Auto-generated method stub
+
+	}
+
 	@Override
 	public void visitArgumentlistExpression(ArgumentListExpression ale) {
 
@@ -725,13 +741,14 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 					SASTNode node = new SASTNode(expression, spread, TypeUtil.getExpressionType(spread));
 					astList.add(node);
 					// spread.visit(this);
-				} 
-//				else {
-//
-//					SASTNode node = new SASTNode(expression, expression1, TypeUtil.getExpressionType(expression1));
-//					astList.add(node);
-//					// expression1.visit(this);
-//				}
+				}
+				// else {
+				//
+				// SASTNode node = new SASTNode(expression, expression1,
+				// TypeUtil.getExpressionType(expression1));
+				// astList.add(node);
+				// // expression1.visit(this);
+				// }
 			}
 		}
 
@@ -852,13 +869,11 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 	@Override
 	public void visitConstantExpression(ConstantExpression expression) {
 		// TODO Auto-generated method stub
-		
-		if(expression.getValue()==null)
+
+		if (expression.getValue() == null)
 			return;
-		
-		
-    	
-    	if (expression.getNodeMetaData("lbl") == null)
+
+		if (expression.getNodeMetaData("lbl") == null)
 			expression.setNodeMetaData("lbl", expression.getText());
 
 		super.visitConstantExpression(expression);
@@ -868,12 +883,12 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 	public void visitClassExpression(ClassExpression expression) {
 		// TODO Auto-generated method stub
 
-		//if (classParent != null) {
-			if (expression.getNodeMetaData("lbl") == null)
-				expression.setNodeMetaData("lbl", expression.getText());
-			SASTNode node = new SASTNode(null, expression, TypeUtil.getExpressionType(expression));
-			astList.add(node);
-		//}
+		// if (classParent != null) {
+		if (expression.getNodeMetaData("lbl") == null)
+			expression.setNodeMetaData("lbl", expression.getText());
+		SASTNode node = new SASTNode(null, expression, TypeUtil.getExpressionType(expression));
+		astList.add(node);
+		// }
 
 		super.visitClassExpression(expression);
 	}
@@ -882,7 +897,6 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 	public void visitVariableExpression(VariableExpression expression) {
 		// TODO Auto-generated method stub
 
-			
 		if (expression.getNodeMetaData("lbl") == null)
 			expression.setNodeMetaData("lbl", expression.getText());
 
@@ -894,13 +908,15 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 		// TODO Auto-generated method stub
 		if (expression.getNodeMetaData("lbl") == null)
 			expression.setNodeMetaData("lbl", expression.getText());
-//		SASTNode node = new SASTNode(expression, expression.getLeftExpression(),
-//				TypeUtil.getExpressionType(expression.getLeftExpression()));
-//		astList.add(node);
-//
-//		SASTNode node1 = new SASTNode(expression, expression.getRightExpression(),
-//				TypeUtil.getExpressionType(expression.getRightExpression()));
-//		astList.add(node1);
+		// SASTNode node = new SASTNode(expression,
+		// expression.getLeftExpression(),
+		// TypeUtil.getExpressionType(expression.getLeftExpression()));
+		// astList.add(node);
+		//
+		// SASTNode node1 = new SASTNode(expression,
+		// expression.getRightExpression(),
+		// TypeUtil.getExpressionType(expression.getRightExpression()));
+		// astList.add(node1);
 
 		super.visitDeclarationExpression(expression);
 	}
@@ -1051,6 +1067,334 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 
 	public List<SASTNode> getNodes() {
 		return astList;
+	}
+
+	public List<String> getCompileTestCompileDependency(MethodCallExpression call) {
+		List<String> dependency = new ArrayList<String>();
+
+		if (call.getMethodAsString().equals("compile") || call.getMethodAsString().equals("testCompile")) {
+			call.putNodeMetaData("visited", "true");
+			Expression argumentsinfo = call.getArguments();
+			if (argumentsinfo != null && argumentsinfo instanceof ArgumentListExpression) {
+				ArgumentListExpression ale = (ArgumentListExpression) argumentsinfo;
+				if (ale != null) {
+					List<Expression> expressions = ale.getExpressions();
+
+					for (Expression expr : expressions) {
+						if (expr != null && expr instanceof MethodCallExpression) {
+							MethodCallExpression methodexp = (MethodCallExpression) expr;
+
+							if (methodexp.getMethodAsString().equals("project")) {
+								Expression argumentsinfo2 = methodexp.getArguments();
+								if (argumentsinfo2 != null && argumentsinfo2 instanceof ArgumentListExpression) {
+									ArgumentListExpression ale2 = (ArgumentListExpression) argumentsinfo2;
+									if (ale != null) {
+										List<Expression> expressions2 = ale2.getExpressions();
+
+										for (Expression expr2 : expressions2) {
+											if (expr2 != null && expr2 instanceof ConstantExpression) {
+												dependency.add(expr2.getText());
+											}
+										}
+
+									}
+								}
+
+							}
+						}
+						else if (expr != null && expr instanceof PropertyExpression) {
+							PropertyExpression propexp = (PropertyExpression) expr;
+
+							if (propexp.getText().contains("this.project") && propexp.getText().contains(":")) {
+							
+								String str=propexp.getText();
+								int firstindex=str.indexOf(':');
+								int lastindex=str.indexOf(')', firstindex);
+								
+								dependency.add(str.substring(firstindex, lastindex));
+								
+							}
+						}
+					}
+
+				}
+			}
+		}
+		// This part is for compile or testCompile Project End
+
+		return dependency;
+	}
+	
+	public List<String> getRuntimeTestRuntimeDependency(MethodCallExpression call) {
+		List<String> dependency = new ArrayList<String>();
+
+		if (call.getMethodAsString().equals("runtime") || call.getMethodAsString().equals("testRuntime")) {
+			call.putNodeMetaData("visited", "true");
+			Expression argumentsinfo = call.getArguments();
+			if (argumentsinfo != null && argumentsinfo instanceof ArgumentListExpression) {
+				ArgumentListExpression ale = (ArgumentListExpression) argumentsinfo;
+				if (ale != null) {
+					List<Expression> expressions = ale.getExpressions();
+
+					for (Expression expr : expressions) {
+						if (expr != null && expr instanceof MethodCallExpression) {
+							MethodCallExpression methodexp = (MethodCallExpression) expr;
+
+							if (methodexp.getMethodAsString().equals("project")) {
+								Expression argumentsinfo2 = methodexp.getArguments();
+								if (argumentsinfo2 != null && argumentsinfo2 instanceof ArgumentListExpression) {
+									ArgumentListExpression ale2 = (ArgumentListExpression) argumentsinfo2;
+									if (ale != null) {
+										List<Expression> expressions2 = ale2.getExpressions();
+
+										for (Expression expr2 : expressions2) {
+											if (expr2 != null && expr2 instanceof ConstantExpression) {
+												dependency.add(expr2.getText());
+											}
+										}
+
+									}
+								}
+
+							}
+						}
+						else if (expr != null && expr instanceof PropertyExpression) {
+							PropertyExpression propexp = (PropertyExpression) expr;
+
+							if (propexp.getText().contains("this.project") && propexp.getText().contains(":")) {
+							
+								String str=propexp.getText();
+								int firstindex=str.indexOf(':');
+								int lastindex=str.indexOf(')', firstindex);
+								
+								dependency.add(str.substring(firstindex, lastindex));
+								
+							}
+						}
+					}
+
+				}
+			}
+		}
+		// This part is for compile or testCompile Project End
+
+		return dependency;
+	}
+	
+	public List<String> getProvidedDependency(MethodCallExpression call) {
+		List<String> dependency = new ArrayList<String>();
+
+		if (call.getMethodAsString().equals("provided")) {
+			call.putNodeMetaData("visited", "true");
+			Expression argumentsinfo = call.getArguments();
+			if (argumentsinfo != null && argumentsinfo instanceof ArgumentListExpression) {
+				ArgumentListExpression ale = (ArgumentListExpression) argumentsinfo;
+				if (ale != null) {
+					List<Expression> expressions = ale.getExpressions();
+
+					for (Expression expr : expressions) {
+						if (expr != null && expr instanceof MethodCallExpression) {
+							MethodCallExpression methodexp = (MethodCallExpression) expr;
+
+							if (methodexp.getMethodAsString().equals("project")) {
+								Expression argumentsinfo2 = methodexp.getArguments();
+								if (argumentsinfo2 != null && argumentsinfo2 instanceof ArgumentListExpression) {
+									ArgumentListExpression ale2 = (ArgumentListExpression) argumentsinfo2;
+									if (ale != null) {
+										List<Expression> expressions2 = ale2.getExpressions();
+
+										for (Expression expr2 : expressions2) {
+											if (expr2 != null && expr2 instanceof ConstantExpression) {
+												dependency.add(expr2.getText());
+											}
+										}
+
+									}
+								}
+								
+								else if (argumentsinfo2 != null && argumentsinfo2 instanceof TupleExpression) {
+									List<? extends Expression> list = ((TupleExpression) argumentsinfo2)
+											.getExpressions();
+									if (list != null) {
+										for (Expression expression1 : list) {
+											
+											for (MapEntryExpression exp : ((MapExpression) expression1).getMapEntryExpressions()) {
+
+												if(exp.getValueExpression().getText().startsWith(":"))
+													dependency.add(exp.getValueExpression().getText());
+											}
+
+										
+										}
+									}
+
+								}
+
+							}
+						}
+						else if (expr != null && expr instanceof PropertyExpression) {
+							PropertyExpression propexp = (PropertyExpression) expr;
+
+							if (propexp.getText().contains("this.project") && propexp.getText().contains(":")) {
+							
+								String str=propexp.getText();
+								int firstindex=str.indexOf(':');
+								int lastindex=str.indexOf(')', firstindex);
+								
+								dependency.add(str.substring(firstindex, lastindex));
+								
+							}
+						}
+					}
+
+				}
+			}
+		}
+		// This part is for compile or testCompile Project End
+
+		return dependency;
+	}
+
+	public Map<String, List<String>> getProjectDependencyForCompile(MethodCallExpression call) {
+		Map<String, List<String>> mapdependency = new HashMap<String, List<String>>();
+		String parentproj = null;
+		if (call.getMethodAsString().equals("project")) {
+			Expression argumentsinfo = call.getArguments();
+
+			if (argumentsinfo != null && argumentsinfo instanceof ArgumentListExpression) {
+				ArgumentListExpression ale = (ArgumentListExpression) argumentsinfo;
+				if (ale != null) {
+					List<Expression> expressions = ale.getExpressions();
+
+					for (Expression expr : expressions) {
+						if (expr != null && expr instanceof ConstantExpression) {
+							parentproj = expr.getText();
+						}
+
+						else if (expr != null && expr instanceof ClosureExpression) {
+							ClosureExpression closureExpression = (ClosureExpression) expr;
+							Statement block = closureExpression.getCode();
+							if (block instanceof BlockStatement) {
+
+								BlockStatement blk = (BlockStatement) block;
+
+								List<Statement> stmts = blk.getStatements();
+
+								for (Statement stmt : stmts) {
+
+									if (stmt instanceof ExpressionStatement) {
+										ExpressionStatement expstmt = (ExpressionStatement) stmt;
+										Expression node = expstmt.getExpression();
+
+										if (node != null && node instanceof MethodCallExpression) {
+											MethodCallExpression methodexp = (MethodCallExpression) node;
+
+											if (methodexp.getMethodAsString().equals("dependencies")) {
+												Expression argumentsinfo2 = methodexp.getArguments();
+
+												if (argumentsinfo2 != null
+														&& argumentsinfo2 instanceof ArgumentListExpression) {
+													ArgumentListExpression ale2 = (ArgumentListExpression) argumentsinfo2;
+
+													if (ale2 != null) {
+														List<Expression> expressions2 = ale2.getExpressions();
+
+														for (Expression expr2 : expressions2) {
+
+															if (expr2 != null && expr2 instanceof ClosureExpression) {
+
+																ClosureExpression closureExpression2 = (ClosureExpression) expr2;
+																Statement block2 = closureExpression2.getCode();
+																if (block2 instanceof BlockStatement) {
+
+																	BlockStatement blk2 = (BlockStatement) block2;
+
+																	List<Statement> stmts2 = blk2.getStatements();
+
+																	for (Statement stmt2 : stmts2) {
+
+																		ExpressionStatement expstmt2 = (ExpressionStatement) stmt2;
+																		Expression node2 = expstmt2.getExpression();
+
+																		if (node2 != null
+																				&& node2 instanceof MethodCallExpression) {
+
+																			MethodCallExpression methodcall = (MethodCallExpression) node2;
+
+																			List<String> dependency = getCompileTestCompileDependency(
+																					methodcall);
+
+																			if (dependency != null
+																					&& dependency.size() > 0) {
+																				mapdependency.put(parentproj,
+																						dependency);
+
+																				mergeDependencyMap(mapdependency);
+																			}
+																			
+																			dependency = getProvidedDependency(methodcall);
+
+																			if (dependency != null
+																					&& dependency.size() > 0) {
+																				mapdependency.put(parentproj,
+																						dependency);
+
+																				mergeDependencyMap(mapdependency);
+																			}
+																			
+																			dependency = getRuntimeTestRuntimeDependency(methodcall);
+
+																			if (dependency != null
+																					&& dependency.size() > 0) {
+																				mapdependency.put(parentproj,
+																						dependency);
+
+																				mergeDependencyMap(mapdependency);
+																			}																			
+
+																		}
+																	}
+																}
+															}
+														}
+
+													}
+												}
+											}
+
+										}
+									}
+								}
+
+							}
+						}
+					}
+
+				}
+			}
+
+		}
+
+		return mapdependency;
+	}
+
+	public void mergeDependencyMap(Map<String, List<String>> depdencymap) {
+
+		for (String key : depdencymap.keySet()) {
+			if (projectDependencyies.containsKey(key)) {
+				List<String> deps = projectDependencyies.get(key);
+
+				deps.addAll(depdencymap.get(key));
+
+				List<String> deDupStringList = new ArrayList<>(new HashSet<>(deps));
+
+				projectDependencyies.put(key, deDupStringList);
+			} else {
+				projectDependencyies.put(key, depdencymap.get(key));
+			}
+
+		}
+
 	}
 
 }

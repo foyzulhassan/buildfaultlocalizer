@@ -110,8 +110,8 @@
             <column name="filterlogdual_map" precision="22" scale="0" />
         </property>
         
-        <property name="failpartsimPos" type="java.lang.Double">
-            <column name="failpartsim_pos" precision="22" scale="0" />
+        <property name="failpartsimPos" type="java.lang.Integer">
+            <column name="failpartsim_pos"/>
         </property>
         
         <property name="failpartsimMrr" type="java.lang.Double">

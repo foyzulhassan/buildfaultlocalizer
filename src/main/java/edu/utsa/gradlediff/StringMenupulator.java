@@ -384,8 +384,8 @@ public class StringMenupulator {
 		if (isStringContainsImport(str))
 			str = getStampedStringforImport(str);
 
-		if (isStringContainsDollarBrace(str))
-			str = getReplaceDollarBrace(str);
+//		if (isStringContainsDollarBrace(str))
+//			str = getReplaceDollarBrace(str);
 
 		if (isStringContainsForwardQuete(str))
 			str = getFwdSlashStampedString(str);

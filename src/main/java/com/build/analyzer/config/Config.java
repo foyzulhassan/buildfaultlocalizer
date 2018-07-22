@@ -9,7 +9,7 @@ public class Config {
 	// "/home/foyzulhassan/Research/Data/autobuilder_testing/";
 
 	public static String workDir = "/media/AutoBuilder/Machine_Learning/";
-	//public static String workDir = "D:\\Researh_Works\\ASE_2018\\source_repo\\buildfaultlocalizer\\src\\main\\java\\com\\build\\docsimilarity\\";
+	//public static String workDir = "D:\\Researh_Works\\ASE_2018\\data_analysis\\";
 	public static String repoDir = "/media/AutoBuilder/Machine_Learning/Project_Repo/";
 
 	// public static String workDir ="D:\\Researh_Works\\ASE_2018\\data_repo\\";
@@ -82,7 +82,7 @@ public class Config {
 	/****************************************************************************/
 	
 	public static String lineSimSeperator="<=##=>";
-	public static double thresholdForSimFilter=0.8;
+	public static double thresholdForSimFilter=0.80;
 	
 
 	public static String getLogFilePath(String projname, String filename) {
@@ -112,6 +112,11 @@ public class Config {
 	// This part is for logging
 	public static int logIndex = 1;
 	public static String resultLogFolder = "/Results2/";
+	
+	//This variabes are for debugging purpose
+	public static boolean quickAnalysis=false;
+	public static int quickAnalysisDataSize=50;
+	//This variabes are for debugging purpose end
 
 	public static String getResultLogFileName() {
 		String filename = logIndex + "_log.txt";

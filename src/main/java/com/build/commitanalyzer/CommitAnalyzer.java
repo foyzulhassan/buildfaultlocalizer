@@ -494,21 +494,19 @@ public class CommitAnalyzer {
 					treeWalk.enterSubtree();
 				}
 
-				else if (treeWalk.getPathString().endsWith(".java")) {
+				else if (treeWalk.getPathString().contains(".java")) {
 					ObjectId objectId = treeWalk.getObjectId(0);
 					ObjectLoader loader = repository.open(objectId);
-
-
 					
 					byte[] butestr = loader.getBytes();
 
 					String str = new String(butestr);					
 	
-					JavaASTParser javaparser=new JavaASTParser();
-					
-					List<String> asts=javaparser.parseJavaMethodDecs(str);
-					
-					str=String.join(" ", asts);		
+//					JavaASTParser javaparser=new JavaASTParser();
+//					
+//					List<String> asts=javaparser.parseJavaMethodDecs(str);
+//					
+//					str=String.join(" ", asts);		
 
 					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
 					index++;
@@ -662,7 +660,7 @@ public class CommitAnalyzer {
 
 			}
 		} catch (Exception ex) {
-			System.out.print(ex.getMessage());
+			System.out.print("getChangedFileStructure() "+ex.getMessage());
 		}
 
 		return filestructmap;

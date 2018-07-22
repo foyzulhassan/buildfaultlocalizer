@@ -35,7 +35,7 @@ public class LogResultWriter {
 
 	public void printResultLog(String projectname, String failcmtid, String fixcmtid, String[] fixfiles, String difflog,
 			ArrayList<String> rankedfile) {
-		String file = Config.getInspectionLogDir()+Config.getResultLogFileName();
+		String file = Config.getInspectionLogDir() + Config.getResultLogFileName();
 
 		Writer writer = null;
 
@@ -74,7 +74,7 @@ public class LogResultWriter {
 				/* ignore */}
 		}
 
-		String resultfile = Config.getInspectionLogDir()+Config.getResultRankFileName();
+		String resultfile = Config.getInspectionLogDir() + Config.getResultRankFileName();
 
 		Writer resultwriter = null;
 
@@ -93,8 +93,8 @@ public class LogResultWriter {
 
 				index++;
 
-//				if (index > 50)
-//					break;
+				// if (index > 50)
+				// break;
 
 			}
 
@@ -103,6 +103,82 @@ public class LogResultWriter {
 		} finally {
 			try {
 				resultwriter.close();
+			} catch (Exception ex) {
+				/* ignore */}
+		}
+
+	}
+
+	public void printDifferentTypeofLog(int counter, long rowid, String proj, String largelog, String failpart,
+			String passpart, String failpartsim, String fixfilelist) {
+
+		String file = Config.getInspectionLogDir() + counter + "_" + rowid + "_" + proj + "_largelog.txt";
+		Writer writer = null;
+
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "utf-8"));
+
+			writer.write(largelog);
+
+		} catch (IOException ex) {
+			// report
+		} finally {
+			try {
+				writer.close();
+			} catch (Exception ex) {
+				/* ignore */}
+		}
+
+		file = Config.getInspectionLogDir() + counter + "_" + rowid + "_" + proj + "_failpart.txt";
+		writer = null;
+
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "utf-8"));
+
+			writer.write(failpart);
+
+		} catch (IOException ex) {
+			// report
+		} finally {
+			try {
+				writer.close();
+			} catch (Exception ex) {
+				/* ignore */}
+		}
+
+		file = Config.getInspectionLogDir() + counter + "_" + rowid + "_" + proj + "_passpart.txt";
+		writer = null;
+
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "utf-8"));
+
+			writer.write(passpart);
+
+		} catch (IOException ex) {
+			// report
+		} finally {
+			try {
+				writer.close();
+			} catch (Exception ex) {
+				/* ignore */}
+		}
+
+		file = Config.getInspectionLogDir() + counter + "_" + rowid + "_" + proj + "_failsim.txt";
+		writer = null;
+
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "utf-8"));
+
+			writer.write(failpartsim);
+			
+			writer.write("\n\n\nFix File List\n\n");
+			writer.write(fixfilelist);
+
+		} catch (IOException ex) {
+			// report
+		} finally {
+			try {
+				writer.close();
 			} catch (Exception ex) {
 				/* ignore */}
 		}

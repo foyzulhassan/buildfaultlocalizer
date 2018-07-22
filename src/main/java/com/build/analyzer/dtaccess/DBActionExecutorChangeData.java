@@ -7,6 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.build.analyzer.config.Config;
 import com.build.analyzer.entity.Gradlebuildfixdata;
 import com.build.analyzer.entity.Gradlepatch;
 
@@ -30,7 +31,11 @@ public class DBActionExecutorChangeData {
 			String hql = "FROM Gradlebuildfixdata gp";
 
 			Query query = session.createQuery(hql);
-			//query.setMaxResults(50);
+			
+			if(Config.quickAnalysis)
+			{
+				query.setMaxResults(Config.quickAnalysisDataSize);
+			}
 
 			results = query.list();
 
