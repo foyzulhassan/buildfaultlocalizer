@@ -8,9 +8,10 @@ public class Config {
 	// public static String mainDir =
 	// "/home/foyzulhassan/Research/Data/autobuilder_testing/";
 
-	public static String workDir = "/media/AutoBuilder/Machine_Learning/";
-	//public static String workDir = "D:\\Researh_Works\\ASE_2018\\data_analysis\\";
-	public static String repoDir = "/media/AutoBuilder/Machine_Learning/Project_Repo/";
+	//public static String workDir = "/media/AutoBuilder/Machine_Learning/";
+	public static String workDir = "D:\\Researh_Works\\ASE_2018\\data_analysis\\";
+	//public static String repoDir = "/media/AutoBuilder/Machine_Learning/Project_Repo/";
+	public static String repoDir = "D:\\Researh_Works\\ASE_2018\\data_repo\\Project_Repo\\";
 
 	// public static String workDir ="D:\\Researh_Works\\ASE_2018\\data_repo\\";
 	// public static String repoDir =
@@ -114,8 +115,8 @@ public class Config {
 	public static String resultLogFolder = "/Results2/";
 	
 	//This variabes are for debugging purpose
-	public static boolean quickAnalysis=false;
-	public static int quickAnalysisDataSize=50;
+	public static boolean quickAnalysis=true;
+	public static int quickAnalysisDataSize=2;
 	//This variabes are for debugging purpose end
 
 	public static String getResultLogFileName() {

@@ -4,11 +4,11 @@
 <!-- Generated Apr 10, 2018 1:22:14 AM by Hibernate Tools 5.1.0.Alpha1 -->
 <hibernate-mapping>
    <!--For Server -->
-	<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata" 
-		catalog="travistorrent" optimistic-lock="version">
+	<!--<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata" 
+		catalog="travistorrent" optimistic-lock="version">--> 
 	<!--For Local Test -->
-	<!--<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata"
-		catalog="travisci" optimistic-lock="version">--> 
+	<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata"
+		catalog="travisci" optimistic-lock="version">
         <id name="row" type="long">
             <column name="row" />
             <generator class="assigned" />

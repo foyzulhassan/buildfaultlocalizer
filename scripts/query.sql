@@ -53,3 +53,14 @@ use travistorrent
 ALTER TABLE gradlebuildfixdata ADD failpartsim_pos DOUBLE AFTER filterlogdual_mrr;
 ALTER TABLE gradlebuildfixdata ADD failpartsim_mrr DOUBLE AFTER failpartsim_pos;
 ALTER TABLE gradlebuildfixdata ADD failpartsim_map DOUBLE AFTER failpartsim_mrr;
+
+
+%%This part is for fail part similarity based filtering with AST 
+ALTER TABLE gradlebuildfixdata ADD failpartsimast_pos int AFTER failpartsim_map;
+ALTER TABLE gradlebuildfixdata ADD failpartsimast_mrr DOUBLE AFTER failpartsimast_pos;
+ALTER TABLE gradlebuildfixdata ADD failpartsimast_map DOUBLE AFTER failpartsimast_mrr;
+
+%%This part is for fail part similarity based filtering with Build Dependency Graph
+ALTER TABLE gradlebuildfixdata ADD failpartsimdep_pos int AFTER failpartsimast_mrr;
+ALTER TABLE gradlebuildfixdata ADD failpartsimdep_mrr DOUBLE AFTER failpartsimdep_pos;
+ALTER TABLE gradlebuildfixdata ADD failpartsimdep_map DOUBLE AFTER failpartsimdep_mrr;

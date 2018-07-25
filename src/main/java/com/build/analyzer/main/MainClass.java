@@ -46,7 +46,9 @@ public class MainClass {
 				+ "\n10->Build Dependency Analysis"
 				+ "\n11->Log Analysis"
 				+ "\n12->ASTParser Checking"
-				+ "\n13->Analyze Result");
+				+ "\n13->Analyze Result"
+				+ "\n14->Generate Similarity on Build Dependency Graph");
+		
 
 		// create an object that reads integers:
 		Scanner cin = new Scanner(System.in);
@@ -100,6 +102,12 @@ public class MainClass {
 			performResultAnalysis();
 			
 		}
+		else if(inputid==14)
+		{
+			generateSimilarityWithDependency();
+			
+		}
+		
 		else {
 			CommitChangeExtractor obj = new CommitChangeExtractor();
 			obj.testCommit();
@@ -229,6 +237,19 @@ public class MainClass {
 		
 	}
 	
+	private static void generateSimilarityWithDependency()
+	{
+		SimGenerationMngr simgen = new SimGenerationMngr();
+
+		try {
+			simgen.simAnalyzerWithBuildDependency();			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	private static void astParserChecker()
 	{
 		
@@ -277,52 +298,55 @@ public class MainClass {
 //
 //		System.out.println(str3);
 		
+//		
+//		List<String> buildfaillines=TextFileReaderWriter.GetFileContentByLine("D:\\Researh_Works\\ASE_2018\\data_analysis\\failpart.txt");
+//		List<String> buildpasslines=TextFileReaderWriter.GetFileContentByLine("D:\\Researh_Works\\ASE_2018\\data_analysis\\passpart.txt");
+//
+//		buildfaillines = getListAfterRemoveDuplicate(buildfaillines);
+//		buildpasslines = getListAfterRemoveDuplicate(buildpasslines);
+//
+//		CosineDocumentSimilarity cosdocsim = new CosineDocumentSimilarity(buildpasslines, buildfaillines);
+//		
+//		List<String> filteredlines = new ArrayList<String>();
+//		for (int failindex = 0; failindex < buildfaillines.size(); failindex++) {
+//
+//			int passindex = 0;				
+//			double maxsimval = 0.0;
+//			
+//			while (passindex < buildpasslines.size()) {
+//				try {
+//					double simval = 0.0;
+//					if(passindex==633)
+//					{
+//						int test=1;
+//					}
+//					simval = cosdocsim.getCosineSimilarity(passindex, failindex);
+//					if (simval > maxsimval) {
+//						maxsimval = simval;
+//						//System.out.println((passindex+1)+"==>"+buildpasslines.get(passindex));
+//					}
+//					// }
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				passindex++;
+//			} // end while
+//
+//			filteredlines.add(buildfaillines.get(failindex) + Config.lineSimSeperator + maxsimval);
+//		}
+//
+//		StringBuilder strbuilder = new StringBuilder();
+//		
+//		for (int lineindex = 0; lineindex < filteredlines.size(); lineindex++) {
+//			strbuilder.append(filteredlines.get(lineindex));
+//			strbuilder.append("\n");
+//		}
+//		
+//		System.out.println(strbuilder.toString());
 		
-		List<String> buildfaillines=TextFileReaderWriter.GetFileContentByLine("D:\\Researh_Works\\ASE_2018\\data_analysis\\failpart.txt");
-		List<String> buildpasslines=TextFileReaderWriter.GetFileContentByLine("D:\\Researh_Works\\ASE_2018\\data_analysis\\passpart.txt");
-
-		buildfaillines = getListAfterRemoveDuplicate(buildfaillines);
-		buildpasslines = getListAfterRemoveDuplicate(buildpasslines);
-
-		CosineDocumentSimilarity cosdocsim = new CosineDocumentSimilarity(buildpasslines, buildfaillines);
-		
-		List<String> filteredlines = new ArrayList<String>();
-		for (int failindex = 0; failindex < buildfaillines.size(); failindex++) {
-
-			int passindex = 0;				
-			double maxsimval = 0.0;
-			
-			while (passindex < buildpasslines.size()) {
-				try {
-					double simval = 0.0;
-					if(passindex==633)
-					{
-						int test=1;
-					}
-					simval = cosdocsim.getCosineSimilarity(passindex, failindex);
-					if (simval > maxsimval) {
-						maxsimval = simval;
-						//System.out.println((passindex+1)+"==>"+buildpasslines.get(passindex));
-					}
-					// }
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				passindex++;
-			} // end while
-
-			filteredlines.add(buildfaillines.get(failindex) + Config.lineSimSeperator + maxsimval);
-		}
-
-		StringBuilder strbuilder = new StringBuilder();
-		
-		for (int lineindex = 0; lineindex < filteredlines.size(); lineindex++) {
-			strbuilder.append(filteredlines.get(lineindex));
-			strbuilder.append("\n");
-		}
-		
-		System.out.println(strbuilder.toString());
+		BuildDependencyGenerator gen=new BuildDependencyGenerator();
+		gen.generateBuildDependency();
 		
 	}
 

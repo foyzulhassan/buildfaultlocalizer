@@ -71,7 +71,7 @@ import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 
 import org.codehaus.groovy.ast.GroovyCodeVisitor;
-
+import org.codehaus.groovy.ast.InnerClassNode;
 /**
  * @author Lovett Li
  */

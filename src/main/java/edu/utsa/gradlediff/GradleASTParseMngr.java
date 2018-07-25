@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.groovy.ast.ASTNode;
+import org.codehaus.groovy.ast.InnerClassNode;
 import org.codehaus.groovy.ast.builder.AstBuilder;
 import org.codehaus.groovy.ast.stmt.EmptyStatement;
 import org.codehaus.groovy.control.CompilePhase;
@@ -27,73 +28,65 @@ import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 import com.github.gumtreediff.tree.TreeUtils;
 
-
-
 import edu.utsa.buildlogparser.util.TextFileReaderWriter;
 import edu.utsa.gradlediff.GradleNodeVisitor;
 import edu.utsa.gradlediff.GradleTreeVisitor;
 import edu.utsa.gradlediff.SASTNode;
 import edu.utsa.gradlediff.GradleChange;
 
-public class GradlePatchGenMngr {
-	
+public class GradleASTParseMngr {
+
 	List<GradleChange> gradlechanges;
-	public List<Action> changeActions=new ArrayList<Action>();
+	public List<Action> changeActions = new ArrayList<Action>();
+
 	public List<GradleChange> getGradlechanges() {
 		return gradlechanges;
 	}
 
 	List<Integer> linelist;
-	
-	public boolean hasFixes()
-	{
-		if(gradlechanges.size()>0)
+
+	public boolean hasFixes() {
+		if (gradlechanges.size() > 0)
 			return true;
 		else
 			return false;
 	}
-	
-	public GradlePatchGenMngr()
-	{
+
+	public GradleASTParseMngr() {
 		gradlechanges = new ArrayList<GradleChange>();
 		linelist = new ArrayList<Integer>();
 	}
 
 	public void generatePatch(String srcfilepath, String destfilepath) {
 		Run.initGenerators();
-		StringMenupulator strmenu=new StringMenupulator();	
+		StringMenupulator strmenu = new StringMenupulator();
 
 		String patchstr = "";
 		TreeContext tsrc;
-		TreeContext tdst;	
-		
+		TreeContext tdst;
 
 		String srcstr = "";
-		List<String> strlist= TextFileReaderWriter.GetFileContentByLine(srcfilepath);	
-		
-		
-		for(int index=0;index<strlist.size();index++)
-		{
-			String str=strlist.get(index);			
-			
-			str=strmenu.getMarkedString(str);	
-			
-			strlist.set(index, str);			
-			
+		List<String> strlist = TextFileReaderWriter.GetFileContentByLine(srcfilepath);
+
+		for (int index = 0; index < strlist.size(); index++) {
+			String str = strlist.get(index);
+
+			str = strmenu.getMarkedString(str);
+
+			strlist.set(index, str);
+
 		}
 
 		List<String> strlist1 = TextFileReaderWriter.GetFileContentByLine(destfilepath);
-		
-		
-		for(int index=0;index<strlist1.size();index++)
-		{
 
-			String str=strlist1.get(index);	
-			
-			str=strmenu.getMarkedString(str);			
-			
-			strlist1.set(index, str);			
-			
+		for (int index = 0; index < strlist1.size(); index++) {
+
+			String str = strlist1.get(index);
+
+			str = strmenu.getMarkedString(str);
+
+			strlist1.set(index, str);
+
 		}
 
 		tsrc = getTreeContext(strlist);
@@ -118,13 +111,11 @@ public class GradlePatchGenMngr {
 		List<Action> actions = g.getActions();
 
 		changeActions.addAll(actions);
-		
+
 		for (int index = 0; index < actions.size(); index++) {
 			Action ac = actions.get(index);
-			
-			
-			if(Config.debugPrint==true)
-			{
+
+			if (Config.debugPrint == true) {
 				String test = ac.getNode().toPrettyString(tsrc);
 				System.out.println(test);
 			}
@@ -169,34 +160,30 @@ public class GradlePatchGenMngr {
 
 					String prettyString = ac.getNode().toPrettyString(tsrc);
 
-					int expindex=prettyString.indexOf(":");					
-					
-					String part1=" ";
-					String part2=" ";
-					
-					if(expindex>=0)
-					{
-						part1=prettyString.substring(0, expindex);
-						part2=prettyString.substring(expindex+1);
+					int expindex = prettyString.indexOf(":");
+
+					String part1 = " ";
+					String part2 = " ";
+
+					if (expindex >= 0) {
+						part1 = prettyString.substring(0, expindex);
+						part2 = prettyString.substring(expindex + 1);
+					} else {
+						part1 = prettyString;
 					}
+
+					String nodetype = " ";// parts[0]; // 004
+					String nodeexp = " ";// parts[1]; // 034556
+
+					if (part1 != null)
+						nodetype = part1;
 					else
-					{
-						part1=prettyString;
-					}
-					
-			
-					String nodetype = " ";//parts[0]; // 004
-					String nodeexp = " ";//parts[1]; // 034556
-					
-					if(part1!=null)
-						nodetype=part1;
+						nodetype = " ";
+
+					if (part2 != null)
+						nodeexp = part2;
 					else
-						nodetype=" ";
-					
-					if(part2!=null)
-						nodeexp=part2;
-					else
-						nodeexp=" ";
+						nodeexp = " ";
 
 					if (!linelist.contains(action.getNode().getPos())) {
 						if (action.getNode().getPos() >= 0)
@@ -228,36 +215,32 @@ public class GradlePatchGenMngr {
 					// "=>task:" + strtask + "=>Stament:"
 					// + strexpstmt);
 
-					String prettyString = ac.getNode().toPrettyString(tsrc);					
+					String prettyString = ac.getNode().toPrettyString(tsrc);
 
-					int expindex=prettyString.indexOf(":");					
-					
-					String part1=" ";
-					String part2=" ";
-					
-					if(expindex>=0)
-					{
-						part1=prettyString.substring(0, expindex);
-						part2=prettyString.substring(expindex+1);
+					int expindex = prettyString.indexOf(":");
+
+					String part1 = " ";
+					String part2 = " ";
+
+					if (expindex >= 0) {
+						part1 = prettyString.substring(0, expindex);
+						part2 = prettyString.substring(expindex + 1);
+					} else {
+						part1 = prettyString;
 					}
+
+					String nodetype = " ";// parts[0]; // 004
+					String nodeexp = " ";// parts[1]; // 034556
+
+					if (part1 != null)
+						nodetype = part1;
 					else
-					{
-						part1=prettyString;
-					}
-					
-			
-					String nodetype = " ";//parts[0]; // 004
-					String nodeexp = " ";//parts[1]; // 034556
-					
-					if(part1!=null)
-						nodetype=part1;
+						nodetype = " ";
+
+					if (part2 != null)
+						nodeexp = part2;
 					else
-						nodetype=" ";
-					
-					if(part2!=null)
-						nodeexp=part2;
-					else
-						nodeexp=" ";
+						nodeexp = " ";
 
 					if (!linelist.contains(action.getNode().getPos())) {
 						if (action.getNode().getPos() >= 0)
@@ -287,36 +270,32 @@ public class GradlePatchGenMngr {
 					// "=>task:" + strtask + "=>Stament:"
 					// + strexpstmt);
 
-					String prettyString = ac.getNode().toPrettyString(tsrc);					
+					String prettyString = ac.getNode().toPrettyString(tsrc);
 
-					int expindex=prettyString.indexOf(":");					
-					
-					String part1=" ";
-					String part2=" ";
-					
-					if(expindex>=0)
-					{
-						part1=prettyString.substring(0, expindex);
-						part2=prettyString.substring(expindex+1);
+					int expindex = prettyString.indexOf(":");
+
+					String part1 = " ";
+					String part2 = " ";
+
+					if (expindex >= 0) {
+						part1 = prettyString.substring(0, expindex);
+						part2 = prettyString.substring(expindex + 1);
+					} else {
+						part1 = prettyString;
 					}
+
+					String nodetype = " ";// parts[0]; // 004
+					String nodeexp = " ";// parts[1]; // 034556
+
+					if (part1 != null)
+						nodetype = part1;
 					else
-					{
-						part1=prettyString;
-					}
-					
-			
-					String nodetype = " ";//parts[0]; // 004
-					String nodeexp = " ";//parts[1]; // 034556
-					
-					if(part1!=null)
-						nodetype=part1;
+						nodetype = " ";
+
+					if (part2 != null)
+						nodeexp = part2;
 					else
-						nodetype=" ";
-					
-					if(part2!=null)
-						nodeexp=part2;
-					else
-						nodeexp=" ";
+						nodeexp = " ";
 
 					if (!linelist.contains(action.getNode().getPos())) {
 						if (action.getNode().getPos() >= 0)
@@ -341,36 +320,32 @@ public class GradlePatchGenMngr {
 					// + action.getNode().getPos()+"Parent
 					// Type:"+ac.getNode().getParent().toPrettyString(tsrc)+"=>Parent:"+strparent+"=>Block:"+strblock+"=>task:"+strtask+"=>Stament:"+strexpstmt);
 
-					String prettyString = ac.getNode().toPrettyString(tsrc);					
+					String prettyString = ac.getNode().toPrettyString(tsrc);
 
-					int expindex=prettyString.indexOf(":");					
-					
-					String part1=" ";
-					String part2=" ";
-					
-					if(expindex>=0)
-					{
-						part1=prettyString.substring(0, expindex);
-						part2=prettyString.substring(expindex+1);
+					int expindex = prettyString.indexOf(":");
+
+					String part1 = " ";
+					String part2 = " ";
+
+					if (expindex >= 0) {
+						part1 = prettyString.substring(0, expindex);
+						part2 = prettyString.substring(expindex + 1);
+					} else {
+						part1 = prettyString;
 					}
+
+					String nodetype = " ";// parts[0]; // 004
+					String nodeexp = " ";// parts[1]; // 034556
+
+					if (part1 != null)
+						nodetype = part1;
 					else
-					{
-						part1=prettyString;
-					}
-					
-			
-					String nodetype = " ";//parts[0]; // 004
-					String nodeexp = " ";//parts[1]; // 034556
-					
-					if(part1!=null)
-						nodetype=part1;
+						nodetype = " ";
+
+					if (part2 != null)
+						nodeexp = part2;
 					else
-						nodetype=" ";
-					
-					if(part2!=null)
-						nodeexp=part2;
-					else
-						nodeexp=" ";
+						nodeexp = " ";
 					if (!linelist.contains(action.getNode().getPos())) {
 						if (action.getNode().getPos() >= 0)
 							linelist.add(action.getNode().getPos());
@@ -397,36 +372,31 @@ public class GradlePatchGenMngr {
 					// Type:"+ac.getNode().getParent().toPrettyString(tsrc)+"=>Parent:"+strparent+"=>Block:"+strblock+"=>task:"+strtask+"=>Stament:"+strexpstmt);
 
 					String prettyString = ac.getNode().toPrettyString(tsrc);
-				
 
-					int expindex=prettyString.indexOf(":");					
-					
-					String part1=" ";
-					String part2=" ";
-					
-					if(expindex>=0)
-					{
-						part1=prettyString.substring(0, expindex);
-						part2=prettyString.substring(expindex+1);
+					int expindex = prettyString.indexOf(":");
+
+					String part1 = " ";
+					String part2 = " ";
+
+					if (expindex >= 0) {
+						part1 = prettyString.substring(0, expindex);
+						part2 = prettyString.substring(expindex + 1);
+					} else {
+						part1 = prettyString;
 					}
+
+					String nodetype = " ";// parts[0]; // 004
+					String nodeexp = " ";// parts[1]; // 034556
+
+					if (part1 != null)
+						nodetype = part1;
 					else
-					{
-						part1=prettyString;
-					}
-					
-			
-					String nodetype = " ";//parts[0]; // 004
-					String nodeexp = " ";//parts[1]; // 034556
-					
-					if(part1!=null)
-						nodetype=part1;
+						nodetype = " ";
+
+					if (part2 != null)
+						nodeexp = part2;
 					else
-						nodetype=" ";
-					
-					if(part2!=null)
-						nodeexp=part2;
-					else
-						nodeexp=" ";
+						nodeexp = " ";
 
 					if (!linelist.contains(action.getNode().getPos())) {
 						if (action.getNode().getPos() >= 0)
@@ -443,39 +413,33 @@ public class GradlePatchGenMngr {
 					change.setTaskName(strtask);
 					change.setStatementExp(strexpstmt);
 					gradlechanges.add(change);
-				}
-				else
-				{
-					String prettyString = ac.getNode().toPrettyString(tsrc);					
+				} else {
+					String prettyString = ac.getNode().toPrettyString(tsrc);
 
-					int expindex=prettyString.indexOf(":");					
-					
-					String part1=" ";
-					String part2=" ";
-					
-					if(expindex>=0)
-					{
-						part1=prettyString.substring(0, expindex);
-						part2=prettyString.substring(expindex+1);
+					int expindex = prettyString.indexOf(":");
+
+					String part1 = " ";
+					String part2 = " ";
+
+					if (expindex >= 0) {
+						part1 = prettyString.substring(0, expindex);
+						part2 = prettyString.substring(expindex + 1);
+					} else {
+						part1 = prettyString;
 					}
+
+					String nodetype = " ";// parts[0]; // 004
+					String nodeexp = " ";// parts[1]; // 034556
+
+					if (part1 != null)
+						nodetype = part1;
 					else
-					{
-						part1=prettyString;
-					}
-					
-			
-					String nodetype = " ";//parts[0]; // 004
-					String nodeexp = " ";//parts[1]; // 034556
-					
-					if(part1!=null)
-						nodetype=part1;
+						nodetype = " ";
+
+					if (part2 != null)
+						nodeexp = part2;
 					else
-						nodetype=" ";
-					
-					if(part2!=null)
-						nodeexp=part2;
-					else
-						nodeexp=" ";
+						nodeexp = " ";
 
 					if (!linelist.contains(ac.getNode().getPos())) {
 						if (ac.getNode().getPos() >= 0)
@@ -497,51 +461,48 @@ public class GradlePatchGenMngr {
 
 		}
 
-		//GradlePatchGenMngr.Collections.sort(linelist);
-		//HashMap<Integer, ExpPerLines> linechange = getExpPerLine(linelist, gradlechanges);
+		// GradlePatchGenMngr.Collections.sort(linelist);
+		// HashMap<Integer, ExpPerLines> linechange = getExpPerLine(linelist,
+		// gradlechanges);
 
-		
-		/*This part is for initial change string*/
-//		// Iterating over keys only
-//		for (int lineno = 0; lineno < linelist.size(); lineno++) {
-//
-//			int key = linelist.get(lineno);
-//			ExpPerLines obj = linechange.get(key);
-//
-//			List<GradleChange> gdchanges = obj.getChangesPerLine();
-//
-//			for (int chindex = 0; chindex < gdchanges.size(); chindex++) {
-//				GradleChange change = gdchanges.get(chindex);
-//				patchstr = patchstr + change.getOperationName() + "-->" + change.getNodeType() + "-->"
-//						+ change.getNodeExp() + "==>" + change.getLineNumber() + "\n";
-//				// System.out.println(change.getOperationName() + "-->" +
-//				// change.getNodeType() + "-->" +
-//				// change.getNodeExp()+"==>"+change.getLineNumber());
-//			}
-//
-//		}
-		/*This part is for initial change string*/
-		
-		//GradlePatchFormater patchformater=new GradlePatchFormater();
-		//String xmlstr=patchformater.getXMLPatch(linelist,linechange);
-		
-		
+		/* This part is for initial change string */
+		// // Iterating over keys only
+		// for (int lineno = 0; lineno < linelist.size(); lineno++) {
+		//
+		// int key = linelist.get(lineno);
+		// ExpPerLines obj = linechange.get(key);
+		//
+		// List<GradleChange> gdchanges = obj.getChangesPerLine();
+		//
+		// for (int chindex = 0; chindex < gdchanges.size(); chindex++) {
+		// GradleChange change = gdchanges.get(chindex);
+		// patchstr = patchstr + change.getOperationName() + "-->" +
+		// change.getNodeType() + "-->"
+		// + change.getNodeExp() + "==>" + change.getLineNumber() + "\n";
+		// // System.out.println(change.getOperationName() + "-->" +
+		// // change.getNodeType() + "-->" +
+		// // change.getNodeExp()+"==>"+change.getLineNumber());
+		// }
+		//
+		// }
+		/* This part is for initial change string */
 
-		//return xmlstr;
+		// GradlePatchFormater patchformater=new GradlePatchFormater();
+		// String xmlstr=patchformater.getXMLPatch(linelist,linechange);
+
+		// return xmlstr;
 
 	}
-	
-	public String getXMLChange()
-	{
+
+	public String getXMLChange() {
 		Collections.sort(linelist);
-		String xmlstr=null;
-		if(linelist.size()>0)
-		{
+		String xmlstr = null;
+		if (linelist.size() > 0) {
 			HashMap<Integer, ExpPerLines> linechange = getExpPerLine(linelist, gradlechanges);
-			
-			GradlePatchFormater patchformater=new GradlePatchFormater();
-			xmlstr=patchformater.getXMLPatch(linelist,linechange);
-		}		
+
+			GradlePatchFormater patchformater = new GradlePatchFormater();
+			xmlstr = patchformater.getXMLPatch(linelist, linechange);
+		}
 		return xmlstr;
 	}
 
@@ -642,23 +603,26 @@ public class GradlePatchGenMngr {
 			System.out.println(e.getMessage());
 		}
 
-		 if(nodes==null)
-         {
-        	 ASTNode node=new EmptyStatement();
-        	 nodes=new ArrayList<ASTNode>();
-        	 nodes.add(node);
-         }
-		 
+		if (nodes == null) {
+			ASTNode node = new EmptyStatement();
+			nodes = new ArrayList<ASTNode>();
+			nodes.add(node);
+		}
+
 		ASTNode[] astnodes = new ASTNode[nodes.size()];
 
 		for (int index = 0; index < nodes.size(); index++) {
-			astnodes[index] = nodes.get(index);
+			if (nodes.get(index) instanceof InnerClassNode) {
+				astnodes[index] = new EmptyStatement();
+			} else {
+				astnodes[index] = nodes.get(index);
+			}
 
 		}
 
 		GradleNodeVisitor visitordep = new GradleNodeVisitor(astnodes[0]);
 
-		for (ASTNode node : nodes) {
+		for (ASTNode node : astnodes) {
 			node.visit(visitordep);
 		}
 
@@ -677,8 +641,8 @@ public class GradlePatchGenMngr {
 		return gradletree.getTree(astList.get(0));
 
 	}
-	
-	public static TreeContext getSubProjList(List<String> strlist) {
+
+	public static List<String> getSubProjList(List<String> strlist) {
 		String srcstr = "";
 
 		for (int size = 0; size < strlist.size(); size++) {
@@ -699,60 +663,115 @@ public class GradlePatchGenMngr {
 			System.out.println(e.getMessage());
 		}
 
-		 if(nodes==null)
-         {
-        	 ASTNode node=new EmptyStatement();
-        	 nodes=new ArrayList<ASTNode>();
-        	 nodes.add(node);
-         }
-		 
+		if (nodes == null) {
+			ASTNode node = new EmptyStatement();
+			nodes = new ArrayList<ASTNode>();
+			nodes.add(node);
+		}
+
 		ASTNode[] astnodes = new ASTNode[nodes.size()];
 
 		for (int index = 0; index < nodes.size(); index++) {
-			astnodes[index] = nodes.get(index);
+			if (nodes.get(index) instanceof InnerClassNode) {
+				astnodes[index] = new EmptyStatement();
+			} else {
+				astnodes[index] = nodes.get(index);
+			}
 
 		}
 
 		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0],"root");
 
-		for (ASTNode node : nodes) {
+		for (ASTNode node : astnodes) {
 			node.visit(visitordep);
 		}
-		
-		List<String> subprojs=visitordep.getSubprojects();
-		
-		for(String subproj: subprojs)
-		{
+
+		List<String> subprojs = visitordep.getSubprojects();
+
+		for (String subproj : subprojs) {
 			System.out.println(subproj);
 		}
-		
-		Map<String,List<String>> projdeps=visitordep.getProjectDependencyies();
-		
-		System.out.println("Project Dependencies");
-		
-		for(String key:projdeps.keySet())
-		{
-			System.out.println("Dependency for Subproject: "+key);
-			List<String> deps=projdeps.get(key);
-			
-			System.out.println(deps);
+		//
+		// Map<String,List<String>>
+		// projdeps=visitordep.getProjectDependencyies();
+		//
+		// System.out.println("Project Dependencies");
+		//
+		// for(String key:projdeps.keySet())
+		// {
+		// System.out.println("Dependency for Subproject: "+key);
+		// List<String> deps=projdeps.get(key);
+		//
+		// System.out.println(deps);
+		// }
+		//
+		//
+		//
+		// List<SASTNode> astList = visitordep.getNodes();
+		//
+		// //// This part for gumtree tree///////
+		// GradleTreeVisitor gradletree = new GradleTreeVisitor(astList.get(0));
+		//
+		// for (int i = 0; i < astList.size(); i++) {
+		//
+		// SASTNode item = astList.get(i);
+		// gradletree.visit(item);
+		//
+		// }
+		//
+		// return gradletree.getTree(astList.get(0));
+
+		return subprojs;
+
+	}
+
+	public static Map<String, List<String>> getSubProjConnectivity(List<String> strlist, String rootfolder) {
+		String srcstr = "";
+
+		for (int size = 0; size < strlist.size(); size++) {
+			srcstr = srcstr + strlist.get(size);
+			srcstr = srcstr + "\r\n";
+
 		}
-		
 
+		List<ASTNode> nodes = null;
 
-		List<SASTNode> astList = visitordep.getNodes();
+		try {
+			// nodes = new AstBuilder().buildFromString(srcstr);
+			// nodes = new
+			// AstBuilder().buildFromString(CompilePhase.CANONICALIZATION,
+			// srcstr);
+			nodes = new AstBuilder().buildFromString(CompilePhase.CONVERSION, srcstr);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 
-		//// This part for gumtree tree///////
-		GradleTreeVisitor gradletree = new GradleTreeVisitor(astList.get(0));
+		if (nodes == null) {
+			ASTNode node = new EmptyStatement();
+			nodes = new ArrayList<ASTNode>();
+			nodes.add(node);
+		}
 
-		for (int i = 0; i < astList.size(); i++) {
+		ASTNode[] astnodes = new ASTNode[nodes.size()];
 
-			SASTNode item = astList.get(i);
-			gradletree.visit(item);
+		for (int index = 0; index < nodes.size(); index++) {
+			if (nodes.get(index) instanceof InnerClassNode) {
+				astnodes[index] = new EmptyStatement();
+			} else {
+				astnodes[index] = nodes.get(index);
+			}
 
 		}
 
-		return gradletree.getTree(astList.get(0));
+		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0], rootfolder);
+
+		for (ASTNode node : astnodes) {
+			node.visit(visitordep);
+		}
+
+		Map<String, List<String>> projdeps = visitordep.getProjectDependencyies();
+
+		return projdeps;
 
 	}
 
