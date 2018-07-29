@@ -324,9 +324,9 @@ public class CommitAnalyzer {
 			logcontent = fixdata.getBlLargelog();
 		} else {
 			if (!issame) {
-				// logcontent = fixdata.getFailChange();
-				FilterLogText filter = new FilterLogText();
-				logcontent = filter.performFilteringV3(fixdata);
+				logcontent = fixdata.getFailChange();
+				//FilterLogText filter = new FilterLogText();
+				//logcontent = filter.performFilteringV3(fixdata);
 			} else {
 				logcontent = fixdata.getFixChange();
 			}
@@ -525,8 +525,8 @@ public class CommitAnalyzer {
 					// CosineDocumentSimilarity csm=new
 					// CosineDocumentSimilarity(file1,file2);
 					double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
-
 					simMap.put(f2.toString(), sim);
+					
 				} else if (treeWalk.getPathString().contains(".gradle")) {
 					ObjectId objectId = treeWalk.getObjectId(0);
 					ObjectLoader loader = repository.open(objectId);
@@ -576,7 +576,6 @@ public class CommitAnalyzer {
 					boolean flag = f.delete();
 
 				}
-
 			}
 
 			treeWalk.reset();
@@ -686,9 +685,9 @@ public class CommitAnalyzer {
 		FilterLogText filter = new FilterLogText();
 		logcontent = filter.performFilteringOnSimValue(fixdata);
 
-		List<String> depprojlist = getDependentProjectList(fixdata, ID, rowid);
+		BuildDependencyGenerator depgen = new BuildDependencyGenerator();
 
-		System.out.println("***" + depprojlist + "*****");
+		List<String> depprojlist = depgen.getDependentProjectList(fixdata, ID, rowid);		
 
 		try {
 			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
@@ -708,52 +707,48 @@ public class CommitAnalyzer {
 			treeWalk.setRecursive(false);
 
 			while (treeWalk.next()) {
-				
+
 				if (treeWalk.isSubtree()) {
 					treeWalk.enterSubtree();
 				}
 
 				else if (treeWalk.getPathString().contains(".java")
 						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist)) {
-					System.out.println("Orig=>" + treeWalk.getPathString());
-					// ObjectId objectId = treeWalk.getObjectId(0);
-					// ObjectLoader loader = repository.open(objectId);
-					// byte[] butestr = loader.getBytes();
-					//
-					// String str = new String(butestr);
-					// String sourcefile = Config.workDir + Config.tempFolder +
-					// "sourcecode" + index + ".txt";
-					// index++;
-					// filemap.put(treeWalk.getPathString(), sourcefile);
-					//
-					// f2 = commitAnalyzingUtils.writeContentInFile(sourcefile,
-					// str);
-					// double sim =
-					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
-					// f2.toString());
-					// simMap.put(f2.toString(), sim);
 
-					System.out.println(treeWalk.getPathString());
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String str = new String(butestr);
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					index++;
+					//filemap.put(treeWalk.getPathString(), sourcefile);
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+					double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					//sim=sim+sim*0.5;
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+
 				} else if (treeWalk.getPathString().contains(".gradle")
 						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist)) {
-					System.out.println("Orig=>" + treeWalk.getPathString());
-					// ObjectId objectId = treeWalk.getObjectId(0);
-					// ObjectLoader loader = repository.open(objectId);
-					// byte[] butestr = loader.getBytes();
-					// String str = new String(butestr);
-					// String sourcefile = Config.workDir + Config.tempFolder +
-					// "sourcecode" + index + ".txt";
-					// index++;
-					//
-					// filemap.put(treeWalk.getPathString(), sourcefile);
-					// f2 = commitAnalyzingUtils.writeContentInFile(sourcefile,
-					// str);
-					// double sim =
-					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
-					// f2.toString());
-					// simMap.put(f2.toString(), sim);
 
-					System.out.println(treeWalk.getPathString());
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					index++;
+
+					//filemap.put(treeWalk.getPathString(), sourcefile);
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+					double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					//sim=sim+sim*0.5;
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+
 				} else if ((treeWalk.getPathString().contains(".java") || treeWalk.getPathString().contains(".gradle"))
 						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist) == false) {
 
@@ -764,10 +759,14 @@ public class CommitAnalyzer {
 
 					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
 					index++;
-					filemap.put(treeWalk.getPathString(), sourcefile);
+					
 					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
 
+					//double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					//double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					//sim=0.5*sim;
 					double sim = 0.0;
+					filemap.put(treeWalk.getPathString(), f2.toString());
 					simMap.put(f2.toString(), sim);
 
 				}
@@ -2047,8 +2046,8 @@ public class CommitAnalyzer {
 		}
 
 		return treeWalk;
-
 	}
+
 	// end This part is for Gradle Build Dependency based filtering
 
 	private boolean isInDependencySubProject(String strpath, List<String> depprojlist) {
@@ -2057,7 +2056,7 @@ public class CommitAnalyzer {
 		int index = 0;
 
 		while (index < depprojlist.size()) {
-			String deppath = depprojlist.get(index).replaceAll(":", "") + "/";
+			String deppath = getPathFromSubProj(depprojlist.get(index));
 
 			if (strpath.contains(deppath)) {
 				independency = true;
@@ -2066,303 +2065,340 @@ public class CommitAnalyzer {
 
 			index++;
 		}
-		
-		if(!strpath.contains("/"))
-		{
+
+		if (!strpath.contains("/")) {
 			independency = true;
 		}
 
+		if (depprojlist.size() <= 0)
+			independency = true;
+
 		return independency;
 	}
-
-	// ***********************************This part for Dependency
-	// analysis******************************************************
-
-	public List<String> getDependentProjectList(Gradlebuildfixdata proj, String ID, long rowid) {
-
-		List<String> depsubprojs = new ArrayList<String>();
-		String lastprojexecuted = "";
-
-		List<String> subprojs = generateSubProjectList(proj, ID, rowid);
-
-		System.out.println("List of Subprojects:=>" + subprojs);
-
-		if (subprojs != null && subprojs.size() > 0) {
-			lastprojexecuted = getLastProjectExecuted(proj, subprojs);
+	
+	private String getPathFromSubProj(String subproj)
+	{
+		String path="";
+		
+		if(subproj.startsWith(":"))
+		{
+			path=subproj.substring(1,subproj.length());
+			path=path.replaceAll(":","/");		
 		}
-
-		System.out.println("Last Executed:=>" + lastprojexecuted);
-
-		Map<String, List<String>> projconnection = generateSubProjectConnectivity(proj, ID, rowid);
-
-		depsubprojs = getFailSubProjDependencies(lastprojexecuted, subprojs, projconnection);
-
-		return depsubprojs;
+		else
+		{
+			path=subproj.replaceAll(":","/");	
+		}
+		
+		return path;
 	}
-
-	public String getLastProjectExecuted(Gradlebuildfixdata proj, List<String> subprojs) {
-		String executedproj = null;
-
-		if (subprojs != null && subprojs.size() > 0) {
-
-			String largelog = proj.getBlLargelog();
-
-			List<String> buildlines = new ArrayList<String>(Arrays.asList(largelog.split("\n")));
-
-			int lineindex = buildlines.size() - 1;
-			boolean match = false;
-
-			while (lineindex >= 0) {
-				String strline = buildlines.get(lineindex);
-
-				int subprojindex = 0;
-
-				while (subprojindex < subprojs.size()) {
-					String subprojstr = subprojs.get(subprojindex);
-
-					if (strline.contains(subprojstr + ":")) {
-						executedproj = subprojstr;
-						match = true;
-					}
-
-					subprojindex++;
-				}
-
-				if (match)
-					break;
-
-				lineindex--;
-			}
-		}
-
-		return executedproj;
-
-	}
-
-	public List<String> generateSubProjectList(Gradlebuildfixdata proj, String ID, long rowid) {
-
-		File gradlefile = null;
-		StringMenupulator strmenu = new StringMenupulator();
-
-		List<String> subprojlist = new ArrayList<String>();
-
-		int index = 0;
-
-		try {
-			ObjectId objectid = repository.resolve(ID);
-			RevCommit commit = rw.parseCommit(objectid);
-
-			RevTree tree = commit.getTree();
-
-			TreeWalk treeWalk = new TreeWalk(repository);
-			treeWalk.addTree(commit.getTree());
-			treeWalk.setRecursive(false);
-
-			while (treeWalk.next()) {
-				System.out.println("in test=>" + treeWalk.getPathString());
-
-				if (treeWalk.isSubtree()) {
-					treeWalk.enterSubtree();
-
-				} else if (treeWalk.getPathString().contains(".gradle")) {
-					ObjectId objectId = treeWalk.getObjectId(0);
-					ObjectLoader loader = repository.open(objectId);
-
-					if (treeWalk.getPathString().contains("common.gradle")) {
-						String testabc = treeWalk.getPathString();
-					}
-
-					byte[] butestr = loader.getBytes();
-
-					String str = new String(butestr);
-
-					String sourcefile = Config.workDir + Config.tempFolder + "buildscriptdep" + index + ".txt";
-					index++;
-
-					gradlefile = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
-
-					List<String> strlist = TextFileReaderWriter.GetFileContentByLine(gradlefile.toString());
-
-					for (int lineindex = 0; lineindex < strlist.size(); lineindex++) {
-						String strline = strlist.get(lineindex);
-						strline = strmenu.getMarkedString(strline);
-						strlist.set(lineindex, strline);
-					}
-
-					List<String> subprjs = GradleASTParseMngr.getSubProjList(strlist);
-
-					if (subprjs != null && subprjs.size() > 0)
-						subprojlist.addAll(subprjs);
-
-					if (gradlefile.exists())
-						gradlefile.delete();
-				}
-
-			}
-
-			treeWalk.reset();
-		} catch (Exception ex) {
-			System.out.print(ex.getMessage());
-		}
-
-		subprojlist = new ArrayList<>(new HashSet<>(subprojlist));
-
-		return subprojlist;
-	}
-
-	public Map<String, List<String>> generateSubProjectConnectivity(Gradlebuildfixdata proj, String ID, long rowid) {
-
-		String project = proj.getGhProjectName();
-		project = project.replace('/', '@');
-
-		File gradlefile = null;
-		StringMenupulator strmenu = new StringMenupulator();
-
-		List<String> subprojlist = new ArrayList<String>();
-
-		Map<String, List<String>> projectDependencyies = new HashMap<String, List<String>>();
-
-		int index = 0;
-
-		try {
-			ObjectId objectid = repository.resolve(ID);
-			RevCommit commit = rw.parseCommit(objectid);
-
-			RevTree tree = commit.getTree();
-			TreeWalk treeWalk = new TreeWalk(repository);
-			treeWalk.addTree(commit.getTree());
-			treeWalk.setRecursive(false);
-
-			while (treeWalk.next()) {
-
-				if (treeWalk.isSubtree()) {
-					treeWalk.enterSubtree();
-				} else if (treeWalk.getPathString().contains(".gradle")) {
-					System.out.println("File in Connection=> " + treeWalk.getPathString());
-
-					if (treeWalk.getPathString().contains("specs.gradle")) {
-						int testabc = 1;
-					}
-					ObjectId objectId = treeWalk.getObjectId(0);
-					ObjectLoader loader = repository.open(objectId);
-
-					byte[] butestr = loader.getBytes();
-
-					String str = new String(butestr);
-
-					String sourcefile = Config.workDir + Config.tempFolder + "buildscriptdep" + index + ".txt";
-					index++;
-
-					gradlefile = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
-
-					List<String> strlist = TextFileReaderWriter.GetFileContentByLine(gradlefile.toString());
-
-					for (int lineindex = 0; lineindex < strlist.size(); lineindex++) {
-						String strline = strlist.get(lineindex);
-						strline = strmenu.getMarkedString(strline);
-						strlist.set(lineindex, strline);
-					}
-
-					String gitfile = treeWalk.getPathString();
-					File f = new File(gitfile);
-					String parent = null;
-
-					if (f.getParentFile() != null) {
-						parent = f.getParentFile().getName();
-					} else {
-						parent = "root";
-					}
-
-					Map<String, List<String>> projconnection = GradleASTParseMngr.getSubProjConnectivity(strlist,
-							parent);
-
-					if (projconnection != null && projconnection.keySet().size() > 0) {
-						projectDependencyies = mergeDependencyMap(projectDependencyies, projconnection);
-					}
-
-					if (gradlefile.exists())
-						gradlefile.delete();
-				}
-
-			}
-
-			treeWalk.reset();
-
-		} catch (Exception ex) {
-			System.out.print(ex.getMessage());
-		}
-
-		subprojlist = new ArrayList<>(new HashSet<>(subprojlist));
-
-		return projectDependencyies;
-	}
-
-	public Map<String, List<String>> mergeDependencyMap(Map<String, List<String>> projectDependencyies,
-			Map<String, List<String>> depdencymap) {
-
-		for (String key : depdencymap.keySet()) {
-			if (projectDependencyies.containsKey(key)) {
-				List<String> deps = projectDependencyies.get(key);
-
-				deps.addAll(depdencymap.get(key));
-
-				List<String> deDupStringList = new ArrayList<>(new HashSet<>(deps));
-
-				projectDependencyies.put(key, deDupStringList);
-			} else {
-				projectDependencyies.put(key, depdencymap.get(key));
-			}
-
-		}
-
-		return projectDependencyies;
-	}
-
-	// BFS implementation to find Gradle Fail project dependency
-	public List<String> getFailSubProjDependencies(String failedsubproj, List<String> subprojs,
-			Map<String, List<String>> projconnection) {
-		List<String> failsubdependencies = new ArrayList<String>();
-		Queue<String> queue = new LinkedList<>();
-
-		// A HashMap to keep track already visited subproject;
-		Map<String, Boolean> visitedstatus = new HashMap<String, Boolean>();
-		for (String key : subprojs) {
-			visitedstatus.put(key, false);
-		}
-
-		// initilize with root node that is failed projects
-		if (visitedstatus.containsKey(failedsubproj)) {
-			visitedstatus.put(failedsubproj, true);
-			queue.add(failedsubproj);
-		}
-
-		while (!queue.isEmpty()) {
-			// Dequeue a vertex from queue and print it
-			String node = queue.peek();
-			failsubdependencies.add(node);
-			queue.remove();
-
-			// Get all adjacent vertices of the dequeued
-			// vertex s. If a adjacent has not been visited,
-			// then mark it visited and enqueue it
-			List<String> connections = projconnection.get(node);
-
-			if (connections != null) {
-				for (String subnode : connections) {
-					subnode = subnode.replaceAll(":", "");
-					if (visitedstatus.get(subnode) == false) {
-						visitedstatus.put(subnode, true);
-						queue.add(subnode);
-					}
-				}
-			}
-		}
-
-		return failsubdependencies;
-
-	}
-
-	// **************************************End Dependency
-	// Analysis*************************************************************
+	
+
+	// // ***********************************This part for Dependency
+	// // analysis******************************************************
+	//
+	// public List<String> getDependentProjectList(Gradlebuildfixdata proj,
+	// String ID, long rowid) {
+	//
+	// List<String> depsubprojs = new ArrayList<String>();
+	// String lastprojexecuted = "";
+	//
+	// List<String> subprojs = generateSubProjectList(proj, ID, rowid);
+	//
+	// System.out.println("List of Subprojects:=>" + subprojs);
+	//
+	// if (subprojs != null && subprojs.size() > 0) {
+	// lastprojexecuted = getLastProjectExecuted(proj, subprojs);
+	// }
+	//
+	// System.out.println("Last Executed:=>" + lastprojexecuted);
+	//
+	// Map<String, List<String>> projconnection =
+	// generateSubProjectConnectivity(proj, ID, rowid);
+	//
+	// depsubprojs = getFailSubProjDependencies(lastprojexecuted, subprojs,
+	// projconnection);
+	//
+	// return depsubprojs;
+	// }
+	//
+	// public String getLastProjectExecuted(Gradlebuildfixdata proj,
+	// List<String> subprojs) {
+	// String executedproj = null;
+	//
+	// if (subprojs != null && subprojs.size() > 0) {
+	//
+	// String largelog = proj.getBlLargelog();
+	//
+	// List<String> buildlines = new
+	// ArrayList<String>(Arrays.asList(largelog.split("\n")));
+	//
+	// int lineindex = buildlines.size() - 1;
+	// boolean match = false;
+	//
+	// while (lineindex >= 0) {
+	// String strline = buildlines.get(lineindex);
+	//
+	// int subprojindex = 0;
+	//
+	// while (subprojindex < subprojs.size()) {
+	// String subprojstr = subprojs.get(subprojindex);
+	//
+	// if (strline.contains(subprojstr + ":")) {
+	// executedproj = subprojstr;
+	// match = true;
+	// }
+	//
+	// subprojindex++;
+	// }
+	//
+	// if (match)
+	// break;
+	//
+	// lineindex--;
+	// }
+	// }
+	//
+	// return executedproj;
+	//
+	// }
+	//
+	// public List<String> generateSubProjectList(Gradlebuildfixdata proj,
+	// String ID, long rowid) {
+	//
+	// File gradlefile = null;
+	// StringMenupulator strmenu = new StringMenupulator();
+	//
+	// List<String> subprojlist = new ArrayList<String>();
+	//
+	// int index = 0;
+	//
+	// try {
+	// ObjectId objectid = repository.resolve(ID);
+	// RevCommit commit = rw.parseCommit(objectid);
+	//
+	// RevTree tree = commit.getTree();
+	//
+	// TreeWalk treeWalk = new TreeWalk(repository);
+	// treeWalk.addTree(commit.getTree());
+	// treeWalk.setRecursive(false);
+	//
+	// while (treeWalk.next()) {
+	// System.out.println("in test=>" + treeWalk.getPathString());
+	//
+	// if (treeWalk.isSubtree()) {
+	// treeWalk.enterSubtree();
+	//
+	// } else if (treeWalk.getPathString().contains(".gradle")) {
+	// ObjectId objectId = treeWalk.getObjectId(0);
+	// ObjectLoader loader = repository.open(objectId);
+	//
+	// if (treeWalk.getPathString().contains("common.gradle")) {
+	// String testabc = treeWalk.getPathString();
+	// }
+	//
+	// byte[] butestr = loader.getBytes();
+	//
+	// String str = new String(butestr);
+	//
+	// String sourcefile = Config.workDir + Config.tempFolder + "buildscriptdep"
+	// + index + ".txt";
+	// index++;
+	//
+	// gradlefile = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+	//
+	// List<String> strlist =
+	// TextFileReaderWriter.GetFileContentByLine(gradlefile.toString());
+	//
+	// for (int lineindex = 0; lineindex < strlist.size(); lineindex++) {
+	// String strline = strlist.get(lineindex);
+	// strline = strmenu.getMarkedString(strline);
+	// strlist.set(lineindex, strline);
+	// }
+	//
+	// List<String> subprjs = GradleASTParseMngr.getSubProjList(strlist);
+	//
+	// if (subprjs != null && subprjs.size() > 0)
+	// subprojlist.addAll(subprjs);
+	//
+	// if (gradlefile.exists())
+	// gradlefile.delete();
+	// }
+	//
+	// }
+	//
+	// treeWalk.reset();
+	// } catch (Exception ex) {
+	// System.out.print(ex.getMessage());
+	// }
+	//
+	// subprojlist = new ArrayList<>(new HashSet<>(subprojlist));
+	//
+	// return subprojlist;
+	// }
+	//
+	// public Map<String, List<String>>
+	// generateSubProjectConnectivity(Gradlebuildfixdata proj, String ID, long
+	// rowid) {
+	//
+	// String project = proj.getGhProjectName();
+	// project = project.replace('/', '@');
+	//
+	// File gradlefile = null;
+	// StringMenupulator strmenu = new StringMenupulator();
+	//
+	// List<String> subprojlist = new ArrayList<String>();
+	//
+	// Map<String, List<String>> projectDependencyies = new HashMap<String,
+	// List<String>>();
+	//
+	// int index = 0;
+	//
+	// try {
+	// ObjectId objectid = repository.resolve(ID);
+	// RevCommit commit = rw.parseCommit(objectid);
+	//
+	// RevTree tree = commit.getTree();
+	// TreeWalk treeWalk = new TreeWalk(repository);
+	// treeWalk.addTree(commit.getTree());
+	// treeWalk.setRecursive(false);
+	//
+	// while (treeWalk.next()) {
+	//
+	// if (treeWalk.isSubtree()) {
+	// treeWalk.enterSubtree();
+	// } else if (treeWalk.getPathString().contains(".gradle")) {
+	// System.out.println("File in Connection=> " + treeWalk.getPathString());
+	//
+	// if (treeWalk.getPathString().contains("specs.gradle")) {
+	// int testabc = 1;
+	// }
+	// ObjectId objectId = treeWalk.getObjectId(0);
+	// ObjectLoader loader = repository.open(objectId);
+	//
+	// byte[] butestr = loader.getBytes();
+	//
+	// String str = new String(butestr);
+	//
+	// String sourcefile = Config.workDir + Config.tempFolder + "buildscriptdep"
+	// + index + ".txt";
+	// index++;
+	//
+	// gradlefile = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+	//
+	// List<String> strlist =
+	// TextFileReaderWriter.GetFileContentByLine(gradlefile.toString());
+	//
+	// for (int lineindex = 0; lineindex < strlist.size(); lineindex++) {
+	// String strline = strlist.get(lineindex);
+	// strline = strmenu.getMarkedString(strline);
+	// strlist.set(lineindex, strline);
+	// }
+	//
+	// String gitfile = treeWalk.getPathString();
+	// File f = new File(gitfile);
+	// String parent = null;
+	//
+	// if (f.getParentFile() != null) {
+	// parent = f.getParentFile().getName();
+	// } else {
+	// parent = "root";
+	// }
+	//
+	// Map<String, List<String>> projconnection =
+	// GradleASTParseMngr.getSubProjConnectivity(strlist,
+	// parent);
+	//
+	// if (projconnection != null && projconnection.keySet().size() > 0) {
+	// projectDependencyies = mergeDependencyMap(projectDependencyies,
+	// projconnection);
+	// }
+	//
+	// if (gradlefile.exists())
+	// gradlefile.delete();
+	// }
+	//
+	// }
+	//
+	// treeWalk.reset();
+	//
+	// } catch (Exception ex) {
+	// System.out.print(ex.getMessage());
+	// }
+	//
+	// subprojlist = new ArrayList<>(new HashSet<>(subprojlist));
+	//
+	// return projectDependencyies;
+	// }
+	//
+	// public Map<String, List<String>> mergeDependencyMap(Map<String,
+	// List<String>> projectDependencyies,
+	// Map<String, List<String>> depdencymap) {
+	//
+	// for (String key : depdencymap.keySet()) {
+	// if (projectDependencyies.containsKey(key)) {
+	// List<String> deps = projectDependencyies.get(key);
+	//
+	// deps.addAll(depdencymap.get(key));
+	//
+	// List<String> deDupStringList = new ArrayList<>(new HashSet<>(deps));
+	//
+	// projectDependencyies.put(key, deDupStringList);
+	// } else {
+	// projectDependencyies.put(key, depdencymap.get(key));
+	// }
+	//
+	// }
+	//
+	// return projectDependencyies;
+	// }
+	//
+	// // BFS implementation to find Gradle Fail project dependency
+	// public List<String> getFailSubProjDependencies(String failedsubproj,
+	// List<String> subprojs,
+	// Map<String, List<String>> projconnection) {
+	// List<String> failsubdependencies = new ArrayList<String>();
+	// Queue<String> queue = new LinkedList<>();
+	//
+	// // A HashMap to keep track already visited subproject;
+	// Map<String, Boolean> visitedstatus = new HashMap<String, Boolean>();
+	// for (String key : subprojs) {
+	// visitedstatus.put(key, false);
+	// }
+	//
+	// // initilize with root node that is failed projects
+	// if (visitedstatus.containsKey(failedsubproj)) {
+	// visitedstatus.put(failedsubproj, true);
+	// queue.add(failedsubproj);
+	// }
+	//
+	// while (!queue.isEmpty()) {
+	// // Dequeue a vertex from queue and print it
+	// String node = queue.peek();
+	// failsubdependencies.add(node);
+	// queue.remove();
+	//
+	// // Get all adjacent vertices of the dequeued
+	// // vertex s. If a adjacent has not been visited,
+	// // then mark it visited and enqueue it
+	// List<String> connections = projconnection.get(node);
+	//
+	// if (connections != null) {
+	// for (String subnode : connections) {
+	// subnode = subnode.replaceAll(":", "");
+	// if (visitedstatus.get(subnode) == false) {
+	// visitedstatus.put(subnode, true);
+	// queue.add(subnode);
+	// }
+	// }
+	// }
+	// }
+	//
+	// return failsubdependencies;
+	//
+	// }
+	//
+	// // **************************************End Dependency
+	// // Analysis*************************************************************
 
 }

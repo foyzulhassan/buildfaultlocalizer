@@ -153,7 +153,7 @@ public class FilterLogText {
 
 				String[] strparts = strline.split(Config.lineSimSeperator);
 
-				if (strparts[1] != null && Double.parseDouble(strparts[1]) < Config.thresholdForSimFilter) {
+				if (strparts[1] != null && Double.parseDouble(strparts[1]) <= Config.thresholdForSimFilter) {
 
 					if (strparts[0] != null) {
 						strbuilder.append(strparts[0]);

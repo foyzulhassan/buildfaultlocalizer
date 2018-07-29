@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.groovy.ast.ASTNode;
+import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.ast.InnerClassNode;
 import org.codehaus.groovy.ast.builder.AstBuilder;
 import org.codehaus.groovy.ast.stmt.EmptyStatement;
@@ -674,13 +675,16 @@ public class GradleASTParseMngr {
 		for (int index = 0; index < nodes.size(); index++) {
 			if (nodes.get(index) instanceof InnerClassNode) {
 				astnodes[index] = new EmptyStatement();
-			} else {
+			} 
+			else if (nodes.get(index) instanceof ClassNode) {
+				astnodes[index] = new EmptyStatement();
+			}else {
 				astnodes[index] = nodes.get(index);
 			}
 
 		}
 
-		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0],"root");
+		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0],":root");
 
 		for (ASTNode node : astnodes) {
 			node.visit(visitordep);
@@ -688,9 +692,9 @@ public class GradleASTParseMngr {
 
 		List<String> subprojs = visitordep.getSubprojects();
 
-		for (String subproj : subprojs) {
-			System.out.println(subproj);
-		}
+//		for (String subproj : subprojs) {
+//			System.out.println(subproj);
+//		}
 		//
 		// Map<String,List<String>>
 		// projdeps=visitordep.getProjectDependencyies();
@@ -757,7 +761,9 @@ public class GradleASTParseMngr {
 		for (int index = 0; index < nodes.size(); index++) {
 			if (nodes.get(index) instanceof InnerClassNode) {
 				astnodes[index] = new EmptyStatement();
-			} else {
+			} else if (nodes.get(index) instanceof ClassNode) {
+				astnodes[index] = new EmptyStatement();
+			}else {
 				astnodes[index] = nodes.get(index);
 			}
 

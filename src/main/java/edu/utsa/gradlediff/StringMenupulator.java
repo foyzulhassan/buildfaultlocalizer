@@ -378,8 +378,8 @@ public class StringMenupulator {
 //			str = getStampedString(str);
 //		}
 
-//		if (isStringContainsMethodDef(str))
-//			str = getStampedStringforMethodDef(str);
+		if (isStringContainsMethodDef(str))
+			str = getStampedStringforMethodDef(str);
 
 		if (isStringContainsImport(str))
 			str = getStampedStringforImport(str);
@@ -387,8 +387,8 @@ public class StringMenupulator {
 //		if (isStringContainsDollarBrace(str))
 //			str = getReplaceDollarBrace(str);
 
-		if (isStringContainsForwardQuete(str))
-			str = getFwdSlashStampedString(str);
+//		if (isStringContainsForwardQuete(str))
+//			str = getFwdSlashStampedString(str);
 
 		str = cleanUpSpecialCases(str);
 

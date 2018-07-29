@@ -251,15 +251,15 @@ public class SimGenerationMngr {
 			String[] actualfixs = actualfixfile.split(";");
 
 			// Files those found for having in common logdiff
-			for (String name : samesimmap.keySet()) {
-
-				if (simmap.containsKey(name)) {
-					Double val = simmap.get(name) - 0.5 * samesimmap.get(name);
-					simmap.put(name, val);
-					break;
-				}
-
-			}
+//			for (String name : samesimmap.keySet()) {
+//
+//				if (simmap.containsKey(name)) {
+//					Double val = simmap.get(name) - 0.5 * samesimmap.get(name);
+//					simmap.put(name, val);
+//					break;
+//				}
+//
+//			}
 			///////////////////////////////////////////////////
 
 			// Fail Introducing file change are geeting extra weight
@@ -277,18 +277,18 @@ public class SimGenerationMngr {
 				}
 			}
 
-			String difflog = proj.getFailChange();
-
-			for (String name : simmap.keySet()) {
-
-				File f = new File(name);
-
-				if (difflog.contains(f.getName())) {
-					Double val = simmap.get(name) + 0.9 * simmap.get(name);
-					simmap.put(name, val);
-				}
-
-			}
+			//For filename in log file
+//			String difflog = proj.getFailChange();
+//			for (String name : simmap.keySet()) {
+//
+//				File f = new File(name);
+//
+//				if (difflog.contains(f.getName())) {
+//					Double val = simmap.get(name) + 0.9 * simmap.get(name);
+//					simmap.put(name, val);
+//				}
+//
+//			}
 
 			Map<String, Double> sortedsimmap = sortByValue(simmap);
 
@@ -373,7 +373,6 @@ public class SimGenerationMngr {
 			// Fail Introducing file change are geeting extra weight
 			for (String name : simmap.keySet()) {
 				int failindex = 0;
-
 				while (failindex < failfixs.length) {
 
 					if (name.equals(failfixs[failindex])) {
@@ -384,19 +383,18 @@ public class SimGenerationMngr {
 					failindex++;
 				}
 			}
-
-			String difflog = proj.getFailChange();
-
-			for (String name : simmap.keySet()) {
-
-				File f = new File(name);
-
-				if (difflog.contains(f.getName())) {
-					Double val = simmap.get(name) + 0.9 * simmap.get(name);
-					simmap.put(name, val);
-				}
-
-			}
+			
+			
+			//This part is for file names mentioned in log file
+//			String difflog = proj.getFailChange();
+//			
+//			for (String name : simmap.keySet()) {
+//				File f = new File(name);
+//				if (difflog.contains(f.getName())) {
+//					Double val = simmap.get(name) + 0.9 * simmap.get(name);
+//					simmap.put(name, val);
+//				}
+//			}
 
 			Map<String, Double> sortedsimmap = sortByValue(simmap);
 
@@ -668,44 +666,47 @@ public class SimGenerationMngr {
 			///////////////////////////////////////////////////
 
 			// Fail Introducing file change are geeting extra weight
-//			for (String name : simmap.keySet()) {
-//				int failindex = 0;
-//
-//				while (failindex < failfixs.length) {
-//
-//					if (name.equals(failfixs[failindex])) {
-//						Double val = simmap.get(name) + 0.5 * simmap.get(name);
-//						simmap.put(name, val);
-//						break;
-//					}
-//					failindex++;
-//				}
-//			}
-//
-//			String difflog = proj.getFailChange();
-//
-//			for (String name : simmap.keySet()) {
-//
-//				File f = new File(name);
-//
-//				if (difflog.contains(f.getName())) {
-//					Double val = simmap.get(name) + 0.5 * simmap.get(name);
-//					simmap.put(name, val);
-//				}
-//
-//			}
-//
-//			Map<String, Double> sortedsimmap = sortByValue(simmap);
-//
-//			ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
-//
-//			int topn = rankmetric.getTopN(keys, actualfixs);
-//			double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
-//			double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
-//
-//			projects.get(index).setFilterlogdualPos(topn);
-//			projects.get(index).setFilterlogdualMrr(mrr);
-//			projects.get(index).setFilterlogdualMap(map);
+			for (String name : simmap.keySet()) {
+				int failindex = 0;
+
+				while (failindex < failfixs.length) {
+
+					if (name.equals(failfixs[failindex])) {
+						Double val = simmap.get(name) + 0.5 * simmap.get(name);
+						simmap.put(name, val);
+						break;
+					}
+					failindex++;
+				}
+			}
+
+			String difflog = proj.getFailChange();
+
+			for (String name : simmap.keySet()) {
+
+				File f = new File(name);
+
+				if (difflog.contains(f.getName())) {
+					Double val = simmap.get(name) + 0.5 * simmap.get(name);
+					simmap.put(name, val);
+				}
+
+			}
+
+			Map<String, Double> sortedsimmap = sortByValue(simmap);
+
+			ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
+
+			int topn = rankmetric.getTopN(keys, actualfixs);
+			double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
+			double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+
+			projects.get(index).setFilterlogdualPos(topn);
+			projects.get(index).setFilterlogdualMrr(mrr);
+			projects.get(index).setFilterlogdualMap(map);
+			
+			System.out.println(project+"<=>"+mrr);
+			System.out.println(project+"<=>"+map);
 			
 		 // }//for local testing
 

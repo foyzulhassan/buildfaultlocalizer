@@ -22,6 +22,10 @@ import com.build.builddependency.BuildDependencyGenerator;
 import com.build.commitanalyzer.CommitAnalyzer;
 import com.build.docsim.CosineDocumentSimilarity;
 import com.build.logfilter.LogFailPartSimGenMgr;
+import com.build.param.tunning.DiffFilterRecentDependencyTunning;
+import com.build.param.tunning.DiffFilterRecentTunning;
+import com.build.param.tunning.DiffFilterTunning;
+import com.build.param.tunning.ParformanceAnalysis;
 import com.build.revertanalyzer.ReverAnalyzer;
 import com.build.util.TextFileReaderWriter;
 import com.github.gumtreediff.actions.model.Action;
@@ -47,7 +51,8 @@ public class MainClass {
 				+ "\n11->Log Analysis"
 				+ "\n12->ASTParser Checking"
 				+ "\n13->Analyze Result"
-				+ "\n14->Generate Similarity on Build Dependency Graph");
+				+ "\n14->Generate Similarity on Build Dependency Graph"
+				+ "\n21->Param Tunning for DiffFilter");
 		
 
 		// create an object that reads integers:
@@ -94,6 +99,10 @@ public class MainClass {
 			 performResultAnalysis();
 		}
 		//this is for 6,8,9,13 menu runnning together for analysis
+		else if(inputid ==21)
+		{
+			parameterTunningDiffFilter();
+		}
 		else if(inputid==68913)
 		{
 			genSimDifferentialLogOnChange();
@@ -113,6 +122,10 @@ public class MainClass {
 			obj.testCommit();
 
 			System.out.println("Wrong Function Id Entered");
+			
+			Config.thresholdForSimFilter=0.1;
+			
+			System.out.println(Config.thresholdForSimFilter);
 		}
 
 		cleanupResource();
@@ -396,6 +409,45 @@ public class MainClass {
 		ResultGenMngr resultgen=new ResultGenMngr();
 		
 		resultgen.performResultAnalysis();
+	}
+	
+	
+	private static void parameterTunningDiffFilter()
+	{
+//		DiffFilterTunning tuner=new DiffFilterTunning();
+//		try {
+//			tuner.simAnalyzerWithFailPartLineSim();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}	
+		
+//		DiffFilterRecentTunning tuner=new DiffFilterRecentTunning();
+//		
+//		try {
+//			tuner.simAnalyzerWithFailPartLineSimAndRecent();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		DiffFilterRecentDependencyTunning tuner=new DiffFilterRecentDependencyTunning();
+//		
+//		try {
+//			tuner.simAnalyzerWithFailPartLineSimRecentDependency();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		ParformanceAnalysis perf=new ParformanceAnalysis();
+		try {
+			perf.simAnalyzerWithFailPartLineSimAndRecent();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	

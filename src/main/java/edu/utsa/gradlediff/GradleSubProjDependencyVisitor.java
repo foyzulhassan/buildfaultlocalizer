@@ -72,6 +72,7 @@ import com.github.gumtreediff.tree.TreeContext;
 
 import org.codehaus.groovy.ast.GroovyCodeVisitor;
 import org.codehaus.groovy.ast.InnerClassNode;
+
 /**
  * @author Lovett Li
  */
@@ -176,9 +177,6 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 
 		}
 
-		if (blockflag == true) {
-			call.setNodeMetaData("block", call.getMethodAsString());
-		}
 
 		if (call.getObjectExpression() != null) {
 			SASTNode node = new SASTNode(call, call.getObjectExpression(),
@@ -210,7 +208,10 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 
 					for (Expression expr : expressions) {
 						if (expr != null && expr instanceof ConstantExpression) {
-							subprojects.add(expr.getText());
+							if(!expr.getText().startsWith(":"))
+								subprojects.add(":"+expr.getText());
+							else
+								subprojects.add(expr.getText());
 						}
 					}
 
@@ -242,9 +243,8 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 		if (call.getMethodAsString().equals("project")) {
 			Map<String, List<String>> mapdependency = getProjectDependencyForCompile(call);
 		}
-		
-		if ((call.getMethodAsString().equals("provided"))
-				&& call.getNodeMetaData("visited") == null) {
+
+		if ((call.getMethodAsString().equals("provided")) && call.getNodeMetaData("visited") == null) {
 			List<String> dependency = getProvidedDependency(call);
 
 			if (dependency != null & dependency.size() > 0) {
@@ -266,7 +266,6 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 
 			}
 		}
-		
 
 		super.visitMethodCallExpression(call);
 
@@ -1101,18 +1100,17 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 								}
 
 							}
-						}
-						else if (expr != null && expr instanceof PropertyExpression) {
+						} else if (expr != null && expr instanceof PropertyExpression) {
 							PropertyExpression propexp = (PropertyExpression) expr;
 
 							if (propexp.getText().contains("this.project") && propexp.getText().contains(":")) {
-							
-								String str=propexp.getText();
-								int firstindex=str.indexOf(':');
-								int lastindex=str.indexOf(')', firstindex);
-								
+
+								String str = propexp.getText();
+								int firstindex = str.indexOf(':');
+								int lastindex = str.indexOf(')', firstindex);
+
 								dependency.add(str.substring(firstindex, lastindex));
-								
+
 							}
 						}
 					}
@@ -1124,7 +1122,7 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 
 		return dependency;
 	}
-	
+
 	public List<String> getRuntimeTestRuntimeDependency(MethodCallExpression call) {
 		List<String> dependency = new ArrayList<String>();
 
@@ -1157,18 +1155,17 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 								}
 
 							}
-						}
-						else if (expr != null && expr instanceof PropertyExpression) {
+						} else if (expr != null && expr instanceof PropertyExpression) {
 							PropertyExpression propexp = (PropertyExpression) expr;
 
 							if (propexp.getText().contains("this.project") && propexp.getText().contains(":")) {
-							
-								String str=propexp.getText();
-								int firstindex=str.indexOf(':');
-								int lastindex=str.indexOf(')', firstindex);
-								
+
+								String str = propexp.getText();
+								int firstindex = str.indexOf(':');
+								int lastindex = str.indexOf(')', firstindex);
+
 								dependency.add(str.substring(firstindex, lastindex));
-								
+
 							}
 						}
 					}
@@ -1180,7 +1177,7 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 
 		return dependency;
 	}
-	
+
 	public List<String> getProvidedDependency(MethodCallExpression call) {
 		List<String> dependency = new ArrayList<String>();
 
@@ -1211,38 +1208,37 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 
 									}
 								}
-								
+
 								else if (argumentsinfo2 != null && argumentsinfo2 instanceof TupleExpression) {
 									List<? extends Expression> list = ((TupleExpression) argumentsinfo2)
 											.getExpressions();
 									if (list != null) {
 										for (Expression expression1 : list) {
-											
-											for (MapEntryExpression exp : ((MapExpression) expression1).getMapEntryExpressions()) {
 
-												if(exp.getValueExpression().getText().startsWith(":"))
+											for (MapEntryExpression exp : ((MapExpression) expression1)
+													.getMapEntryExpressions()) {
+
+												if (exp.getValueExpression().getText().startsWith(":"))
 													dependency.add(exp.getValueExpression().getText());
 											}
 
-										
 										}
 									}
 
 								}
 
 							}
-						}
-						else if (expr != null && expr instanceof PropertyExpression) {
+						} else if (expr != null && expr instanceof PropertyExpression) {
 							PropertyExpression propexp = (PropertyExpression) expr;
 
 							if (propexp.getText().contains("this.project") && propexp.getText().contains(":")) {
-							
-								String str=propexp.getText();
-								int firstindex=str.indexOf(':');
-								int lastindex=str.indexOf(')', firstindex);
-								
+
+								String str = propexp.getText();
+								int firstindex = str.indexOf(':');
+								int lastindex = str.indexOf(')', firstindex);
+
 								dependency.add(str.substring(firstindex, lastindex));
-								
+
 							}
 						}
 					}
@@ -1313,47 +1309,54 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 
 																	for (Statement stmt2 : stmts2) {
 
-																		ExpressionStatement expstmt2 = (ExpressionStatement) stmt2;
-																		Expression node2 = expstmt2.getExpression();
+																		if (stmt2 instanceof ExpressionStatement) {
+																			ExpressionStatement expstmt2 = (ExpressionStatement) stmt2;
+																			Expression node2 = expstmt2.getExpression();
 
-																		if (node2 != null
-																				&& node2 instanceof MethodCallExpression) {
+																			if (node2 != null
+																					&& node2 instanceof MethodCallExpression) {
 
-																			MethodCallExpression methodcall = (MethodCallExpression) node2;
+																				MethodCallExpression methodcall = (MethodCallExpression) node2;
 
-																			List<String> dependency = getCompileTestCompileDependency(
-																					methodcall);
+																				List<String> dependency = getCompileTestCompileDependency(
+																						methodcall);
 
-																			if (dependency != null
-																					&& dependency.size() > 0) {
-																				mapdependency.put(parentproj,
-																						dependency);
+																				if (dependency != null
+																						&& dependency.size() > 0) {
+																					mapdependency.put(parentproj,
+																							dependency);
 
-																				mergeDependencyMap(mapdependency);
+																					mergeDependencyMap(mapdependency);
+																				}
+
+																				dependency = getProvidedDependency(
+																						methodcall);
+
+																				if (dependency != null
+																						&& dependency.size() > 0) {
+																					mapdependency.put(parentproj,
+																							dependency);
+
+																					mergeDependencyMap(mapdependency);
+																				}
+
+																				dependency = getRuntimeTestRuntimeDependency(
+																						methodcall);
+
+																				if (dependency != null
+																						&& dependency.size() > 0) {
+																					mapdependency.put(parentproj,
+																							dependency);
+
+																					mergeDependencyMap(mapdependency);
+																				}
+
 																			}
-																			
-																			dependency = getProvidedDependency(methodcall);
-
-																			if (dependency != null
-																					&& dependency.size() > 0) {
-																				mapdependency.put(parentproj,
-																						dependency);
-
-																				mergeDependencyMap(mapdependency);
-																			}
-																			
-																			dependency = getRuntimeTestRuntimeDependency(methodcall);
-
-																			if (dependency != null
-																					&& dependency.size() > 0) {
-																				mapdependency.put(parentproj,
-																						dependency);
-
-																				mergeDependencyMap(mapdependency);
-																			}																			
 
 																		}
+
 																	}
+
 																}
 															}
 														}
