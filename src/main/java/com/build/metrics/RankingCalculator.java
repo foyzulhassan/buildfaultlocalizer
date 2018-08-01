@@ -45,7 +45,7 @@ public class RankingCalculator {
 	}
 	
 	public int getTopN(ArrayList<String> rankedfiles, String[] actualfiles) {
-		int firstindex = 9999999;
+		int firstindex = 999999999;
 		int fileindex = 0;
 
 		fileindex = 0;

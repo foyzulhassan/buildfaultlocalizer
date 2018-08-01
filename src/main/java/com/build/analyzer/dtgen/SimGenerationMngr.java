@@ -251,15 +251,15 @@ public class SimGenerationMngr {
 			String[] actualfixs = actualfixfile.split(";");
 
 			// Files those found for having in common logdiff
-//			for (String name : samesimmap.keySet()) {
-//
-//				if (simmap.containsKey(name)) {
-//					Double val = simmap.get(name) - 0.5 * samesimmap.get(name);
-//					simmap.put(name, val);
-//					break;
-//				}
-//
-//			}
+			for (String name : samesimmap.keySet()) {
+
+				if (simmap.containsKey(name)) {
+					Double val = simmap.get(name) - 0.5 * samesimmap.get(name);
+					simmap.put(name, val);
+					break;
+				}
+
+			}
 			///////////////////////////////////////////////////
 
 			// Fail Introducing file change are geeting extra weight
@@ -278,17 +278,17 @@ public class SimGenerationMngr {
 			}
 
 			//For filename in log file
-//			String difflog = proj.getFailChange();
-//			for (String name : simmap.keySet()) {
-//
-//				File f = new File(name);
-//
-//				if (difflog.contains(f.getName())) {
-//					Double val = simmap.get(name) + 0.9 * simmap.get(name);
-//					simmap.put(name, val);
-//				}
-//
-//			}
+			String difflog = proj.getFailChange();
+			for (String name : simmap.keySet()) {
+
+				File f = new File(name);
+
+				if (difflog.contains(f.getName())) {
+					Double val = simmap.get(name) + 0.9 * simmap.get(name);
+					simmap.put(name, val);
+				}
+
+			}
 
 			Map<String, Double> sortedsimmap = sortByValue(simmap);
 
@@ -634,7 +634,10 @@ public class SimGenerationMngr {
 				e.printStackTrace();
 			}
 
-			Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependency(proj.getGitLastfailCommit(),proj.getF2row(), proj);
+			List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
+					proj.getGitLastfailCommit());
+			
+			Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependency(proj.getGitLastfailCommit(),proj.getF2row(), proj,recentchangefile);
 
 
 //			// this map contains from having in common logdiff
@@ -645,8 +648,7 @@ public class SimGenerationMngr {
 			String failintrofiles = proj.getFailFilelist();
 
 			// This code to inhance
-			List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
-					proj.getGitLastfailCommit());
+
 			failintrofiles = getCommaSeperated(recentchangefile);
 			///
 

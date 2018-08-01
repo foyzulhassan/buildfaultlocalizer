@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -509,16 +510,16 @@ public class CommitAnalyzer {
 
 					String str = new String(butestr);
 
-					// JavaASTParser javaparser=new JavaASTParser();
-					//
-					// List<String> asts=javaparser.parseJavaMethodDecs(str);
-					//
-					// str=String.join(" ", asts);
+					 JavaASTParser javaparser=new JavaASTParser();
+					
+					 List<String> asts=javaparser.parseJavaMethodDecs(str);
+					
+					 str=String.join(" ", asts);
 
 					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
 					index++;
 
-					filemap.put(treeWalk.getPathString(), sourcefile);
+					//filemap.put(treeWalk.getPathString(), sourcefile);
 
 					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
 
@@ -526,6 +527,7 @@ public class CommitAnalyzer {
 					// CosineDocumentSimilarity(file1,file2);
 					double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
 					simMap.put(f2.toString(), sim);
+					filemap.put(treeWalk.getPathString(), f2.toString());
 					
 				} else if (treeWalk.getPathString().contains(".gradle")) {
 					ObjectId objectId = treeWalk.getObjectId(0);
@@ -538,7 +540,7 @@ public class CommitAnalyzer {
 					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
 					index++;
 
-					filemap.put(treeWalk.getPathString(), sourcefile);
+					//filemap.put(treeWalk.getPathString(), sourcefile);
 
 					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
 
@@ -547,6 +549,7 @@ public class CommitAnalyzer {
 					double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
 
 					simMap.put(f2.toString(), sim);
+					filemap.put(treeWalk.getPathString(), f2.toString());
 				}
 
 			}
@@ -669,11 +672,12 @@ public class CommitAnalyzer {
 	}
 
 	public Map<String, Double> getTreeSimilarityMapWithBuildDependency(String ID, long rowid,
-			Gradlebuildfixdata fixdata) {
+			Gradlebuildfixdata fixdata, List<String> recentchanges) {
 
 		String logcontent = "";
 		File f1 = null;
 		File f2 = null;
+		File f3=  null;
 		int index = 0;
 
 		Map<String, String> filemap = new HashMap<String, String>();
@@ -686,11 +690,26 @@ public class CommitAnalyzer {
 		logcontent = filter.performFilteringOnSimValue(fixdata);
 
 		BuildDependencyGenerator depgen = new BuildDependencyGenerator();
+		
+		List<String> allprojlist=depgen.getAllSubProjects(fixdata, ID, rowid);
 
-		List<String> depprojlist = depgen.getDependentProjectList(fixdata, ID, rowid);		
+		List<String> depprojlist = depgen.getDependentProjectList(fixdata, ID, rowid, recentchanges);	
+		
+		Map<String,Double> probmap=getDependentProjProbability(allprojlist,depprojlist);
+		
+		Double minprob=1.0;
+		Double maxprob=1.0;
+		
+		if(allprojlist.size()>0 && depprojlist.size()>0)
+		{
+			minprob=Collections.min(probmap.values());
+			maxprob=Collections.max(probmap.values());
+		}
+		
 
 		try {
 			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
+			f3 = commitAnalyzingUtils.writeContentInFile("logpass.text", fixdata.getFixChange());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -720,13 +739,19 @@ public class CommitAnalyzer {
 					byte[] butestr = loader.getBytes();
 
 					String str = new String(butestr);
+					
+					 JavaASTParser javaparser=new JavaASTParser();
+					
+					 List<String> asts=javaparser.parseJavaMethodDecs(str);
+					
+					 str=String.join(" ", asts);
+					
 					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
 					index++;
 					//filemap.put(treeWalk.getPathString(), sourcefile);
 
 					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
-					double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
-					//sim=sim+sim*0.5;
+					double sim = maxprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());					
 					filemap.put(treeWalk.getPathString(), f2.toString());
 					simMap.put(f2.toString(), sim);
 
@@ -743,8 +768,7 @@ public class CommitAnalyzer {
 
 					//filemap.put(treeWalk.getPathString(), sourcefile);
 					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
-					double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
-					//sim=sim+sim*0.5;
+					double sim = maxprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());					
 					filemap.put(treeWalk.getPathString(), f2.toString());
 					simMap.put(f2.toString(), sim);
 
@@ -762,10 +786,10 @@ public class CommitAnalyzer {
 					
 					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
 
-					//double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
-					//double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					//double sim = 0.0;
+					double sim = minprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString())-CosineDocumentSimilarity.getCosineSimilarity(f3.toString(), f2.toString());
 					//sim=0.5*sim;
-					double sim = 0.0;
+					//double sim = 0.2;
 					filemap.put(treeWalk.getPathString(), f2.toString());
 					simMap.put(f2.toString(), sim);
 
@@ -782,6 +806,7 @@ public class CommitAnalyzer {
 
 			// log file content
 			files.add(f1.toString());
+			files.add(f3.toString());
 
 			int count = 0;
 			for (Map.Entry<String, String> entry : filemap.entrySet()) {
@@ -803,6 +828,7 @@ public class CommitAnalyzer {
 
 			treeWalk.reset();
 			f1.delete();
+			f3.delete();
 
 		} catch (Exception ex) {
 			System.out.print(ex.getMessage());
@@ -2401,4 +2427,49 @@ public class CommitAnalyzer {
 	// // **************************************End Dependency
 	// // Analysis*************************************************************
 
+	
+	public Map<String,Double> getDependentProjProbability(List<String> allprojlist,List<String> depprojlist)
+	{
+		double val=0.0;
+		
+		double iniprob=(1.0/allprojlist.size());
+		
+		Map<String,Double> probmap=new HashMap<String,Double>();
+		
+		for(String proj:allprojlist)
+		{
+			probmap.put(proj, iniprob);
+		}
+		
+		
+		
+		for(String depproj:depprojlist)
+		{
+			if(probmap.containsKey(depproj))
+			{
+				Double prob=probmap.get(depproj);
+				probmap.put(depproj,prob+1.0);
+			}
+		}
+		
+		
+		double sum=0.0;
+		
+		for(String proj:probmap.keySet())
+		{
+			sum=sum+probmap.get(proj);		
+		}
+		
+		//sum=sum/probmap.keySet().size();
+		
+		for(String proj:probmap.keySet())
+		{
+			Double prob=probmap.get(proj)/sum;
+			probmap.put(proj, prob);
+		}
+		
+	
+		
+		return probmap;
+	}
 }

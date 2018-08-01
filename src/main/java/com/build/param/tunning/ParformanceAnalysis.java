@@ -35,7 +35,9 @@ public class ParformanceAnalysis {
 		int totaltopn1 = 0;
 		double totalmrr1 = 0.0;
 		double totalmap1 = 0.0;
+		int worse=0;
 
+		int size=1;
 		for (Double paramval : paramvalues) {
 			totaltopn = 0;
 			totalmrr = 0.0;
@@ -44,6 +46,7 @@ public class ParformanceAnalysis {
 			totaltopn1 = 0;
 			totalmrr1 = 0.0;
 			totalmap1 = 0.0;
+			size=0;
 			
 			Config.thresholdForSimFilter = paramval;
 
@@ -52,11 +55,12 @@ public class ParformanceAnalysis {
 				Gradlebuildfixdata proj = projects.get(index);
 
 				// checking loop
-				//if (proj.getRow() == 733505) {
+				//if (proj.getRow() == 427759) {
 				String project = proj.getGhProjectName();
 				project = project.replace('/', '@');
+				size++;
 
-				// System.out.println(proj.getRow() + "=>" + project);
+				System.out.println(proj.getRow() + "=>" + project);
 
 				CommitAnalyzer cmtanalyzer = null;
 
@@ -117,8 +121,12 @@ public class ParformanceAnalysis {
 				totalmap = totalmap + map;
 				
 				
+				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
+						proj.getGitLastfailCommit());				
+
+				
 				Map<String, Double> simmap1 = cmtanalyzer
-						.getTreeSimilarityMapWithBuildDependency(proj.getGitLastfailCommit(), proj.getF2row(), proj);
+						.getTreeSimilarityMapWithBuildDependency(proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
 
 				// // this map contains from having in common logdiff
 //				 Map<String, Double> samesimmap =
@@ -129,25 +137,13 @@ public class ParformanceAnalysis {
 				String failintrofiles1 = proj.getFailFilelist();
 
 				// This code to inhance
-//				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
-//						proj.getGitLastfailCommit());
-//				failintrofiles = getCommaSeperated(recentchangefile);
+
+				failintrofiles = getCommaSeperated(recentchangefile);
 				///
 
 				String[] failfixs1 = failintrofiles.split(";");
 				String[] actualfixs1 = actualfixfile.split(";");
 
-				// // Files those found for having in common logdiff
-//				for (String name : samesimmap.keySet()) {
-//
-//					if (simmap.containsKey(name)) {
-//						Double val = simmap.get(name) - 0.5 * samesimmap.get(name);
-//						simmap.put(name, val);
-//						// break;
-//					}
-//
-//				}
-				/////////////////////////////////////////////////
 
 				// Fail Introducing file change are geeting extra weight
 				for (String name1 : simmap1.keySet()) {
@@ -176,6 +172,8 @@ public class ParformanceAnalysis {
 					}
 
 				}
+				
+			
 
 				Map<String, Double> sortedsimmap1 = SortingMgr.sortByValue(simmap1);
 
@@ -191,20 +189,29 @@ public class ParformanceAnalysis {
 				totalmrr1 = totalmrr1 + mrr1;
 				totalmap1 = totalmap1 + map1;
 				
+				System.out.println("MRR: "+mrr+"MRR1: "+mrr1);
+				
 				if(mrr>mrr1)
 				{
 					System.out.println("\n\n$$$$$$$$$$$$$$$"+index+"=>"+proj.getRow() + "=>" + project+"$$$$$$$$$$$$$$$$");
+					worse++;
+				}
+				else if(mrr<mrr1)
+				{
+					System.out.println("\n\nGood=>"+index);
 				}
 
-			  //} //checking loop
+			 // } //checking loop
 
 			}
 			System.out.println("*******For Param: " + Config.thresholdForSimFilter + "********");
-			System.out.println("TopN: " + (totaltopn / projects.size()) + " MRR: " + (totalmrr / projects.size())
-					+ " MAP: " + (totalmap / projects.size()));
+			System.out.println("TopN: " + (totaltopn / size) + " MRR: " + (totalmrr / size)
+					+ " MAP: " + (totalmap / size));
 			
-			System.out.println("TopN: " + (totaltopn1 / projects.size()) + " MRR: " + (totalmrr1 / projects.size())
-					+ " MAP: " + (totalmap1 / projects.size()));
+			System.out.println("TopN: " + (totaltopn1 / size) + " MRR: " + (totalmrr1 / size)
+					+ " MAP: " + (totalmap1 / size));
+			
+			System.out.println("Worse Count: "+worse);
 
 		}
 	}

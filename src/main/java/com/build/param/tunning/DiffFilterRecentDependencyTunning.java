@@ -66,9 +66,12 @@ public class DiffFilterRecentDependencyTunning {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
+				proj.getGitLastfailCommit());
 
 				Map<String, Double> simmap = cmtanalyzer
-						.getTreeSimilarityMapWithBuildDependency(proj.getGitLastfailCommit(), proj.getF2row(), proj);
+						.getTreeSimilarityMapWithBuildDependency(proj.getGitLastfailCommit(), proj.getF2row(), proj,recentchangefile);
 
 				// // this map contains from having in common logdiff
 //				 Map<String, Double> samesimmap =

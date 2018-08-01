@@ -64,3 +64,44 @@ ALTER TABLE gradlebuildfixdata ADD failpartsimast_map DOUBLE AFTER failpartsimas
 ALTER TABLE gradlebuildfixdata ADD failpartsimdep_pos int AFTER failpartsimast_mrr;
 ALTER TABLE gradlebuildfixdata ADD failpartsimdep_mrr DOUBLE AFTER failpartsimdep_pos;
 ALTER TABLE gradlebuildfixdata ADD failpartsimdep_map DOUBLE AFTER failpartsimdep_mrr;
+
+%% Final Evaluation Fields
+%%This part is for fail part similarity based filtering with Build Dependency Graph
+ALTER TABLE gradlebuildfixdata ADD ev_reverting_pos int AFTER filterlogdual_map;
+ALTER TABLE gradlebuildfixdata ADD ev_reverting_mrr DOUBLE AFTER ev_reverting_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_reverting_map DOUBLE AFTER ev_reverting_mrr;
+
+ALTER TABLE gradlebuildfixdata ADD ev_fulllog_pos int AFTER ev_reverting_map;
+ALTER TABLE gradlebuildfixdata ADD ev_fulllog_mrr DOUBLE AFTER ev_fulllog_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_fulllog_map DOUBLE AFTER ev_fulllog_mrr;
+
+ALTER TABLE gradlebuildfixdata ADD ev_fulllogast_pos int AFTER ev_fulllog_map;
+ALTER TABLE gradlebuildfixdata ADD ev_fulllogast_mrr DOUBLE AFTER ev_fulllogast_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_fulllogast_map DOUBLE AFTER ev_fulllogast_mrr;
+
+ALTER TABLE gradlebuildfixdata ADD ev_diffdepboost_pos int AFTER ev_fulllogast_map;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdepboost_mrr DOUBLE AFTER ev_diffdepboost_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdepboost_map DOUBLE AFTER ev_diffdepboost_mrr;
+
+ALTER TABLE gradlebuildfixdata ADD ev_diffdep_pos int AFTER ev_diffdepboost_map;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdep_mrr DOUBLE AFTER ev_diffdep_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdep_map DOUBLE AFTER ev_diffdep_mrr;
+
+
+
+ALTER TABLE gradlebuildfixdata ADD ev_diffboost_pos int AFTER ev_diffdep_map;
+ALTER TABLE gradlebuildfixdata ADD ev_diffboost_mrr DOUBLE AFTER ev_diffboost_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_diffboost_map DOUBLE AFTER ev_diffboost_mrr;
+
+ALTER TABLE gradlebuildfixdata ADD ev_fulllogboost_pos int AFTER ev_diffboost_map;
+ALTER TABLE gradlebuildfixdata ADD ev_fulllogboost_mrr DOUBLE AFTER ev_fulllogboost_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_fulllogboost_map DOUBLE AFTER ev_fulllogboost_mrr;
+
+ALTER TABLE gradlebuildfixdata ADD dt_dataset_type text AFTER ev_fulllogboost_map;
+
+
+
+
+
+
+
