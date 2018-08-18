@@ -594,6 +594,26 @@ public class GradleNodeVisitor extends CodeVisitorSupport {
 		SASTNode node1 = new SASTNode(expression, expression.getRightExpression(),
 				TypeUtil.getExpressionType(expression.getRightExpression()));
 		astList.add(node1);
+		
+Expression left=expression.getLeftExpression();
+		
+		Expression right=expression.getRightExpression();
+		
+		if(left instanceof PropertyExpression)
+		{
+			PropertyExpression leftprop=(PropertyExpression) left;
+			
+			if(leftprop.getText().toLowerCase().contains("rootproject.name"))
+			{
+				if(right instanceof ConstantExpression)
+				{
+					ConstantExpression rightconst=(ConstantExpression) right;
+					
+					String rootproj=rightconst.getText();
+					System.out.println(rootproj);
+				}
+			}
+		}
 
 		super.visitBinaryExpression(expression);
 	}

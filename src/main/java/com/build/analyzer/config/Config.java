@@ -83,7 +83,8 @@ public class Config {
 	/****************************************************************************/
 	
 	public static String lineSimSeperator="<=##=>";
-	public static double thresholdForSimFilter=0.80;
+	public static double thresholdForSimFilter=0.90;
+	public static double alphaparam=0.1;
 	
 
 	public static String getLogFilePath(String projname, String filename) {
@@ -116,7 +117,7 @@ public class Config {
 	
 	//This variabes are for debugging purpose
 	public static boolean quickAnalysis=false;
-	public static int quickAnalysisDataSize=100;
+	public static int quickAnalysisDataSize=5;
 	//This variabes are for debugging purpose end
 
 	public static String getResultLogFileName() {

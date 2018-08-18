@@ -12,6 +12,76 @@ import com.build.analyzer.entity.Gradlebuildfixdata;
 import com.build.analyzer.entity.Gradlepatch;
 
 public class DBActionExecutorChangeData {
+	
+	public List<Gradlebuildfixdata> getTunningRows()
+	{
+		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
+		List<Gradlebuildfixdata> results = null;
+
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+
+			//// SELECT count(*) FROM travistorrent.travistorrent_27_10_2016
+			//// where gh_lang="java" and (tr_status="errored" or
+			//// tr_status="failed") and (tr_analyzer="java-ant" or
+			//// tr_analyzer="java-maven" or tr_analyzer="java-gradle") and
+			//// bl_log is NULL ;
+
+			String hql = "FROM Gradlebuildfixdata gp where gp.dtDatasetType=:dttype";
+			Query query = session.createQuery(hql);
+			query.setParameter("dttype", "TUNNING");	
+			
+			if(Config.quickAnalysis)
+			{
+				query.setMaxResults(Config.quickAnalysisDataSize);
+			}
+
+			results = query.list();
+
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return results;		
+
+	}
+	
+	public List<Gradlebuildfixdata> getEvalRows()
+	{
+		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
+		List<Gradlebuildfixdata> results = null;
+
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+
+			String hql = "FROM Gradlebuildfixdata gp where gp.dtDatasetType=:dttype";
+			Query query = session.createQuery(hql);
+			query.setParameter("dttype", "EVAL");	
+			
+			if(Config.quickAnalysis)
+			{
+				query.setMaxResults(Config.quickAnalysisDataSize);
+			}
+
+			results = query.list();
+
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return results;		
+
+	}
 
 	public List<Gradlebuildfixdata> getRows() {
 
@@ -31,6 +101,7 @@ public class DBActionExecutorChangeData {
 			String hql = "FROM Gradlebuildfixdata gp";
 
 			Query query = session.createQuery(hql);
+			
 			
 			if(Config.quickAnalysis)
 			{

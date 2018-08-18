@@ -54,16 +54,85 @@ public class BuildDependencyGenerator {
 		System.out.println(tsrc.toString());
 
 	}
-	
+
 	public List<String> getAllSubProjects(Gradlebuildfixdata proj, String ID, long rowid) {
 		List<String> subprojs = new ArrayList<String>();
-				
-		subprojs=generateSubProjectList(proj, ID, rowid);
+
+		subprojs = generateSubProjectList(proj, ID, rowid);
 
 		return subprojs;
 	}
 
-	public List<String> getDependentProjectList(Gradlebuildfixdata proj, String ID, long rowid, List<String> recentchanges) {
+	public String getRootProjName(Gradlebuildfixdata proj, String ID, long rowid) {
+		String rootproject;
+
+		rootproject = getRootProjectName(proj, ID, rowid);
+
+		return rootproject;
+	}
+
+
+	public List<String> getDependentProjectListWithChange(Gradlebuildfixdata proj, String ID, long rowid,
+			List<String> recentchanges) {
+
+		List<String> depsubprojs = new ArrayList<String>();
+		List<String> depsubprojsrecent = new ArrayList<String>();
+
+		List<String> lastprojexecuted = new ArrayList<String>();
+		List<String> recentchangeproj = new ArrayList<String>();
+
+		List<String> finalsubprojs = new ArrayList<String>();
+
+		List<String> subprojs = generateSubProjectList(proj, ID, rowid);
+
+		if (subprojs != null && subprojs.size() > 0) {
+			lastprojexecuted = getLastProjectExecuted(proj, subprojs);
+		}
+
+		// //This part is for fail subproject include
+		recentchangeproj = getRecentChangeProjects(proj, subprojs, recentchanges);
+		/// lastprojexecuted.addAll(recentchangeproj);
+		// //end
+
+		List<String> lastprojexecuted1 = new ArrayList<>(new HashSet<>(lastprojexecuted));
+
+		Map<String, List<String>> projconnection = generateSubProjectConnectivity(proj, ID, rowid, subprojs);
+
+		for (String lastproj : lastprojexecuted1) {
+			List<String> indepsubprojs = getFailSubProjDependencies(lastproj, subprojs, projconnection);
+
+			if (indepsubprojs != null && indepsubprojs.size() > 0) {
+				depsubprojs.addAll(indepsubprojs);
+			}
+		}
+
+		for (String lastproj : recentchangeproj) {
+			List<String> indepsubprojs = getFailSubProjDependencies(lastproj, subprojs, projconnection);
+
+			if (indepsubprojs != null && indepsubprojs.size() > 0) {
+				depsubprojsrecent.addAll(indepsubprojs);
+			}
+		}
+
+		List<String> distinctprojs = new ArrayList<>(new HashSet<>(depsubprojs));
+		List<String> distinctprojsrec = new ArrayList<>(new HashSet<>(depsubprojsrecent));
+
+		for (String subproj : distinctprojs) {
+			if (distinctprojsrec.contains(subproj)) {
+				finalsubprojs.add(subproj);
+			}
+		}
+
+		if (lastprojexecuted.size() > 0)
+			finalsubprojs.add(lastprojexecuted.get(0));
+
+		finalsubprojs = new ArrayList<>(new HashSet<>(finalsubprojs));
+
+		return finalsubprojs;
+	}
+
+	public List<String> getDependentProjectList(Gradlebuildfixdata proj, String ID, long rowid,
+			List<String> recentchanges) {
 
 		List<String> depsubprojs = new ArrayList<String>();
 		List<String> lastprojexecuted = new ArrayList<String>();
@@ -74,41 +143,59 @@ public class BuildDependencyGenerator {
 		if (subprojs != null && subprojs.size() > 0) {
 			lastprojexecuted = getLastProjectExecuted(proj, subprojs);
 		}
-		
-		//This part is for fail subproject include
-//		recentchangeproj=getRecentChangeProjects(proj, subprojs, recentchanges);		
-//		lastprojexecuted.addAll(recentchangeproj);
-		///end
-		
+
+		// //This part is for fail subproject include
+		// recentchangeproj=getRecentChangeProjects(proj, subprojs,
+		// recentchanges);
+		/// lastprojexecuted.addAll(recentchangeproj);
+		// //end
+
 		List<String> lastprojexecuted1 = new ArrayList<>(new HashSet<>(lastprojexecuted));
 
-		Map<String, List<String>> projconnection = generateSubProjectConnectivity(proj, ID, rowid,subprojs);
+		Map<String, List<String>> projconnection = generateSubProjectConnectivity(proj, ID, rowid, subprojs);
 
-		
-		for(String lastproj:lastprojexecuted1)
-		{
+		if (projconnection!=null && lastprojexecuted1.size()>0 && !projconnection.containsKey(lastprojexecuted1.get(0))) {
+			List<String> connt = new ArrayList<String>();
+			projconnection.put(lastprojexecuted1.get(0), connt);
+		}
+
+		// This part of new dep
+		for (String str : projconnection.keySet()) {
+			if (lastprojexecuted1 != null && lastprojexecuted1.size() > 0 && !lastprojexecuted1.contains(str)) {
+				List<String> dependencies = projconnection.get(str);
+
+				for (String strdep : dependencies) {
+					if (lastprojexecuted1.contains(strdep)) {
+						if (projconnection.containsKey(lastprojexecuted1.get(0)))
+							projconnection.get(lastprojexecuted1.get(0)).add(str);
+
+					}
+				}
+			}
+		}
+		// This part of new dep
+
+		for (String lastproj : lastprojexecuted1) {
 			List<String> indepsubprojs = getFailSubProjDependencies(lastproj, subprojs, projconnection);
-			
-			if(indepsubprojs!=null && indepsubprojs.size()>0)
-			{
+
+			if (indepsubprojs != null && indepsubprojs.size() > 0) {
 				depsubprojs.addAll(indepsubprojs);
 			}
-		}		
+		}
 
 		List<String> distinctprojs = new ArrayList<>(new HashSet<>(depsubprojs));
-		
+
 		return distinctprojs;
 	}
 
 	public List<String> getLastProjectExecuted(Gradlebuildfixdata proj, List<String> subprojs1) {
 		List<String> executedproj = new ArrayList<String>();
-		 List<String> subprojs=new ArrayList<String>();
-		 
-		 for(String subproj:subprojs1)
-		 {
-			 String pathsubproj=getPathFromSubProj(subproj);
-			 subprojs.add(pathsubproj);
-		 }
+		List<String> subprojs = new ArrayList<String>();
+
+		for (String subproj : subprojs1) {
+			String pathsubproj = getPathFromSubProj(subproj);
+			subprojs.add(pathsubproj);
+		}
 
 		if (subprojs != null && subprojs.size() > 0) {
 
@@ -128,7 +215,8 @@ public class BuildDependencyGenerator {
 					String subprojstr = subprojs.get(subprojindex);
 					String subprojstr1 = subprojs1.get(subprojindex);
 
-					//if (strline.contains(subprojstr) || strline.contains(subprojstr1)) {
+					// if (strline.contains(subprojstr) ||
+					// strline.contains(subprojstr1)) {
 					if (strline.contains(subprojstr1)) {
 						executedproj.add(subprojstr1);
 						match = true;
@@ -138,29 +226,29 @@ public class BuildDependencyGenerator {
 					subprojindex++;
 				}
 
-				if(match)
+				if (match == true)
 					break;
 
 				lineindex--;
 			}
 		}
 
-		//removing duplicate
+		// removing duplicate
 		List<String> deDupStringList = new ArrayList<>(new HashSet<>(executedproj));
-		
+
 		return deDupStringList;
 
 	}
-	
-	public List<String> getRecentChangeProjects(Gradlebuildfixdata proj, List<String> subprojs1, List<String> recentchanges) {
+
+	public List<String> getRecentChangeProjects(Gradlebuildfixdata proj, List<String> subprojs1,
+			List<String> recentchanges) {
 		List<String> executedproj = new ArrayList<String>();
-		 List<String> subprojs=new ArrayList<String>();
-		 
-		 for(String subproj:subprojs1)
-		 {
-			 String pathsubproj=getPathFromSubProj(subproj);
-			 subprojs.add(pathsubproj);
-		 }
+		List<String> subprojs = new ArrayList<String>();
+
+		for (String subproj : subprojs1) {
+			String pathsubproj = getPathFromSubProj(subproj);
+			subprojs.add(pathsubproj);
+		}
 
 		if (subprojs != null && subprojs.size() > 0) {
 
@@ -189,15 +277,13 @@ public class BuildDependencyGenerator {
 					subprojindex++;
 				}
 
-				
-
 				lineindex--;
 			}
 		}
 
-		//removing duplicate
+		// removing duplicate
 		List<String> deDupStringList = new ArrayList<>(new HashSet<>(executedproj));
-		
+
 		return deDupStringList;
 
 	}
@@ -276,8 +362,8 @@ public class BuildDependencyGenerator {
 
 		return subprojlist;
 	}
-
-	public Map<String, List<String>> generateSubProjectConnectivity(Gradlebuildfixdata proj, String ID, long rowid, List<String> subprojs) {
+	
+	public String getRootProjectName(Gradlebuildfixdata proj, String ID, long rowid) {
 
 		String project = proj.getGhProjectName();
 		project = project.replace('/', '@');
@@ -289,7 +375,76 @@ public class BuildDependencyGenerator {
 		CommitAnalyzingUtils commitAnalyzingUtils = new CommitAnalyzingUtils();
 		StringMenupulator strmenu = new StringMenupulator();
 
-		List<String> subprojlist = new ArrayList<String>();
+		String rootproject=null;
+
+		try {
+			cmtanalyzer = new CommitAnalyzer("test", project);
+
+			treeWalk = cmtanalyzer.getCommitTree(proj.getGitLastfailCommit(), proj.getF2row(), proj);
+			repository = cmtanalyzer.getRepository();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		int index = 0;
+
+		try {
+			while (treeWalk.next()) {
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				} else if (treeWalk.getPathString().toLowerCase().contains("settings.gradle")) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+
+					byte[] butestr = loader.getBytes();
+
+					String str = new String(butestr);
+
+					String sourcefile = Config.workDir + Config.tempFolder + "buildscriptdep" + index + ".txt";
+					index++;
+
+					gradlefile = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					List<String> strlist = TextFileReaderWriter.GetFileContentByLine(gradlefile.toString());
+
+					for (int lineindex = 0; lineindex < strlist.size(); lineindex++) {
+						String strline = strlist.get(lineindex);
+						strline = strmenu.getMarkedString(strline);
+						strlist.set(lineindex, strline);
+					}
+
+					rootproject = GradleASTParseMngr.getRootProjectName(strlist);
+
+					if (gradlefile.exists())
+						gradlefile.delete();
+				}
+
+			}
+
+			treeWalk.reset();
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+
+		return rootproject;
+	}
+
+	public Map<String, List<String>> generateSubProjectConnectivity(Gradlebuildfixdata proj, String ID, long rowid,
+			List<String> subprojs) {
+
+		String project = proj.getGhProjectName();
+		project = project.replace('/', '@');
+		CommitAnalyzer cmtanalyzer = null;
+		TreeWalk treeWalk = null;
+		Repository repository = null;
+
+		File gradlefile = null;
+		CommitAnalyzingUtils commitAnalyzingUtils = new CommitAnalyzingUtils();
+		StringMenupulator strmenu = new StringMenupulator();
 
 		Map<String, List<String>> projectDependencyies = new HashMap<String, List<String>>();
 
@@ -337,9 +492,28 @@ public class BuildDependencyGenerator {
 					String parent = null;
 
 					if (f.getParentFile() != null) {
-						parent = ":"+f.getParentFile().getName();
+						
+						int sindex = 0;
+						boolean match = false;
+
+						if (subprojs != null & subprojs.size() > 0) {
+							while (sindex < subprojs.size()) {
+								if (subprojs.get(sindex).contains(f.getParentFile().getName())) {
+									parent = subprojs.get(sindex);
+									match = true;
+									break;
+								}
+
+								sindex++;
+
+							}
+						}
+
+						if (match == false) {
+							parent = ":" + f.getParentFile().getName();
+						}
 					} else {
-						parent = ":"+"root";
+						parent = ":" + "root";
 					}
 
 					Map<String, List<String>> projconnection = GradleASTParseMngr.getSubProjConnectivity(strlist,
@@ -347,34 +521,30 @@ public class BuildDependencyGenerator {
 
 					if (projconnection != null && projconnection.keySet().size() > 0) {
 						projectDependencyies = mergeDependencyMap(projectDependencyies, projconnection);
-					}
-					else
-					{
-						List<String> bootforcelist=new ArrayList<String>();
+					} else {
+						List<String> bootforcelist = new ArrayList<String>();
 						for (int lineindex = 0; lineindex < strlist.size(); lineindex++) {
-							
-							for(String subproj: subprojs)
-							{
-								if(strlist.get(lineindex).contains("project(\""+subproj+"\")") || strlist.get(lineindex).contains("project(\'"+subproj+"\')"))
-								{
+
+							for (String subproj : subprojs) {
+								if (strlist.get(lineindex).contains("project(\"" + subproj + "\")")
+										|| strlist.get(lineindex).contains("project(\'" + subproj + "\')")) {
 									bootforcelist.add(subproj);
 								}
 							}
 						}
-						
-						if(bootforcelist.size()>0)
-						{
-							Map<String, List<String>> bootforceprojconnection=new HashMap<>();
+
+						if (bootforcelist.size() > 0) {
+							Map<String, List<String>> bootforceprojconnection = new HashMap<>();
 							bootforceprojconnection.put(parent, bootforcelist);
-							
+
 							if (bootforceprojconnection != null && bootforceprojconnection.keySet().size() > 0) {
-								projectDependencyies = mergeDependencyMap(projectDependencyies, bootforceprojconnection);
+								projectDependencyies = mergeDependencyMap(projectDependencyies,
+										bootforceprojconnection);
 							}
-							
+
 						}
 					}
 
-					
 					if (gradlefile.exists())
 						gradlefile.delete();
 				}
@@ -387,7 +557,7 @@ public class BuildDependencyGenerator {
 			System.out.print(ex.getMessage());
 		}
 
-		subprojlist = new ArrayList<>(new HashSet<>(subprojlist));
+		// subprojlist = new ArrayList<>(new HashSet<>(subprojlist));
 
 		return projectDependencyies;
 	}
@@ -417,36 +587,37 @@ public class BuildDependencyGenerator {
 	public List<String> getFailSubProjDependencies(String failedsubproj, List<String> subprojs,
 			Map<String, List<String>> projconnection) {
 
-//		String failedsubproj = "";
-//
-//		if (failedsubproj1 != null && failedsubproj1.length() > 0)
-//			failedsubproj = failedsubproj1.replace(":", "");
-//
-//		List<String> subprojs = new ArrayList<String>();
-//		for (String subproj : subprojs1) {
-//			if (subproj != null && subproj.length() > 0) {
-//				subproj = subproj.replaceAll(":", "");
-//				subprojs.add(subproj);
-//			}
-//		}
-//
-//		Map<String, List<String>> projconnection = new HashMap<String, List<String>>();
-//
-//		for (String key : projconnection1.keySet()) {
-//
-//			List<String> connections = projconnection1.get(key);
-//			List<String> newconnections = new ArrayList<String>();
-//
-//			for (String conn : connections) {
-//				if (conn != null && conn.length() > 0) {
-//					conn = conn.replaceAll(":", "");
-//					newconnections.add(conn);
-//				}
-//			}
-//
-//			key = key.replaceAll(":", "");
-//			projconnection.put(key, newconnections);
-//		}
+		// String failedsubproj = "";
+		//
+		// if (failedsubproj1 != null && failedsubproj1.length() > 0)
+		// failedsubproj = failedsubproj1.replace(":", "");
+		//
+		// List<String> subprojs = new ArrayList<String>();
+		// for (String subproj : subprojs1) {
+		// if (subproj != null && subproj.length() > 0) {
+		// subproj = subproj.replaceAll(":", "");
+		// subprojs.add(subproj);
+		// }
+		// }
+		//
+		// Map<String, List<String>> projconnection = new HashMap<String,
+		// List<String>>();
+		//
+		// for (String key : projconnection1.keySet()) {
+		//
+		// List<String> connections = projconnection1.get(key);
+		// List<String> newconnections = new ArrayList<String>();
+		//
+		// for (String conn : connections) {
+		// if (conn != null && conn.length() > 0) {
+		// conn = conn.replaceAll(":", "");
+		// newconnections.add(conn);
+		// }
+		// }
+		//
+		// key = key.replaceAll(":", "");
+		// projconnection.put(key, newconnections);
+		// }
 
 		List<String> failsubdependencies = new ArrayList<String>();
 		Queue<String> queue = new LinkedList<>();
@@ -476,7 +647,7 @@ public class BuildDependencyGenerator {
 
 			if (connections != null) {
 				for (String subnode : connections) {
-					//subnode = subnode.replaceAll(":", "");
+					// subnode = subnode.replaceAll(":", "");
 					if (subnode != null && subnode.length() > 0 && visitedstatus.containsKey(subnode)
 							&& visitedstatus.get(subnode) == false) {
 						visitedstatus.put(subnode, true);
@@ -489,21 +660,17 @@ public class BuildDependencyGenerator {
 		return failsubdependencies;
 
 	}
-	
-	private String getPathFromSubProj(String subproj)
-	{
-		String path="";
-		
-		if(subproj.startsWith(":"))
-		{
-			path=subproj.substring(1,subproj.length());
-			path=path.replaceAll(":","/");		
+
+	private String getPathFromSubProj(String subproj) {
+		String path = "";
+
+		if (subproj.startsWith(":")) {
+			path = subproj.substring(1, subproj.length());
+			path = path.replaceAll(":", "/");
+		} else {
+			path = subproj.replaceAll(":", "/");
 		}
-		else
-		{
-			path=subproj.replaceAll(":","/");	
-		}
-		
+
 		return path;
 	}
 

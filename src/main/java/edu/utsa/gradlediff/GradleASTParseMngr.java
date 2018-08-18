@@ -728,6 +728,59 @@ public class GradleASTParseMngr {
 		return subprojs;
 
 	}
+	
+	public static String getRootProjectName(List<String> strlist) {
+		String srcstr = "";
+
+		for (int size = 0; size < strlist.size(); size++) {
+			srcstr = srcstr + strlist.get(size);
+			srcstr = srcstr + "\r\n";
+
+		}
+
+		List<ASTNode> nodes = null;
+
+		try {
+			// nodes = new AstBuilder().buildFromString(srcstr);
+			// nodes = new
+			// AstBuilder().buildFromString(CompilePhase.CANONICALIZATION,
+			// srcstr);
+			nodes = new AstBuilder().buildFromString(CompilePhase.CONVERSION, srcstr);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		if (nodes == null) {
+			ASTNode node = new EmptyStatement();
+			nodes = new ArrayList<ASTNode>();
+			nodes.add(node);
+		}
+
+		ASTNode[] astnodes = new ASTNode[nodes.size()];
+
+		for (int index = 0; index < nodes.size(); index++) {
+			if (nodes.get(index) instanceof InnerClassNode) {
+				astnodes[index] = new EmptyStatement();
+			} 
+			else if (nodes.get(index) instanceof ClassNode) {
+				astnodes[index] = new EmptyStatement();
+			}else {
+				astnodes[index] = nodes.get(index);
+			}
+
+		}
+
+		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0],":root");
+
+		for (ASTNode node : astnodes) {
+			node.visit(visitordep);
+		}
+
+		String rootproject = visitordep.getRootProjectName();
+
+		return rootproject;
+
+	}
 
 	public static Map<String, List<String>> getSubProjConnectivity(List<String> strlist, String rootfolder) {
 		String srcstr = "";

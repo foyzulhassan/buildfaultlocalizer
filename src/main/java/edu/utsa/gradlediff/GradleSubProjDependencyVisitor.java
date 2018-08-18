@@ -91,6 +91,12 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 	private String parentProject;
 
 	private Map<String, List<String>> projectDependencyies;
+	
+	private String rootProjectName;
+
+	public String getRootProjectName() {
+		return rootProjectName;
+	}
 
 	public Map<String, List<String>> getProjectDependencyies() {
 		return projectDependencyies;
@@ -682,6 +688,25 @@ public class GradleSubProjDependencyVisitor extends CodeVisitorSupport {
 		SASTNode node1 = new SASTNode(expression, expression.getRightExpression(),
 				TypeUtil.getExpressionType(expression.getRightExpression()));
 		astList.add(node1);
+		
+		Expression left=expression.getLeftExpression();
+		
+		Expression right=expression.getRightExpression();
+		
+		if(left instanceof PropertyExpression)
+		{
+			PropertyExpression leftprop=(PropertyExpression) left;
+			
+			if(leftprop.getText().toLowerCase().contains("rootproject.name"))
+			{
+				if(right instanceof ConstantExpression)
+				{
+					ConstantExpression rightconst=(ConstantExpression) right;
+					
+					rootProjectName=rightconst.getText();
+				}
+			}
+		}
 
 		super.visitBinaryExpression(expression);
 	}

@@ -60,7 +60,7 @@ public class ParformanceAnalysis {
 				project = project.replace('/', '@');
 				size++;
 
-				System.out.println(proj.getRow() + "=>" + project);
+				//System.out.println(proj.getRow() + "=>" + project);
 
 				CommitAnalyzer cmtanalyzer = null;
 
@@ -189,17 +189,23 @@ public class ParformanceAnalysis {
 				totalmrr1 = totalmrr1 + mrr1;
 				totalmap1 = totalmap1 + map1;
 				
-				System.out.println("MRR: "+mrr+"MRR1: "+mrr1);
+				//System.out.println("MRR: "+mrr+"MRR1: "+mrr1);
 				
-				if(mrr>mrr1)
+				//This part is for cleanup
+				if(topn>=999999999)
 				{
-					System.out.println("\n\n$$$$$$$$$$$$$$$"+index+"=>"+proj.getRow() + "=>" + project+"$$$$$$$$$$$$$$$$");
-					worse++;
+					System.out.println(proj.getRow() + "=>" + project);
 				}
-				else if(mrr<mrr1)
-				{
-					System.out.println("\n\nGood=>"+index);
-				}
+				
+//				if(mrr>mrr1)
+//				{
+//					System.out.println("\n\n$$$$$$$$$$$$$$$"+index+"=>"+proj.getRow() + "=>" + project+"$$$$$$$$$$$$$$$$");
+//					worse++;
+//				}
+//				else if(mrr<mrr1)
+//				{
+//					System.out.println("\n\nGood=>"+index);
+//				}
 
 			 // } //checking loop
 

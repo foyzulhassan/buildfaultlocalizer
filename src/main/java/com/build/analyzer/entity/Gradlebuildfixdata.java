@@ -42,6 +42,28 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	private Integer failpartsimPos;
 	private Double failpartsimMrr;
 	private Double failpartsimMap;
+	private Integer evRevertingPos;
+	private Double evRevertingMrr;
+	private Double evRevertingMap;
+	private Integer evFulllogPos;
+	private Double evFulllogMrr;
+	private Double evFulllogMap;
+	private Integer evFulllogastPos;
+	private Double evFulllogastMrr;
+	private Double evFulllogastMap;
+	private Integer evDiffdepboostPos;
+	private Double evDiffdepboostMrr;
+	private Double evDiffdepboostMap;
+	private Integer evDiffdepPos;
+	private Double evDiffdepMrr;
+	private Double evDiffdepMap;
+	private Integer evDiffboostPos;
+	private Double evDiffboostMrr;
+	private Double evDiffboostMap;
+	private Integer evFulllogboostPos;
+	private Double evFulllogboostMrr;
+	private Double evFulllogboostMap;
+	private String dtDatasetType;
 
 	public Gradlebuildfixdata() {
 	}
@@ -381,6 +403,182 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 
 	public void setFailpartsimMap(Double failpartsimMap) {
 		this.failpartsimMap = failpartsimMap;
+	}
+	
+	public Integer getEvRevertingPos() {
+		return this.evRevertingPos;
+	}
+
+	public void setEvRevertingPos(Integer evRevertingPos) {
+		this.evRevertingPos = evRevertingPos;
+	}
+
+	public Double getEvRevertingMrr() {
+		return this.evRevertingMrr;
+	}
+
+	public void setEvRevertingMrr(Double evRevertingMrr) {
+		this.evRevertingMrr = evRevertingMrr;
+	}
+
+	public Double getEvRevertingMap() {
+		return this.evRevertingMap;
+	}
+
+	public void setEvRevertingMap(Double evRevertingMap) {
+		this.evRevertingMap = evRevertingMap;
+	}
+
+	public Integer getEvFulllogPos() {
+		return this.evFulllogPos;
+	}
+
+	public void setEvFulllogPos(Integer evFulllogPos) {
+		this.evFulllogPos = evFulllogPos;
+	}
+
+	public Double getEvFulllogMrr() {
+		return this.evFulllogMrr;
+	}
+
+	public void setEvFulllogMrr(Double evFulllogMrr) {
+		this.evFulllogMrr = evFulllogMrr;
+	}
+
+	public Double getEvFulllogMap() {
+		return this.evFulllogMap;
+	}
+
+	public void setEvFulllogMap(Double evFulllogMap) {
+		this.evFulllogMap = evFulllogMap;
+	}
+
+	public Integer getEvFulllogastPos() {
+		return this.evFulllogastPos;
+	}
+
+	public void setEvFulllogastPos(Integer evFulllogastPos) {
+		this.evFulllogastPos = evFulllogastPos;
+	}
+
+	public Double getEvFulllogastMrr() {
+		return this.evFulllogastMrr;
+	}
+
+	public void setEvFulllogastMrr(Double evFulllogastMrr) {
+		this.evFulllogastMrr = evFulllogastMrr;
+	}
+
+	public Double getEvFulllogastMap() {
+		return this.evFulllogastMap;
+	}
+
+	public void setEvFulllogastMap(Double evFulllogastMap) {
+		this.evFulllogastMap = evFulllogastMap;
+	}
+
+	public Integer getEvDiffdepboostPos() {
+		return this.evDiffdepboostPos;
+	}
+
+	public void setEvDiffdepboostPos(Integer evDiffdepboostPos) {
+		this.evDiffdepboostPos = evDiffdepboostPos;
+	}
+
+	public Double getEvDiffdepboostMrr() {
+		return this.evDiffdepboostMrr;
+	}
+
+	public void setEvDiffdepboostMrr(Double evDiffdepboostMrr) {
+		this.evDiffdepboostMrr = evDiffdepboostMrr;
+	}
+
+	public Double getEvDiffdepboostMap() {
+		return this.evDiffdepboostMap;
+	}
+
+	public void setEvDiffdepboostMap(Double evDiffdepboostMap) {
+		this.evDiffdepboostMap = evDiffdepboostMap;
+	}
+
+	public Integer getEvDiffdepPos() {
+		return this.evDiffdepPos;
+	}
+
+	public void setEvDiffdepPos(Integer evDiffdepPos) {
+		this.evDiffdepPos = evDiffdepPos;
+	}
+
+	public Double getEvDiffdepMrr() {
+		return this.evDiffdepMrr;
+	}
+
+	public void setEvDiffdepMrr(Double evDiffdepMrr) {
+		this.evDiffdepMrr = evDiffdepMrr;
+	}
+
+	public Double getEvDiffdepMap() {
+		return this.evDiffdepMap;
+	}
+
+	public void setEvDiffdepMap(Double evDiffdepMap) {
+		this.evDiffdepMap = evDiffdepMap;
+	}
+
+	public Integer getEvDiffboostPos() {
+		return this.evDiffboostPos;
+	}
+
+	public void setEvDiffboostPos(Integer evDiffboostPos) {
+		this.evDiffboostPos = evDiffboostPos;
+	}
+
+	public Double getEvDiffboostMrr() {
+		return this.evDiffboostMrr;
+	}
+
+	public void setEvDiffboostMrr(Double evDiffboostMrr) {
+		this.evDiffboostMrr = evDiffboostMrr;
+	}
+
+	public Double getEvDiffboostMap() {
+		return this.evDiffboostMap;
+	}
+
+	public void setEvDiffboostMap(Double evDiffboostMap) {
+		this.evDiffboostMap = evDiffboostMap;
+	}
+
+	public Integer getEvFulllogboostPos() {
+		return this.evFulllogboostPos;
+	}
+
+	public void setEvFulllogboostPos(Integer evFulllogboostPos) {
+		this.evFulllogboostPos = evFulllogboostPos;
+	}
+
+	public Double getEvFulllogboostMrr() {
+		return this.evFulllogboostMrr;
+	}
+
+	public void setEvFulllogboostMrr(Double evFulllogboostMrr) {
+		this.evFulllogboostMrr = evFulllogboostMrr;
+	}
+
+	public Double getEvFulllogboostMap() {
+		return this.evFulllogboostMap;
+	}
+
+	public void setEvFulllogboostMap(Double evFulllogboostMap) {
+		this.evFulllogboostMap = evFulllogboostMap;
+	}
+
+	public String getDtDatasetType() {
+		return this.dtDatasetType;
+	}
+
+	public void setDtDatasetType(String dtDatasetType) {
+		this.dtDatasetType = dtDatasetType;
 	}
 
 }
