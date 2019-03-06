@@ -23,8 +23,8 @@ public class DiffFilterRecentDependencyTunning {
 		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
 		RankingCalculator rankmetric = new RankingCalculator();
 
-		//List<Gradlebuildfixdata> projects = dbexec.getTunningRows();
-		List<Gradlebuildfixdata> projects = dbexec.getRows();
+		List<Gradlebuildfixdata> projects = dbexec.getTunningRows();
+		//List<Gradlebuildfixdata> projects = dbexec.getRows();
 
 		// List<Gradlebuildfixdata> projects=new
 		// ArrayList<Gradlebuildfixdata>();
@@ -33,24 +33,24 @@ public class DiffFilterRecentDependencyTunning {
 		// dbexec.getEntityWithRowId((long)444640);
 		// projects.add(gproject);
 		List<Double> paramvalues = new ArrayList<Double>();
-//		paramvalues.add(0.0);
-//		paramvalues.add(0.5);
-//		paramvalues.add(0.6);
-//		paramvalues.add(0.7);
-//		paramvalues.add(0.8);
+		paramvalues.add(0.0);
+		paramvalues.add(0.5);
+		paramvalues.add(0.6);
+		paramvalues.add(0.7);
+		paramvalues.add(0.8);
 		paramvalues.add(0.9);
 
 		List<Double> paramvalues1 = new ArrayList<Double>();
-//		paramvalues1.add(0.0);
+		paramvalues1.add(0.0);
 		paramvalues1.add(0.1);
-//		paramvalues1.add(0.2);
-//		paramvalues1.add(0.3);
-//		paramvalues1.add(0.4);
-//		paramvalues1.add(0.5);
-//		paramvalues1.add(0.6);
-//		paramvalues1.add(0.7);
-//		paramvalues1.add(0.8);
-//		paramvalues1.add(0.9);
+		paramvalues1.add(0.2);
+		paramvalues1.add(0.3);
+		paramvalues1.add(0.4);
+		paramvalues1.add(0.5);
+		paramvalues1.add(0.6);
+		paramvalues1.add(0.7);
+		paramvalues1.add(0.8);
+		paramvalues1.add(0.9);
 //		
 //		List<Integer> paramvalues1 = new ArrayList<Integer>();
 //		paramvalues1.add(0);
@@ -69,7 +69,7 @@ public class DiffFilterRecentDependencyTunning {
 		double totalmrr = 0.0;
 		double totalmap = 0.0;
 
-		String file = Config.getInspectionLogDir() + "geom_mean_final.txt";
+		String file = Config.getInspectionLogDir() + "geom_mean_final_last.txt";
 
 		Writer writer = null;
 
@@ -93,7 +93,7 @@ public class DiffFilterRecentDependencyTunning {
 						Gradlebuildfixdata proj = projects.get(index);
 
 						// checking loop
-						if (proj.getRow() == 2744628) {
+						//if (proj.getRow() == 3219332) {
 
 						String project = proj.getGhProjectName();
 						project = project.replace('/', '@');
@@ -153,6 +153,8 @@ public class DiffFilterRecentDependencyTunning {
 //							}
 //						}
 						
+						Map<String, Double> sortedsimmap = SortingMgr.sortByValue(simmap);
+						
 						for (String name : simmap.keySet()) {
 							int failindex = 0;
 
@@ -181,7 +183,7 @@ public class DiffFilterRecentDependencyTunning {
 							}
 						}
 
-						Map<String, Double> sortedsimmap = SortingMgr.sortByValue(simmap);
+						sortedsimmap = SortingMgr.sortByValue(simmap);
 
 						ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
 
@@ -197,7 +199,7 @@ public class DiffFilterRecentDependencyTunning {
 						{
 							writer.write("\n"+proj.getRow());
 						}
-					 } //checking loop
+					 //} //checking loop
 
 					}
 

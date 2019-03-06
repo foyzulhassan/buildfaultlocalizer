@@ -1,0 +1,64 @@
+RQ1:
+
+1
+~~~~~~~~~~~~~~~~~~~~~~~~~
+SELECT 
+(sum(case when ev_baselineissta_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS baselinetop1percent, 
+(sum(case when ev_baselineissta_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS baselinetop5percent,
+(sum(case when ev_baselineissta_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS baselinetop10percent,
+(sum(case when ev_diffdepboost_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS proposedtop1percent,
+(sum(case when ev_diffdepboost_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS proposedtop5percent,
+(sum(case when ev_diffdepboost_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS proposedtop10percent
+FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL";
+
+
+2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SELECT 
+ev_baselineissta_mrr as baselineMRR,
+ev_diffdepboost_mrr as proposedMRR,
+ev_baselineissta_map as baselineMAP,
+ev_diffdepboost_map as proposedMAP
+FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL";
+
+
+3
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+SELECT gh_project_name, count(*),
+avg(ev_baselineissta_mrr) as baselineMRR,
+avg(ev_baselineissta_map) as baselineMAP,
+avg(ev_diffdepboost_mrr) as proposedMRR,
+avg(ev_diffdepboost_map) as proposedMAP
+FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL" group by gh_project_name;
+
+
+RQ3:
+
+Select 
+(sum(case when ev_baselineissta_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS baselinetop1, 
+(sum(case when ev_baselineissta_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS baselinetop5,
+(sum(case when ev_baselineissta_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS baselinetop10,
+avg(ev_baselineissta_mrr) as baselineMRR,
+avg(ev_baselineissta_map) as baselineMAP,
+(sum(case when ev_diffdep_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS queryserachtop1, 
+(sum(case when ev_diffdep_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS queryserachtop5,
+(sum(case when ev_diffdep_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS queryserachtop10,
+avg(ev_diffdep_mrr) as queryserachMRR,
+avg(ev_diffdep_map) as queryserachMAP,
+(sum(case when ev_diffboost_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS queryboosttop1, 
+(sum(case when ev_diffboost_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS queryboosttop5,
+(sum(case when ev_diffboost_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS queryboosttop10,
+avg(ev_diffboost_mrr) as queryboostMRR,
+avg(ev_diffboost_map) as queryboostMAP,
+(sum(case when ev_fulllogboost_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS searchboosttop1, 
+(sum(case when ev_fulllogboost_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS searchboosttop5,
+(sum(case when ev_fulllogboost_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS searchboosttop10,
+avg(ev_fulllogboost_mrr) as searchboostMRR,
+avg(ev_fulllogboost_map) as searchboostMAP,
+(sum(case when ev_diffdepboost_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS proposedtop1, 
+(sum(case when ev_diffdepboost_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS proposedtop5,
+(sum(case when ev_diffdepboost_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS proposedtop10,
+avg(ev_diffdepboost_mrr) as proposedMRR,
+avg(ev_diffdepboost_map) as proposedMAP
+FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL";

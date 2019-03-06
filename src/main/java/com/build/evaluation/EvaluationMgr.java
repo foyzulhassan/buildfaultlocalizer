@@ -86,5 +86,18 @@ public class EvaluationMgr {
 			e.printStackTrace();
 		}	
 	}
+	
+	
+	//baseline of our experiment
+	//Saha et al.(fail part log+AST ranking+Then all the build scripts)
+	public static void BaseLineForISSTA() {
+		BaseLineEvaluation obj = new BaseLineEvaluation();
+		try {
+			obj.calculateBaseLineEvaluationScore();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }

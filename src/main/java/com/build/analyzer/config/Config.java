@@ -144,5 +144,7 @@ public class Config {
 	//for Lucene
 	public static String luceneDir=workDir+"lucenedir/";
 	public static String luceneDir2=workDir+"lucenedir2/";
+	
+	public static String logfileDir="/media/AutoBuilder/Machine_Learning/Results3/";
 
 }

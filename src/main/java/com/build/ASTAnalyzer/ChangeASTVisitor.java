@@ -21,7 +21,11 @@ public class ChangeASTVisitor extends ASTVisitor {
 
 	// For imports
 	public boolean visit(ImportDeclaration node) {
-		astTextList.add(node.toString());
+		
+		if(!node.toString().contains("import org.junit") && !node.toString().contains("import java."))
+		{
+			astTextList.add(node.toString());
+		}
 		return super.visit(node);
 	}
 
@@ -75,7 +79,7 @@ public class ChangeASTVisitor extends ASTVisitor {
 	}
 
 	public boolean visit(PackageDeclaration node) {
-		astTextList.add(node.toString());
+		astTextList.add(node.getName().toString());
 		return super.visit(node);
 	}
 }

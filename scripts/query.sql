@@ -99,11 +99,16 @@ ALTER TABLE gradlebuildfixdata ADD ev_fulllogboost_map DOUBLE AFTER ev_fulllogbo
 
 ALTER TABLE gradlebuildfixdata ADD dt_dataset_type text AFTER ev_fulllogboost_map;
 
+ALTER TABLE gradlebuildfixdata ADD dt_fail_type text AFTER ev_fulllogboost_map;
+
 
 delete FROM travistorrent.gradlebuildfixdata where row in (1381227,1385548,1398162,1461404,1622116,1798740,2163605,2274095,2292027,2301959);
 
 delete  FROM travistorrent.gradlebuildfixdata where row in (1349493, 1464263, 1469030, 1513750, 1557381, 1647462, 1678612, 2125017, 2218838, 2326406, 2357700, 2524284, 2731946);
 
 
-
+%Need to add this part for ISSTA
+ALTER TABLE gradlebuildfixdata ADD ev_baselineissta_pos int AFTER ev_fulllogboost_map;
+ALTER TABLE gradlebuildfixdata ADD ev_baselineissta_mrr DOUBLE AFTER ev_baselineissta_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_baselineissta_map DOUBLE AFTER ev_baselineissta_mrr;
 

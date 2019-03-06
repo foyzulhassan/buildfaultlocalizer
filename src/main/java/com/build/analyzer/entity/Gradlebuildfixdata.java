@@ -63,6 +63,10 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	private Integer evFulllogboostPos;
 	private Double evFulllogboostMrr;
 	private Double evFulllogboostMap;
+	private Integer evBaselineISSTAPos;
+	private Double evBaselineISSTAMrr;
+	private Double evBaselineISSTAMap;
+	private String dtFailType;
 	private String dtDatasetType;
 
 	public Gradlebuildfixdata() {
@@ -580,5 +584,38 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	public void setDtDatasetType(String dtDatasetType) {
 		this.dtDatasetType = dtDatasetType;
 	}
+	
+	public String getDtFailType() {
+		return this.dtFailType;
+	}
+
+	public void setDtFailType(String dtFailType) {
+		this.dtFailType = dtFailType;
+	}
+
+	public Integer getEvBaselineISSTAPos() {
+		return evBaselineISSTAPos;
+	}
+
+	public void setEvBaselineISSTAPos(Integer evBaselineISSTAPos) {
+		this.evBaselineISSTAPos = evBaselineISSTAPos;
+	}
+
+	public Double getEvBaselineISSTAMrr() {
+		return evBaselineISSTAMrr;
+	}
+
+	public void setEvBaselineISSTAMrr(Double evBaselineISSTAMrr) {
+		this.evBaselineISSTAMrr = evBaselineISSTAMrr;
+	}
+
+	public Double getEvBaselineISSTAMap() {
+		return evBaselineISSTAMap;
+	}
+
+	public void setEvBaselineISSTAMap(Double evBaselineISSTAMap) {
+		this.evBaselineISSTAMap = evBaselineISSTAMap;
+	}
+
 
 }

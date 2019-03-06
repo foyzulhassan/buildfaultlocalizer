@@ -85,6 +85,36 @@ FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL";
 
 RQ4:
 
+
+SELECT gh_project_name, count(*),
+(sum(case when ev_diffdepboost_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS proposedtop1percent, 
+(sum(case when ev_diffdepboost_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS proposedtop5percent,
+(sum(case when ev_diffdepboost_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS proposedtop10percent,
+avg(ev_diffdepboost_mrr) as proposedMRR,
+avg(ev_diffdepboost_map) as proposedMAP
+FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL" and f2pass_filelist not like "%.gradle%" and f2pass_filelist like "%.java%";
+
+SELECT gh_project_name, count(*),
+(sum(case when ev_diffdepboost_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS proposedtop1percent, 
+(sum(case when ev_diffdepboost_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS proposedtop5percent,
+(sum(case when ev_diffdepboost_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS proposedtop10percent,
+avg(ev_diffdepboost_mrr) as proposedMRR,
+avg(ev_diffdepboost_map) as proposedMAP
+FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL" and f2pass_filelist like "%.gradle%" and f2pass_filelist not like "%.java%" ;
+
+
+
+
+SELECT gh_project_name, count(*),
+(sum(case when ev_diffdepboost_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS proposedtop1percent, 
+(sum(case when ev_diffdepboost_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS proposedtop5percent,
+(sum(case when ev_diffdepboost_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS proposedtop10percent,
+avg(ev_diffdepboost_mrr) as proposedMRR,
+avg(ev_diffdepboost_map) as proposedMAP
+FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL" and f2pass_filelist like "%.gradle%" and f2pass_filelist like "%.java%"
+
+RQ5
+
 SELECT gh_project_name, count(*),
 (sum(case when ev_diffdepboost_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS proposedtop1percent, 
 (sum(case when ev_diffdepboost_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS proposedtop5percent,
@@ -109,3 +139,6 @@ SELECT gh_project_name, count(*),
 avg(ev_diffdepboost_mrr) as proposedMRR,
 avg(ev_diffdepboost_map) as proposedMAP
 FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL" and f2pass_filelist like "%.gradle%" and like "%.java%"
+
+SELECT avg(ev_diffdepboost_mrr) as proposedMRR,
+avg(ev_diffdepboost_map) as proposedMAP FROM travistorrent.gradlebuildfixdata where dt_dataset_type="EVAL" and dt_fail_type="TEST FAIL" 

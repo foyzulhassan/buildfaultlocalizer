@@ -647,21 +647,21 @@ public class CommitAnalyzer {
 					byte[] butestr = loader.getBytes();
 
 					String str = new String(butestr);
-					
+
 					if (str.length() <= 0) {
 						str = "blankfile";
 					}
 
-//					if (str.length() > 0) {
-//
-//						JavaASTParser javaparser = new JavaASTParser();
-//
-//						List<String> asts = javaparser.parseJavaMethodDecs(str);
-//
-//						str = String.join(" ", asts);
-//					} else {
-//						str = "blankfile";
-//					}
+					// if (str.length() > 0) {
+					//
+					// JavaASTParser javaparser = new JavaASTParser();
+					//
+					// List<String> asts = javaparser.parseJavaMethodDecs(str);
+					//
+					// str = String.join(" ", asts);
+					// } else {
+					// str = "blankfile";
+					// }
 
 					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
 					index++;
@@ -723,6 +723,154 @@ public class CommitAnalyzer {
 				}
 			}
 
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				File f = new File(entry.getValue());
+				if (f.exists()) {
+					boolean flag = f.delete();
+
+				}
+			}
+
+			treeWalk.reset();
+			f1.delete();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		return filteredmap;
+	}
+	
+	public Map<String, Double> getBaselineFailLogPartTreeSimilarityMap(String ID, long rowid, Gradlebuildfixdata fixdata,boolean isJavaFile) {
+
+		String logcontent = "";
+		File f1 = null;
+		File f2 = null;
+		int index = 0;
+
+		Map<String, String> filemap = new HashMap<String, String>();
+		Map<String, Double> filteredmap = new HashMap<String, Double>();
+
+		Map<String, Double> simMap = new HashMap<String, Double>();
+		// CosineSimilarity csm=new CosineSimilarity();
+
+		FilterLogText filter = new FilterLogText();
+		logcontent = filter.performFilteringOnSimValue(fixdata);
+		
+
+		try {
+			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+
+			RevTree tree = commit.getTree();
+
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			while (treeWalk.next()) {
+
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				}
+
+				else if (treeWalk.getPathString().contains(".java") && isJavaFile==true) {
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+
+					byte[] butestr = loader.getBytes();
+
+					String str = new String(butestr);
+
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+
+					 if (str.length() > 0) {
+					
+					 JavaASTParser javaparser = new JavaASTParser();
+					
+					 List<String> asts = javaparser.parseJavaMethodDecs(str);
+					
+					 str = String.join(" ", asts);
+					 } else {
+					 str = "blankfile";
+					 }
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					index++;
+
+					// filemap.put(treeWalk.getPathString(), sourcefile);
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					// CosineDocumentSimilarity csm=new
+					// CosineDocumentSimilarity(file1,file2);
+					double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+					filemap.put(treeWalk.getPathString(), f2.toString());
+
+				} else if (treeWalk.getPathString().contains(".gradle") && isJavaFile==false) {
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+
+					byte[] butestr = loader.getBytes();
+
+					String str = new String(butestr);
+
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					index++;
+
+					// filemap.put(treeWalk.getPathString(), sourcefile);
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					// CosineDocumentSimilarity csm=new
+					// CosineDocumentSimilarity(file1,file2);
+					double sim =0.0;
+
+					simMap.put(f2.toString(), sim);
+					filemap.put(treeWalk.getPathString(), f2.toString());
+				}
+
+			}
+			
+			
+
+			ArrayList<String> files = new ArrayList<String>();
+
+			//All Java files
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				files.add(entry.getValue());
+			}
+			
+
+			// log file content
+			//files.add(f1.toString());
+
+			int count = 0;
+			//Add similarity value for Java files
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				if (simMap.containsKey(entry.getValue())) {
+					filteredmap.put(entry.getKey(), simMap.get(entry.getValue()));
+				}
+			}
+			
+			//delete Java files
 			for (Map.Entry<String, String> entry : filemap.entrySet()) {
 				// System.out.println(entry.getKey() + ":" + entry.getValue());
 				File f = new File(entry.getValue());
@@ -961,6 +1109,8 @@ public class CommitAnalyzer {
 
 		FilterLogText filter = new FilterLogText();
 		logcontent = filter.performFilteringOnSimValue(fixdata);
+		
+		//logcontent=fixdata.getFailChange();
 
 		BuildDependencyGenerator depgen = new BuildDependencyGenerator();
 
@@ -1009,15 +1159,20 @@ public class CommitAnalyzer {
 					ObjectLoader loader = repository.open(objectId);
 					byte[] butestr = loader.getBytes();
 
-					String str = new String(butestr);
+					String str = new String(butestr);					
 
 					if (str.length() > 0) {
 
-						JavaASTParser javaparser = new JavaASTParser();
+						try {
+							JavaASTParser javaparser = new JavaASTParser();
 
-						List<String> asts = javaparser.parseJavaMethodDecs(str);
+							List<String> asts = javaparser.parseJavaMethodDecs(str);
 
-						str = String.join(" ", asts);
+							str = String.join(" ", asts);
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+						}
+
 					} else {
 						str = "blankfile";
 					}
@@ -1075,10 +1230,15 @@ public class CommitAnalyzer {
 					String str = new String(butestr);
 
 					if (str.length() > 0) {
+						try {
+							JavaASTParser javaparser = new JavaASTParser();
 
-						JavaASTParser javaparser = new JavaASTParser();
-						List<String> asts = javaparser.parseJavaMethodDecs(str);
-						str = String.join(" ", asts);
+							List<String> asts = javaparser.parseJavaMethodDecs(str);
+
+							str = String.join(" ", asts);
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+						}
 					} else {
 						str = "blankfile";
 					}
@@ -1184,8 +1344,8 @@ public class CommitAnalyzer {
 		File f2 = null;
 		File f3 = null;
 		int index = 0;
-		
-		CosineDocumentSimilarityTFIDF ifidfindex=getIndexing(ID,rowid,fixdata);
+
+		CosineDocumentSimilarityTFIDF ifidfindex = getIndexing(ID, rowid, fixdata);
 
 		Map<String, String> filemap = new HashMap<String, String>();
 		Map<String, Double> filteredmap = new HashMap<String, Double>();
@@ -1264,8 +1424,10 @@ public class CommitAnalyzer {
 					// double sim = maxprob *
 					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
 					// f2.toString());
-					//double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
-					double sim=ifidfindex.getTFIDFCosineSimilarity(f1.toString(), treeWalk.getPathString());
+					// double sim =
+					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+					double sim = ifidfindex.getTFIDFCosineSimilarity(f1.toString(), treeWalk.getPathString());
 					// double sim =
 					// maxprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
 					// f2.toString());
@@ -1293,8 +1455,10 @@ public class CommitAnalyzer {
 					// double sim = maxprob *
 					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
 					// f2.toString());
-					//double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
-					double sim=ifidfindex.getTFIDFCosineSimilarity(f1.toString(), treeWalk.getPathString());
+					// double sim =
+					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+					double sim = ifidfindex.getTFIDFCosineSimilarity(f1.toString(), treeWalk.getPathString());
 					// double sim =
 					// maxprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
 					// f2.toString());
@@ -2865,7 +3029,7 @@ public class CommitAnalyzer {
 			String deppath = getPathFromSubProj(depprojlist.get(index));
 			String deppathroot = getSubPartForRootProject(deppath, rootproj);
 
-			if (strpath.contains(deppath) || strpath.contains(deppathroot)) {
+			if (strpath.contains(deppath) || strpath.contains(deppathroot) || deppath.contains(strpath)) {
 				independency = true;
 				break;
 			}
@@ -3332,8 +3496,8 @@ public class CommitAnalyzer {
 					} else {
 						str = "blankfile";
 					}
-					
-					tfidfindex.addDocument(treeWalk.getPathString(),str);
+
+					tfidfindex.addDocument(treeWalk.getPathString(), str);
 
 				} else if (treeWalk.getPathString().contains(".gradle")) {
 
@@ -3345,8 +3509,8 @@ public class CommitAnalyzer {
 					if (str.length() <= 0) {
 						str = "blankfile";
 					}
-					
-					tfidfindex.addDocument(treeWalk.getPathString(),str);
+
+					tfidfindex.addDocument(treeWalk.getPathString(), str);
 				}
 
 			}
@@ -3355,9 +3519,9 @@ public class CommitAnalyzer {
 		} catch (Exception ex) {
 			System.out.print(ex.getMessage());
 		}
-		
+
 		tfidfindex.closeIndexWriter();
-		
+
 		return tfidfindex;
 
 	}

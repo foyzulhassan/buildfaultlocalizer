@@ -23,6 +23,7 @@ import com.build.commitanalyzer.CommitAnalyzer;
 import com.build.docsim.CosineDocumentSimilarity;
 import com.build.evaluation.EvaluationMgr;
 import com.build.evaluation.FixWithBuildFailChange;
+import com.build.failanalyzer.GenerateTestFailType;
 import com.build.logfilter.LogFailPartSimGenMgr;
 import com.build.param.tunning.DiffFilterRecentDependencyTunning;
 import com.build.param.tunning.DiffFilterRecentTunning;
@@ -53,7 +54,8 @@ public class MainClass {
 				+ "\n10->Build Dependency Analysis" + "\n11->Log Analysis" + "\n12->ASTParser Checking"
 				+ "\n13->Analyze Result" + "\n14->Generate Similarity on Build Dependency Graph"
 				+ "\n21->Param Tunning for DiffFilter" + "\n22->Set Tunning Dataset Tag"
-
+				+ "\n23->Set Failing Type"
+				
 				+ "\n31->Performance Analysis for Reverting File" 
 				+ "\n32->Full Log Based" 
 				+ "\n33->Full Log AST Based"
@@ -61,7 +63,8 @@ public class MainClass {
 				+ "\n35->Diff filter+Dependency"
 				+ "\n36->Diff filter+BoostScore" 
 				+ "\n37->Full Log+Dependency+BoostScore"
-				+ "\n38->All Evaluation Experiment");
+				+ "\n38->Baseline(Saha et al){Fail Part Log+Java File Rank+Then Gradle Build Script}"
+				+ "\n39->All Evaluation Experiment");
 
 		// create an object that reads integers:
 		Scanner cin = new Scanner(System.in);
@@ -115,6 +118,11 @@ public class MainClass {
 			;
 
 		}
+		else if(inputid==23)
+		{
+			GenerateTestFailType typesetobj=new GenerateTestFailType();
+			typesetobj.generateFailType();
+		}
 
 		else if (inputid == 31) {
 			EvaluationMgr.FixWithBuildFailChangeEval();
@@ -131,6 +139,10 @@ public class MainClass {
 		} else if (inputid == 37) {
 			EvaluationMgr.FullLogDependencyBoostScoreSimEval();
 		} else if (inputid == 38) {
+			EvaluationMgr.BaseLineForISSTA();
+		} 
+		else if((inputid == 39))
+		{
 			EvaluationMgr.FixWithBuildFailChangeEval();
 			EvaluationMgr.FullLogFaultLocalizationEval();
 			EvaluationMgr.FullLogASTFaultLocalizationEval();
@@ -138,12 +150,14 @@ public class MainClass {
 			EvaluationMgr.DiffFilterDependencySimEval();
 			EvaluationMgr.DiffFilterBoostScoreSimEval();
 			EvaluationMgr.FullLogDependencyBoostScoreSimEval();
-		} else if (inputid == 68913) {
+			EvaluationMgr.BaseLineForISSTA();
+			
+		}		
+		else if (inputid == 68913) {
 			genSimDifferentialLogOnChange();
 			genSimDifferentialLogOnChangeForLogging();
 			genSimFailLogPartWithSimLimit();
 			performResultAnalysis();
-
 		}
 
 		else {

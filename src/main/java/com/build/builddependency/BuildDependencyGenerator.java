@@ -161,17 +161,20 @@ public class BuildDependencyGenerator {
 
 		// This part of new dep
 		for (String str : projconnection.keySet()) {
-			if (lastprojexecuted1 != null && lastprojexecuted1.size() > 0 && !lastprojexecuted1.contains(str)) {
-				List<String> dependencies = projconnection.get(str);
 
-				for (String strdep : dependencies) {
-					if (lastprojexecuted1.contains(strdep)) {
-						if (projconnection.containsKey(lastprojexecuted1.get(0)))
-							projconnection.get(lastprojexecuted1.get(0)).add(str);
+			//if (proj.getFailChange().contains(str)) {
+				if (lastprojexecuted1 != null && lastprojexecuted1.size() > 0 && !lastprojexecuted1.contains(str)) {
+					List<String> dependencies = projconnection.get(str);
 
+					for (String strdep : dependencies) {
+						if (lastprojexecuted1.contains(strdep)) {
+							if (projconnection.containsKey(lastprojexecuted1.get(0)))
+								projconnection.get(lastprojexecuted1.get(0)).add(str);
+
+						}
 					}
 				}
-			}
+			//}
 		}
 		// This part of new dep
 
@@ -182,7 +185,17 @@ public class BuildDependencyGenerator {
 				depsubprojs.addAll(indepsubprojs);
 			}
 		}
-
+		
+		//For mentioned file
+		if(depsubprojs.size()>0)
+		{
+			List<String> mentionedfiles=getFileListMentionedFailLogPart(proj, ID, rowid);
+			if(mentionedfiles!=null && mentionedfiles.size()>0)
+			{
+				depsubprojs.addAll(mentionedfiles);
+			}
+		}
+		//This part
 		List<String> distinctprojs = new ArrayList<>(new HashSet<>(depsubprojs));
 
 		return distinctprojs;
@@ -341,7 +354,13 @@ public class BuildDependencyGenerator {
 						strlist.set(lineindex, strline);
 					}
 
-					List<String> subprjs = GradleASTParseMngr.getSubProjList(strlist);
+					List<String> subprjs=new ArrayList<>();
+					try
+					{
+						subprjs= GradleASTParseMngr.getSubProjList(strlist);
+					}catch (Exception ex) {
+						System.out.print(ex.getMessage());
+					}
 
 					if (subprjs != null && subprjs.size() > 0)
 						subprojlist.addAll(subprjs);
@@ -361,6 +380,59 @@ public class BuildDependencyGenerator {
 		subprojlist = new ArrayList<>(new HashSet<>(subprojlist));
 
 		return subprojlist;
+	}
+	
+	public List<String> getFileListMentionedFailLogPart(Gradlebuildfixdata proj, String ID, long rowid) {
+
+		String project = proj.getGhProjectName();
+		project = project.replace('/', '@');
+		CommitAnalyzer cmtanalyzer = null;
+		TreeWalk treeWalk = null;
+		Repository repository = null;
+
+		File gradlefile = null;
+		CommitAnalyzingUtils commitAnalyzingUtils = new CommitAnalyzingUtils();
+		StringMenupulator strmenu = new StringMenupulator();
+
+		List<String> mentionedfilelist = new ArrayList<String>();
+
+		try {
+			cmtanalyzer = new CommitAnalyzer("test", project);
+
+			treeWalk = cmtanalyzer.getCommitTree(proj.getGitLastfailCommit(), proj.getF2row(), proj);
+			repository = cmtanalyzer.getRepository();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		int index = 0;
+		String failpart=proj.getFailChange();
+
+		try {
+			while (treeWalk.next()) {
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				} else if (treeWalk.getPathString().contains(".gradle") || treeWalk.getPathString().contains(".java")) {
+
+					if(failpart.contains(treeWalk.getPathString()))
+					{
+						mentionedfilelist.add(treeWalk.getPathString());
+					}
+				}
+
+			}
+
+			treeWalk.reset();
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		// for removing duplicates
+		mentionedfilelist = new ArrayList<>(new HashSet<>(mentionedfilelist));
+
+		return mentionedfilelist;
 	}
 	
 	public String getRootProjectName(Gradlebuildfixdata proj, String ID, long rowid) {
@@ -516,8 +588,14 @@ public class BuildDependencyGenerator {
 						parent = ":" + "root";
 					}
 
-					Map<String, List<String>> projconnection = GradleASTParseMngr.getSubProjConnectivity(strlist,
+					Map<String, List<String>> projconnection=null;
+					try
+					{
+						projconnection= GradleASTParseMngr.getSubProjConnectivity(strlist,
 							parent);
+					}catch (Exception ex) {
+						System.out.print(ex.getMessage());
+					}
 
 					if (projconnection != null && projconnection.keySet().size() > 0) {
 						projectDependencyies = mergeDependencyMap(projectDependencyies, projconnection);

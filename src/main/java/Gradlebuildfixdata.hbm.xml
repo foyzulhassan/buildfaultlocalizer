@@ -184,6 +184,19 @@
         <property name="evFulllogboostMap" type="java.lang.Double">
             <column name="ev_fulllogboost_map" precision="22" scale="0" />
         </property>
+        
+        <property name="evBaselineISSTAPos" type="java.lang.Integer">
+            <column name="ev_baselineissta_pos" />
+        </property>
+        <property name="evBaselineISSTAMrr" type="java.lang.Double">
+            <column name="ev_baselineissta_mrr" precision="22" scale="0" />
+        </property>
+        <property name="evBaselineISSTAMap" type="java.lang.Double">
+            <column name="ev_baselineissta_map" precision="22" scale="0" />
+        </property>
+       <property name="dtFailType" type="string">
+            <column name="dt_fail_type" length="65535" />
+        </property>
         <property name="dtDatasetType" type="string">
             <column name="dt_dataset_type" length="65535" />
         </property>

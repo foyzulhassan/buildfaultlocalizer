@@ -60,11 +60,11 @@ public class DiffFilterDependencyWithBoostScoreSim {
 				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
 						proj.getGitLastfailCommit());
 
-//				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependency(
-//						proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
+				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependency(
+						proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
 				
-				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependencyTFIDF(
-				proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
+//				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependencyTFIDF(
+//				proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
 
 				String actualfixfile = proj.getF2passFilelist();
 				String failintrofiles = proj.getFailFilelist();
