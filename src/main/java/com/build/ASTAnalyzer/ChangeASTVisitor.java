@@ -79,7 +79,7 @@ public class ChangeASTVisitor extends ASTVisitor {
 	}
 
 	public boolean visit(PackageDeclaration node) {
-		astTextList.add(node.getName().toString());
+		astTextList.add(node.getName().toString());	
 		return super.visit(node);
 	}
 }
