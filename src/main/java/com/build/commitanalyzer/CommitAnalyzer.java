@@ -134,7 +134,7 @@ public class CommitAnalyzer {
 	
 	//This ctor is used when you have project folder local path
 	//User for Dynamic Analysis at Copied local dir
-	public CommitAnalyzer(String projectowner, String localprojectpath) throws Exception
+	public CommitAnalyzer(String projectowner, String localprojectpath,String commitid) throws Exception
 	{
 		this.projectOwner=projectowner;
 		directoryPath = localprojectpath+ "/.git";

@@ -63,7 +63,7 @@ public class DependencyGenerator {
 		}
 		
 		try {
-			CommitAnalyzer commitanalyzer=new CommitAnalyzer("Test",repodir);
+			CommitAnalyzer commitanalyzer=new CommitAnalyzer("Test",repodir,commitid);
 			commitanalyzer.gitCheckOut(commitid, "Dynamic_AnaLysis");			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
