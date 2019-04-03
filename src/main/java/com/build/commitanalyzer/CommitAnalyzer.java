@@ -23,6 +23,11 @@ import java.util.Queue;
 //import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.CheckoutConflictException;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRefNameException;
+import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
+import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
@@ -124,7 +129,41 @@ public class CommitAnalyzer {
 		git = new Git(repository);
 		rw = new RevWalk(repository);
 		this.commitChangeTracker = new CommitChange();
-		this.gradleChanges = "";
+		this.gradleChanges = "";		
+	}
+	
+	//This ctor is used when you have project folder local path
+	//User for Dynamic Analysis at Copied local dir
+	public CommitAnalyzer(String projectowner, String localprojectpath) throws Exception
+	{
+		this.projectOwner=projectowner;
+		directoryPath = localprojectpath+ "/.git";
+		commitAnalyzingUtils = new CommitAnalyzingUtils();
+		statsHolder = new DataStatsHolder();
+		repository = commitAnalyzingUtils.setRepository(directoryPath);
+		git = new Git(repository);
+	}
+	
+	public void gitCheckOut(String commitid, String localbranchname)
+	{
+		try {
+			git.checkout().setCreateBranch(true).setName(localbranchname).setStartPoint(commitid).call();
+		} catch (RefAlreadyExistsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RefNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidRefNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CheckoutConflictException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GitAPIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public CommitChange getCommitChangeTracker() {

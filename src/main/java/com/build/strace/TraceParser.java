@@ -47,7 +47,10 @@ public class TraceParser {
 		for(FileInfo file:dependencyfiles)
 		{
 			if(file.getTracefile().contains(".java")||file.getTracefile().contains(".class"))
+			{
 				System.out.println(file.getOpCode()+"====>"+file.getPid()+"==>"+file.getTracefile());
+		
+			}
 		}
 		
 		return dependencyfiles;

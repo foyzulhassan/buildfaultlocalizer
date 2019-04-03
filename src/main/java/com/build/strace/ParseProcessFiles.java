@@ -55,7 +55,12 @@ public class ParseProcessFiles {
 							process.addToOutputFileList(fileinfo);
 							process.addToFileAccessList(fileinfo);
 						}
+						else
+						{
+							System.out.println(entry.getArgs());
+						}
 					}
+					
 				}
 			}
 		} catch (IOException e) {

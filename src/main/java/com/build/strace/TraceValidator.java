@@ -91,7 +91,7 @@ public class TraceValidator {
 	    long smallest_pid = sortedKeys.get(0);
 	    long root_pid = smallest_pid;
 	    
-	    if(smallest_pid != oldest_pid)
+	    if(smallest_pid != oldest_pid && oldest_pid!=-1)
 	        root_pid = oldest_pid;
 	    
 	    tracelist.setRootpid(root_pid);
