@@ -54,11 +54,7 @@ public class ParseProcessFiles {
 							FileInfo fileinfo = new FileInfo(pid, filepath, OperationType.Read, entry.getTstamp());
 							process.addToOutputFileList(fileinfo);
 							process.addToFileAccessList(fileinfo);
-						}
-						else
-						{
-							System.out.println(entry.getArgs());
-						}
+						}						
 					}
 					
 				}

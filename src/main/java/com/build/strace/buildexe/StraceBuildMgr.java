@@ -33,7 +33,8 @@ public class StraceBuildMgr {
 		InitLogPath();
 		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + buildCmd;
 		CmdExecutor cmdexe = new CmdExecutor();
-		cmdexe.ExecuteCommand(buildPath, cmd, buildPath);
+		cmdexe.ExecuteCommand(buildPath+"//", "chmod 777 gradlew", buildPath+"//");
+		cmdexe.ExecuteCommand(buildPath+"//", cmd, buildPath+"//");
 	}
 
 	public Map<String, List<String>> getCompileJavaDependency(List<String> repofiles, List<String> recentchangedfiles) {
@@ -56,7 +57,9 @@ public class StraceBuildMgr {
 
 			List<String> filelist = new ArrayList<>();
 
+
 			for (FileInfo fileinfo : dependency) {
+				String str=fileinfo.getTracefile();
 				if (repofiles.contains(fileinfo.getTracefile())) {
 					filelist.add(fileinfo.getTracefile());
 				}
@@ -75,36 +78,67 @@ public class StraceBuildMgr {
 		InitLogPath();
 		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + testcmd;
 		CmdExecutor cmdexe = new CmdExecutor();
+		
+		
+		//
+		System.out.println("Test Order\n\n\n\n\n\n\n");
+		
 		cmdexe.ExecuteCommand(buildPath, cmd, buildPath);
 		TraceParser parser = new TraceParser();
 		List<FileInfo> dependency = parser.parseRawTraces(this.buildPath + "//" + this.straceFolder, this.buildPath);
 		List<String> testexecutionorder = new ArrayList<>();
+		Map<String,String> testfilemap=new HashMap<>();
 
+		System.out.println("Test Information Order\n\n\n\n\n\n\n");
 		for (FileInfo fileinfo : dependency) {
 			String basename = FilenameUtils.getBaseName(fileinfo.getTracefile());
-			if (basename.toUpperCase().contains("TEST")) {
-				testexecutionorder.add(basename);
+			String extension=FilenameUtils.getExtension(fileinfo.getTracefile());
+			if (basename.toUpperCase().contains("TEST") && extension.equals("class")) {
+				System.out.println(fileinfo.getTracefile());
+				if(!testexecutionorder.contains(basename))
+				{
+						testexecutionorder.add(basename);
+						String strfile=getJavaFileFromClassName(repofiles,basename,extension);
+						testfilemap.put(basename, strfile);
+				}
 			}
 		}
 
 		/// running each test seperately
 		for (String testname : testexecutionorder) {
-			String specifictestcmd = testcmd + " --tests *" + testname + ".*;";
+			String specifictestcmd = testcmd + " --tests *" +"*."+testname + ".*;";
 			String testspecmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + specifictestcmd;
 			InitLogPath();
+			String strtestsrc=testfilemap.get(testname);
+			
+			if (strtestsrc.contains(".java")) {
+
+				JavaCodeToucher codetoucher = new JavaCodeToucher();
+				codetoucher.touchJavaFile(new File(strtestsrc));
+			}
+			
 			cmdexe.ExecuteCommand(buildPath, testspecmd, buildPath);
 			List<FileInfo> testdependency = parser.parseRawTraces(this.buildPath + "//" + this.straceFolder,
 					this.buildPath);
 
+			System.out.println("test");
 			for (FileInfo fileinfodep : testdependency) {
 				String basename = FilenameUtils.getBaseName(fileinfodep.getTracefile());
+				String extension=FilenameUtils.getExtension(fileinfodep.getTracefile());
 
 				for (String compdep : compiledeps.keySet()) {
 					if (IsInDependency(compdep, compiledeps.get(compdep), basename)) {
-						String javafilename = getJavaFileFromClassName(repofiles, basename);
+						if(extension.equals("class"))
+						{
+							System.out.println("test");
+						}
+						String javafilename = getJavaFileFromClassName(repofiles, basename,extension);
 
 						if (javafilename != null && javafilename.length() > 0) {
-							compiledeps.get(compdep).add(javafilename);
+							if(!compiledeps.get(compdep).contains(javafilename))
+							{
+									compiledeps.get(compdep).add(javafilename);
+							}
 						}
 					}
 				}
@@ -149,11 +183,11 @@ public class StraceBuildMgr {
 		return false;
 	}
 
-	private String getJavaFileFromClassName(List<String> repofiles, String classname) {
+	private String getJavaFileFromClassName(List<String> repofiles, String classname,String extension) {
 		String filename = "";
 
 		for (String strfile : repofiles) {
-			if (strfile.contains(classname)) {
+			if (strfile.contains(classname) && extension.equals("class")) {
 				filename = strfile;
 				return filename;
 			}

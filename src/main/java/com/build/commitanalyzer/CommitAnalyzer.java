@@ -31,6 +31,7 @@ import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.errors.RevisionSyntaxException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
@@ -142,12 +143,24 @@ public class CommitAnalyzer {
 		statsHolder = new DataStatsHolder();
 		repository = commitAnalyzingUtils.setRepository(directoryPath);
 		git = new Git(repository);
+		rw = new RevWalk(repository);
 	}
 	
 	public void gitCheckOut(String commitid, String localbranchname)
 	{
+		ObjectId objectid;
+		RevCommit commit=null;
 		try {
-			git.checkout().setCreateBranch(true).setName(localbranchname).setStartPoint(commitid).call();
+			objectid = repository.resolve(commitid);
+			commit = rw.parseCommit(objectid);
+		} catch (RevisionSyntaxException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try {
+			//git.checkout().setCreateBranch(true).setName(localbranchname).setStartPoint(commitid).call();
+			git.checkout().setStartPoint(commit).setCreateBranch(false).setName(commit.name()).call();
 		} catch (RefAlreadyExistsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

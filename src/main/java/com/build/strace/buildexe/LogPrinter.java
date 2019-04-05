@@ -63,7 +63,7 @@ public class LogPrinter {
 
 	public void println(String txt) {
 
-		System.out.println(txt);
+		//System.out.println(txt);
 
 	}
 

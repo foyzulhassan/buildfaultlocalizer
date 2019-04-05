@@ -12,8 +12,8 @@ public class TraceParserDriver {
 	public static void main(String[] args)
 	{
 		TraceParser parser=new TraceParser();
-		String inputdir="C:\\Users\\foyzul\\Desktop\\strace\\April1\\May30_21_2";
-		String builddir="/home/foyzulhassan/Desktop/strace/analysis_projects/gradle-build-scan-quickstart/";
+		String inputdir="/home/foyzulhassan/Research/Strace_Implementation/builddir/gradle-build-scan-quickstart/teststrace/";
+		String builddir="/home/foyzulhassan/Research/Strace_Implementation/builddir/gradle-build-scan-quickstart/";
 		parser.parseRawTraces(inputdir,builddir);
 		
 

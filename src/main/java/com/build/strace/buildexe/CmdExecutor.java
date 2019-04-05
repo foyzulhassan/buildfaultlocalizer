@@ -26,13 +26,14 @@ public class CmdExecutor {
 	String cmdtoexecute = "";
 	StringBuffer output = new StringBuffer();
 
-	if (cmd.contains("gradlew ")) {
+	if (cmd.startsWith("gradlew ")) {
 	    if (!cmd.startsWith("./"))
 		cmdtoexecute = "./" + cmd;
 	    else
 		cmdtoexecute = cmd;
 	} else {
-	    cmdtoexecute = cmd;
+	    //cmdtoexecute = "./gradlew build";
+		cmdtoexecute=cmd;
 	}
 
 	String[] cmds = cmdtoexecute.split(" ");

@@ -148,6 +148,6 @@ public class Config {
 	public static String logfileDir="/media/AutoBuilder/Machine_Learning/Results3/";
 	
 	// For Strace Based Dynamic Analisis Configurations
-	public static String dynamicBuildDir="/media/AutoBuilder/Machine_Learning/BuildDir/";
+	public static String dynamicBuildDir="//home/foyzulhassan/Research/Strace_Implementation/builddir/";
 
 }

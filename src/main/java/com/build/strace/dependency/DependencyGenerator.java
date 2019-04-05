@@ -62,23 +62,41 @@ public class DependencyGenerator {
 			}
 		}
 		
+		///repodir=repodir+"//";
+		
 		try {
-			CommitAnalyzer commitanalyzer=new CommitAnalyzer("Test",repodir,commitid);
-			commitanalyzer.gitCheckOut(commitid, "Dynamic_AnaLysis");			
+			CommitAnalyzer commitanalyzer=new CommitAnalyzer("test",repodir,commitid);
+			commitanalyzer.gitCheckOut(commitid, "AnaLysis");			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		List<String> files = (List<String>) FileUtils.listFiles(new File(repodir), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-		StraceBuildMgr stracebuildmgr=new StraceBuildMgr(repodir,"strace","tracelog","./gradlew build -x test");
+		
+		List<String> files=getRepoFiles(repodir);
+		
+		StraceBuildMgr stracebuildmgr=new StraceBuildMgr(repodir,"teststrace","tracelog","./gradlew build -x test");
 		stracebuildmgr.InitBuild();
 		
 		List<String> recentchangedfiles=new ArrayList<>();
+		recentchangedfiles.add("/home/foyzulhassan/Research/Strace_Implementation/builddir/gradle-build-scan-quickstart/src/main/java/example/UtilTwo.java");
 		
 		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles);
 		
 		Map<String, List<String>> compiletestdef=stracebuildmgr.getCompileTestJavaDependency(files, recentchangedfiles, "./gradlew test", compiledef);
 		
+	}
+	
+	private List<String> getRepoFiles(String repodir)
+	{
+		List<String> strfiles=new ArrayList<>();
+		List<File> files = (List<File>) FileUtils.listFiles(new File(repodir), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		
+		for(File strfile:files)
+		{
+			strfiles.add(strfile.toString());
+		}
+		
+		return strfiles;
 	}
 }
