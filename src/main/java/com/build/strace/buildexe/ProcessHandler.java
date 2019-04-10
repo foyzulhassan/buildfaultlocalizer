@@ -31,7 +31,7 @@ public class ProcessHandler extends Thread {
 	    String line = null;
 	    while ((line = buffRd.readLine()) != null) {
 		// logprint.println(strType + "-->" + line);
-		logprint.println(line);
+		logprint.println(strType+"===>"+line);
 	    }
 	    buffRd.close();
 	} catch (Exception e) {

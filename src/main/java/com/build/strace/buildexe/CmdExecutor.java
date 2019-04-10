@@ -2,22 +2,26 @@ package com.build.strace.buildexe;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
 public class CmdExecutor {
-    private LogPrinter logprinter;
+    private LogPrinter infologprinter;
+    private LogPrinter errorlogprinter;
 
     public CmdExecutor(String path) {
-	logprinter = new LogPrinter(path);
+    	infologprinter = new LogPrinter(path,false);
+    	errorlogprinter= new LogPrinter(path,true);
     }
 
     public CmdExecutor(String path, boolean infocmd) {
-	logprinter = new LogPrinter(path, infocmd);
+    	infologprinter = new LogPrinter(path, infocmd);
     }
 
     public CmdExecutor() {
-	logprinter = new LogPrinter();
+    	infologprinter = new LogPrinter();
     }
 
     public boolean ExecuteCommand(String executionpath, String cmd,
@@ -44,11 +48,17 @@ public class CmdExecutor {
 
 	try {
 	    p = Runtime.getRuntime().exec(cmds, null, exefolder);
+	    //p.waitFor();
+	   	    
+	    //p.get
+	    
+	    File initialFile = new File("/home/foyzulhassan/Research/Strace_Implementation/builddir/gradle-build-scan-quickstart/log.txt");
+	    InputStream targetStream = new FileInputStream(initialFile);
 
-	    ProcessHandler inputStream = new ProcessHandler(p.getInputStream(),
-		    "INPUT", this.logprinter);
-	    ProcessHandler errorStream = new ProcessHandler(p.getErrorStream(),
-		    "ERROR", this.logprinter);
+	    ProcessHandler inputStream = new ProcessHandler(targetStream,
+		    "INPUT", this.infologprinter);
+	    ProcessHandler errorStream = new ProcessHandler(targetStream,
+		    "ERROR", this.errorlogprinter);
 
 	    /* start the stream threads */
 	    inputStream.start();
@@ -89,9 +99,9 @@ public class CmdExecutor {
 	    p = Runtime.getRuntime().exec(cmdtoexecute, null, exefolder);
 
 	    ProcessHandler inputStream = new ProcessHandler(p.getInputStream(),
-		    "INPUT", this.logprinter);
+		    "INPUT", this.infologprinter);
 	    ProcessHandler errorStream = new ProcessHandler(p.getErrorStream(),
-		    "ERROR", this.logprinter);
+		    "ERROR", this.errorlogprinter);
 
 	    /* start the stream threads */
 	    inputStream.start();
@@ -132,9 +142,9 @@ public class CmdExecutor {
 	    p = Runtime.getRuntime().exec(cmds, null, exefolder);
 
 	    ProcessHandler inputStream = new ProcessHandler(p.getInputStream(),
-		    "INPUT", this.logprinter);
+		    "INPUT", this.infologprinter);
 	    ProcessHandler errorStream = new ProcessHandler(p.getErrorStream(),
-		    "ERROR", this.logprinter);
+		    "ERROR", this.errorlogprinter);
 
 	    /* start the stream threads */
 	    inputStream.start();

@@ -12,10 +12,11 @@ public class LogPrinter {
 		this.infologfilename = "buildtrace.log";
 	}
 
-	public LogPrinter(String path) {
+	public LogPrinter(String path,boolean printtype) {
 
 		this.path = path;
 		this.infologfilename = "buildtrace.log";
+		this.isInfoCmd=printtype;
 
 		try {
 
@@ -32,38 +33,39 @@ public class LogPrinter {
 
 	}
 
-	public LogPrinter(String path, boolean infocmd) {
-
-		this.path = path;
-		String tempFile = "";
-
-		try {
-
-			if (infocmd == true) {
-				tempFile = this.path + "//" + this.infologfilename;
-				File fileTemp = new File(tempFile);
-				if (fileTemp.exists()) {
-					fileTemp.delete();
-				}
-			} else {
-				tempFile = this.path + "//" + this.infologfilename;
-				File fileTemp = new File(tempFile);
-				if (fileTemp.exists()) {
-					fileTemp.delete();
-				}
-			}
-			// Delete if tempFile exists
-
-		} catch (Exception e) {
-			// if any error occurs
-			e.printStackTrace();
-		}
-
-	}
+//	public LogPrinter(String path, boolean infocmd) {
+//
+//		this.path = path;
+//		String tempFile = "";
+//
+//		try {
+//
+//			if (infocmd == true) {
+//				tempFile = this.path + "//" + this.infologfilename;
+//				File fileTemp = new File(tempFile);
+//				if (fileTemp.exists()) {
+//					fileTemp.delete();
+//				}
+//			} else {
+//				tempFile = this.path + "//" + this.infologfilename;
+//				File fileTemp = new File(tempFile);
+//				if (fileTemp.exists()) {
+//					fileTemp.delete();
+//				}
+//			}
+//			// Delete if tempFile exists
+//
+//		} catch (Exception e) {
+//			// if any error occurs
+//			e.printStackTrace();
+//		}
+//
+//	}
 
 	public void println(String txt) {
 
-		//System.out.println(txt);
+		//if(isInfoCmd) 
+			System.out.println(txt);
 
 	}
 
