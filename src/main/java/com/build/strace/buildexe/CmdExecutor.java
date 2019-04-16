@@ -5,19 +5,38 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 
 public class CmdExecutor {
     private LogPrinter infologprinter;
     private LogPrinter errorlogprinter;
+    
+    
+    public Map<String,Boolean> getPassedLines()
+    {
+    	if(infologprinter!=null)
+    		return infologprinter.getLineMaps();
+    	else
+    		return null;
+    }
+    
+    public Map<String,Boolean> getFailedLines()
+    {
+    	if(errorlogprinter!=null)
+    		return errorlogprinter.getLineMaps();
+    	else
+    		return null;
+    }
+    
 
     public CmdExecutor(String path) {
-    	infologprinter = new LogPrinter(path,false);
-    	errorlogprinter= new LogPrinter(path,true);
+    	infologprinter = new LogPrinter();
+    	errorlogprinter= new LogPrinter();
     }
 
     public CmdExecutor(String path, boolean infocmd) {
-    	infologprinter = new LogPrinter(path, infocmd);
+    	infologprinter = new LogPrinter();
     }
 
     public CmdExecutor() {
@@ -30,15 +49,16 @@ public class CmdExecutor {
 	String cmdtoexecute = "";
 	StringBuffer output = new StringBuffer();
 
-	if (cmd.startsWith("gradlew ")) {
-	    if (!cmd.startsWith("./"))
-		cmdtoexecute = "./" + cmd;
-	    else
-		cmdtoexecute = cmd;
-	} else {
-	    //cmdtoexecute = "./gradlew build";
-		cmdtoexecute=cmd;
-	}
+//	if (cmd.startsWith("gradlew ")) {
+//	    if (!cmd.startsWith("./"))
+//		cmdtoexecute = "./" + cmd;
+//	    else
+//		cmdtoexecute = cmd;
+//	} else {
+//	    //cmdtoexecute = "./gradlew build";
+//		cmdtoexecute=cmd;
+//	}
+	cmdtoexecute=cmd;
 
 	String[] cmds = cmdtoexecute.split(" ");
 
@@ -48,17 +68,11 @@ public class CmdExecutor {
 
 	try {
 	    p = Runtime.getRuntime().exec(cmds, null, exefolder);
-	    //p.waitFor();
-	   	    
-	    //p.get
 	    
-	    File initialFile = new File("/home/foyzulhassan/Research/Strace_Implementation/builddir/gradle-build-scan-quickstart/log.txt");
-	    InputStream targetStream = new FileInputStream(initialFile);
-
-	    ProcessHandler inputStream = new ProcessHandler(targetStream,
-		    "INPUT", this.infologprinter);
-	    ProcessHandler errorStream = new ProcessHandler(targetStream,
-		    "ERROR", this.errorlogprinter);
+	    ProcessHandler inputStream = new ProcessHandler(p.getInputStream(),
+			    "INPUT", this.infologprinter);
+		    ProcessHandler errorStream = new ProcessHandler(p.getErrorStream(),
+			    "ERROR", this.errorlogprinter);
 
 	    /* start the stream threads */
 	    inputStream.start();

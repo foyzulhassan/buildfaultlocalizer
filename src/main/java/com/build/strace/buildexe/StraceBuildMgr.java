@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.build.strace.TraceParser;
 import com.build.strace.entity.FileInfo;
+import com.build.strace.entity.FileScore;
 import com.build.strace.touchbuild.JavaCodeToucher;
 import org.apache.commons.io.FilenameUtils;
 
@@ -17,6 +18,25 @@ public class StraceBuildMgr {
 	private String straceFolder;
 	private String straceLog;
 	private String buildCmd;
+	
+	private Map<String, Boolean> passedLines;
+	public Map<String, Boolean> getPassedLines() {
+		return passedLines;
+	}
+
+	public void setPassedLines(Map<String, Boolean> passedLines) {
+		this.passedLines = passedLines;
+	}
+
+	public Map<String, Boolean> getFailedLines() {
+		return failedLines;
+	}
+
+	public void setFailedLines(Map<String, Boolean> failedLines) {
+		this.failedLines = failedLines;
+	}
+
+	private Map<String, Boolean> failedLines;
 
 	private final String straceCmd = "strace -ff -y -ttt -qq -a1 -s 500 -o ";
 
@@ -34,10 +54,15 @@ public class StraceBuildMgr {
 		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + buildCmd+">/home/foyzulhassan/Research/Strace_Implementation/builddir/gradle-build-scan-quickstart/log.txt";
 		CmdExecutor cmdexe = new CmdExecutor();
 		cmdexe.ExecuteCommand(buildPath+"//", "chmod 777 gradlew", buildPath+"//");
-		cmdexe.ExecuteCommand(buildPath+"//", cmd, buildPath+"//");
+		
+		cmdexe = new CmdExecutor();
+		//cmdexe.ExecuteCommand(buildPath+"//", cmd, buildPath+"//");
+		cmdexe.ExecuteCommand(buildPath+"//", buildCmd, buildPath+"//");
+		passedLines=cmdexe.getPassedLines();
+		failedLines=cmdexe.getFailedLines();
 	}
 
-	public Map<String, List<String>> getCompileJavaDependency(List<String> repofiles, List<String> recentchangedfiles) {
+	public Map<String, List<String>> getCompileJavaDependency(List<String> repofiles, List<String> recentchangedfiles,FileScore filescore) {
 		Map<String, List<String>> compileJavadeps = new HashMap<>();
 		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + buildCmd;
 
@@ -51,9 +76,9 @@ public class StraceBuildMgr {
 
 			CmdExecutor cmdexe = new CmdExecutor();
 			cmdexe.ExecuteCommand(buildPath, cmd, buildPath);
-			TraceParser parser = new TraceParser();
+			TraceParser parser = new TraceParser(passedLines,failedLines);
 			List<FileInfo> dependency = parser.parseRawTraces(this.buildPath + "//" + this.straceFolder,
-					this.buildPath);
+					this.buildPath,repofiles,filescore,true);
 
 			List<String> filelist = new ArrayList<>();
 
@@ -72,7 +97,7 @@ public class StraceBuildMgr {
 	}
 
 	public Map<String, List<String>> getCompileTestJavaDependency(List<String> repofiles,
-			List<String> recentchangedfiles, String testcmd, Map<String, List<String>> compiledeps) {
+			List<String> recentchangedfiles, String testcmd, Map<String, List<String>> compiledeps,FileScore filescore) {
 
 		// Run full test to find execution order
 		InitLogPath();
@@ -84,8 +109,8 @@ public class StraceBuildMgr {
 		System.out.println("Test Order\n\n\n\n\n\n\n");
 		
 		cmdexe.ExecuteCommand(buildPath, cmd, buildPath);
-		TraceParser parser = new TraceParser();
-		List<FileInfo> dependency = parser.parseRawTraces(this.buildPath + "//" + this.straceFolder, this.buildPath);
+		TraceParser parser = new TraceParser(passedLines,failedLines);
+		List<FileInfo> dependency = parser.parseRawTraces(this.buildPath + "//" + this.straceFolder, this.buildPath,repofiles,filescore,false);
 		List<String> testexecutionorder = new ArrayList<>();
 		Map<String,String> testfilemap=new HashMap<>();
 
@@ -119,7 +144,7 @@ public class StraceBuildMgr {
 			
 			cmdexe.ExecuteCommand(buildPath, testspecmd, buildPath);
 			List<FileInfo> testdependency = parser.parseRawTraces(this.buildPath + "//" + this.straceFolder,
-					this.buildPath);
+					this.buildPath,repofiles,filescore,true);
 
 			System.out.println("test");
 			for (FileInfo fileinfodep : testdependency) {

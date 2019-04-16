@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.*;
 
 import com.build.strace.entity.FileInfo;
+import com.build.strace.entity.FileScore;
 import com.build.strace.entity.ProcessInfo;
 
 public class TraceParser {
@@ -11,8 +12,21 @@ public class TraceParser {
 	public List<TraceListEntity> processedPIDs=new ArrayList<>();
 	public List<ProcessInfo> listOfProcess=new ArrayList<>();
 	public Map<Long,ProcessInfo> processInfoMap=new HashMap<>();
+	private Map<String,Boolean> passedLines;
+	private Map<String, Boolean> failedLines;
 	
-	public List<FileInfo> parseRawTraces(String inputdir,String builddir) {
+	private TraceParser()
+	{
+		
+	}
+	
+	public TraceParser(Map<String,Boolean> passlines, Map<String,Boolean> faillines)
+	{
+		passedLines=passlines;
+		failedLines=faillines;
+	}
+	
+	public List<FileInfo> parseRawTraces(String inputdir,String builddir,List<String> repofiles, FileScore filescore,boolean updatescore) {
 		TraceListEntity tracelist;
 
 //		//Create output directory if not exists
@@ -42,16 +56,16 @@ public class TraceParser {
 		}
 		
 		ProcessInfo rootprocess=ParseProcessFiles.getBuildProcessGraph(tracelist.getRootpid(),processInfoMap);
-		List<FileInfo> dependencyfiles=ParseProcessFiles.getDependencyFileList(rootprocess);
+		List<FileInfo> dependencyfiles=ParseProcessFiles.getDependencyFileList(rootprocess,filescore,passedLines,failedLines,updatescore);
 		
-		for(FileInfo file:dependencyfiles)
-		{
-			if(file.getTracefile().contains(".java")||file.getTracefile().contains(".class"))
-			{
-				System.out.println(file.getOpCode()+"====>"+file.getPid()+"==>"+file.getTracefile());
-		
-			}
-		}
+//		for(FileInfo file:dependencyfiles)
+//		{
+//			if(file.getTracefile().contains(".java")||file.getTracefile().contains(".class"))
+//			{
+//				System.out.println(file.getOpCode()+"====>"+file.getPid()+"==>"+file.getTracefile());
+//		
+//			}
+//		}
 		
 		return dependencyfiles;
 	}

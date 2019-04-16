@@ -12,6 +12,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import com.build.analyzer.config.Config;
 import com.build.commitanalyzer.CommitAnalyzer;
 import com.build.strace.buildexe.StraceBuildMgr;
+import com.build.strace.entity.FileScore;
 
 public class DependencyGenerator {
 
@@ -77,13 +78,18 @@ public class DependencyGenerator {
 		
 		StraceBuildMgr stracebuildmgr=new StraceBuildMgr(repodir,"teststrace","tracelog","./gradlew build -x test");
 		stracebuildmgr.InitBuild();
+		Map<String,Boolean> passedlines=stracebuildmgr.getPassedLines();
+		Map<String, Boolean> failedlines=stracebuildmgr.getFailedLines();
 		
 		List<String> recentchangedfiles=new ArrayList<>();
 		recentchangedfiles.add("/home/foyzulhassan/Research/Strace_Implementation/builddir/gradle-build-scan-quickstart/src/main/java/example/UtilTwo.java");
 		
-		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles);
+		//This class is responsible for holding scores of files
+		FileScore filescore=new FileScore(files);
 		
-		Map<String, List<String>> compiletestdef=stracebuildmgr.getCompileTestJavaDependency(files, recentchangedfiles, "./gradlew test", compiledef);
+		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles,filescore);
+		
+		Map<String, List<String>> compiletestdef=stracebuildmgr.getCompileTestJavaDependency(files, recentchangedfiles, "./gradlew test", compiledef,filescore);
 		
 	}
 	

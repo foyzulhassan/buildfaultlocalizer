@@ -10,8 +10,11 @@ public class ProcessInfo {
 	private List<FileInfo> fileAccessList;
 	private List<FileInfo> inputFiles;
 	private List<FileInfo> outputFiles;
+	private List<OutputEntry> outputText;
+	private List<String> textForDuplicat;
 	
-	
+	private List<FileInfo> fileFromParentAndCurr;	
+
 	public ProcessInfo(long pid)
 	{
 		this.processPID=pid;
@@ -19,7 +22,10 @@ public class ProcessInfo {
 		childProcessList=new ArrayList<>();
 		fileAccessList=new ArrayList<>();
 		inputFiles=new ArrayList<>();
-		outputFiles=new ArrayList<>();		
+		outputFiles=new ArrayList<>();	
+		outputText=new ArrayList<>();
+		textForDuplicat=new ArrayList<>();
+		fileFromParentAndCurr=new ArrayList<>();
 	}
 	
 	public long getProcessPID() {
@@ -110,6 +116,7 @@ public class ProcessInfo {
 		}
 		
 		inputFiles.add(file);
+		fileFromParentAndCurr.add(file);
 		
 	}
 
@@ -135,4 +142,43 @@ public class ProcessInfo {
 		}
 		outputFiles.add(file);
 	}	
+	
+	public List<OutputEntry> getOutputText() {
+		return outputText;
+	}
+
+	public void setOutputText(List<OutputEntry> outputText) {
+		this.outputText = outputText;
+	}
+	
+	public void addToOutputTxt(OutputEntry linetxt)
+	{		
+		if(!this.textForDuplicat.contains(linetxt.strMsg))
+		{
+			this.textForDuplicat.add(linetxt.strMsg);
+			this.outputText.add(linetxt);
+		}
+	}
+	
+	public List<FileInfo> getFileFromParentAndCurr() {
+		return fileFromParentAndCurr;
+	}
+
+	public void setFileFromParentAndCurr(List<FileInfo> fileFromParentAndCurr) {
+		this.fileFromParentAndCurr = fileFromParentAndCurr;
+	}
+	
+	public void addToFileFromParentAndCurr(FileInfo file)
+	{
+		
+		for(FileInfo in:fileFromParentAndCurr)
+		{
+			if(in.getTracefile().equals(file.getTracefile()))
+			{				
+				return;
+			}
+		}		
+		
+		fileFromParentAndCurr.add(file);		
+	}
 }
