@@ -24,7 +24,7 @@ public class RankingMgr {
 
 		RankingCalculator rankmetric = new RankingCalculator();
 
-		List<Gradlebuildfixdata> projects = dbexec.getEvalRows();
+		List<Gradlebuildfixdata> projects = dbexec.getProjectRows("BuildCraft/BuildCraft");
 
 		int totaltopn = 0;
 		double totalmrr = 0.0;
@@ -52,17 +52,26 @@ public class RankingMgr {
 					e.printStackTrace();
 				}
 
+				//this gives path based on Git repo relative path
 				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
 						proj.getGitLastfailCommit());
 				
+				//Git repo relative path to local path list
+				List<String> localpathtochange=new ArrayList<>();				
+				for(String strfile:recentchangefile)
+				{
+					String localpath=Config.dynamicBuildDir+project+strfile;
+					localpathtochange.add(localpath);
+				}
+				
 				DependencyGenerator depgen=new DependencyGenerator();
-				FileScore filescore=depgen.getFileSuspicionScore(projecth,proj.getGitLastfailCommit(),recentchangefile);
+				FileScore filescore=depgen.getFileSuspicionScore(projecth,proj.getGitLastfailCommit(),localpathtochange);
 				
 				Map<String,Boolean> passedlines=depgen.getPassedlines();
 				Map<String,Boolean> failedlines=depgen.getFailedlines();				
 
 				String actualfixfile = proj.getF2passFilelist();
-				String failintrofiles = proj.getFailFilelist();
+				//String failintrofiles = proj.getFailFilelist();
 				String[] actualfixs = actualfixfile.split(";");
 				
 				SpectrumCalculator spectrumcalc=new SpectrumCalculator();
@@ -91,7 +100,10 @@ public class RankingMgr {
 				double barinelmap = rankmetric.getMeanAveragePrecision(barinellist, actualfixs);
 				
 				
-				
+				System.out.println("Tarantula "+"TopN:"+tarantulatopn+" MRR:"+tarantulamrr+" MAP:"+tarantulamap);
+				System.out.println("Oochiai "+"TopN:"+ochiaitopn+" MRR:"+ochiaimrr+" MAP:"+ochiaimap);
+				System.out.println("Op2 "+"TopN:"+op2topn+" MRR:"+op2mrr+" MAP:"+op2map);
+				System.out.println("Barinel "+"TopN:"+barineltopn+" MRR:"+barinelmrr+" MAP:"+barinelmap);
 //				projects.get(index).setEvDiffdepboostPos(topn);
 //				projects.get(index).setEvDiffdepboostMrr(mrr);
 //				projects.get(index).setEvDiffdepboostMap(map);
@@ -102,10 +114,10 @@ public class RankingMgr {
 
 			}
 
-			System.out.println("\n\n\n*******Diff Filter+Dependency+BoostScore********");
-			System.out.println("\n*******For Param: " + Config.thresholdForSimFilter + "********");
-			System.out.println("\nTopN: " + (totaltopn / projects.size()) + " MRR: " + (totalmrr / projects.size()) + " MAP: "
-					+ (totalmap / projects.size()));
+//			System.out.println("\n\n\n*******Diff Filter+Dependency+BoostScore********");
+//			System.out.println("\n*******For Param: " + Config.thresholdForSimFilter + "********");
+//			System.out.println("\nTopN: " + (totaltopn / projects.size()) + " MRR: " + (totalmrr / projects.size()) + " MAP: "
+//					+ (totalmap / projects.size()));
 			
 			SessionGenerator.closeFactory();
 			dbexec = new DBActionExecutorChangeData();

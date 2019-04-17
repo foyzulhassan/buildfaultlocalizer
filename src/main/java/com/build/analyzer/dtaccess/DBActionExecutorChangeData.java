@@ -82,6 +82,39 @@ public class DBActionExecutorChangeData {
 		return results;		
 
 	}
+	
+	
+	public List<Gradlebuildfixdata> getProjectRows(String projectname)
+	{
+		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
+		List<Gradlebuildfixdata> results = null;
+
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+
+			String hql = "FROM Gradlebuildfixdata gp where gp.ghProjectName=:dtproject";
+			Query query = session.createQuery(hql);
+			query.setParameter("dtproject", projectname);	
+			
+			if(Config.quickAnalysis)
+			{
+				query.setMaxResults(Config.quickAnalysisDataSize);
+			}
+
+			results = query.list();
+
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return results;		
+
+	}
 
 	public List<Gradlebuildfixdata> getRows() {
 

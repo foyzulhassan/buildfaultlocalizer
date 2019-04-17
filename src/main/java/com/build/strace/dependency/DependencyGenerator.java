@@ -56,15 +56,14 @@ public class DependencyGenerator {
 	}
 
 	public FileScore getFileSuspicionScore(String strsrcdir, String commitid,List<String> recentchangedfiles) {
+		///Copy to Local Build Directory
 		File srcdir = new File(strsrcdir);
 		File desdir = new File(Config.dynamicBuildDir);
-
 		try {
 			FileUtils.copyDirectory(srcdir, desdir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		File folder = new File(Config.dynamicBuildDir);
 		File[] listOfFiles = folder.listFiles();
 
@@ -75,9 +74,10 @@ public class DependencyGenerator {
 				break;
 			}
 		}
+		//copy to local build dir completed
 		
-		repodir=repodir+"/.git";;
-		
+		//checkout specific version of project to build 
+		repodir=repodir+"/.git";		
 		try {
 			CommitAnalyzer commitanalyzer=new CommitAnalyzer("test",repodir,commitid);
 			commitanalyzer.gitCheckOut(commitid, "AnaLysis");			
@@ -85,19 +85,22 @@ public class DependencyGenerator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//complete repo checkout
 		
-		
+		//List of files in repo
 		List<String> files=getRepoFiles(repodir);
 		
-		StraceBuildMgr stracebuildmgr=new StraceBuildMgr(repodir,"teststrace","tracelog","./gradlew build -x test");
+		//Build command
+		StraceBuildMgr stracebuildmgr=new StraceBuildMgr(repodir,"teststrace","tracelog","./gradlew build");
 		stracebuildmgr.InitBuild();
+		
 		this.passedlines=stracebuildmgr.getPassedLines();
 		this.failedlines=stracebuildmgr.getFailedLines();	
 		
 		//This class is responsible for holding scores of files
 		FileScore filescore=new FileScore(files);
 		
-		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles,filescore);
+		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles,filescore,"./gradlew build -x test");
 		
 		Map<String, List<String>> compiletestdef=stracebuildmgr.getCompileTestJavaDependency(files, recentchangedfiles, "./gradlew test", compiledef,filescore);
 		

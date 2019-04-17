@@ -1,6 +1,7 @@
 package com.build.strace.buildexe;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,8 @@ import com.build.strace.TraceParser;
 import com.build.strace.entity.FileInfo;
 import com.build.strace.entity.FileScore;
 import com.build.strace.touchbuild.JavaCodeToucher;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 public class StraceBuildMgr {
@@ -55,6 +58,11 @@ public class StraceBuildMgr {
 		CmdExecutor cmdexe = new CmdExecutor();
 		cmdexe.ExecuteCommand(buildPath+"//", "chmod 777 gradlew", buildPath+"//");
 		
+		//Build and clean so that dependency related issues are not in log
+		cmdexe = new CmdExecutor();
+		cmdexe.ExecuteCommand(buildPath+"//", buildCmd+" clean", buildPath+"//");
+		
+		//build again to get only passes and fail parts
 		cmdexe = new CmdExecutor();
 		//cmdexe.ExecuteCommand(buildPath+"//", cmd, buildPath+"//");
 		cmdexe.ExecuteCommand(buildPath+"//", buildCmd, buildPath+"//");
@@ -62,9 +70,9 @@ public class StraceBuildMgr {
 		failedLines=cmdexe.getFailedLines();
 	}
 
-	public Map<String, List<String>> getCompileJavaDependency(List<String> repofiles, List<String> recentchangedfiles,FileScore filescore) {
+	public Map<String, List<String>> getCompileJavaDependency(List<String> repofiles, List<String> recentchangedfiles,FileScore filescore,String buildcmd) {
 		Map<String, List<String>> compileJavadeps = new HashMap<>();
-		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + buildCmd;
+		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + buildcmd;
 
 		for (String file : recentchangedfiles) {
 			InitLogPath();
@@ -72,6 +80,20 @@ public class StraceBuildMgr {
 
 				JavaCodeToucher codetoucher = new JavaCodeToucher();
 				codetoucher.touchJavaFile(new File(file));
+			}
+			else
+			{
+				try {
+					File f=new File(file);
+					
+					if(f.exists())
+					{
+						FileUtils.touch(new File(file));
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 			CmdExecutor cmdexe = new CmdExecutor();

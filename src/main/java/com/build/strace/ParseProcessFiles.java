@@ -7,6 +7,7 @@ import com.build.strace.entity.OperationType;
 import com.build.strace.entity.OutputEntry;
 import com.build.strace.entity.ProcessInfo;
 import com.build.strace.entity.SysCallTypes;
+import com.build.strace.text.TextCleaner;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class ParseProcessFiles {
 
-	public static ProcessInfo getProcessNode(long pid, Map<Long, String> tracefilemap, String buildrootdir) {
+	public static ProcessInfo getProcessNode(long pid, Map<Long, String> tracefilemap, String buildrootdir,Map<String,Boolean> passelines,Map<String,Boolean> faillines) {
 		ProcessInfo process = new ProcessInfo(pid);
 
 		if (!tracefilemap.containsKey(pid))
@@ -62,8 +63,12 @@ public class ParseProcessFiles {
 							// For write second parameter is the text
 							String writetxt = entry.getArgs().get(1);
 							double writetime = entry.getTstamp();
-							OutputEntry outentry = new OutputEntry(writetime, writetxt);
-							process.addToOutputTxt(outentry);
+							String cleantext=TextCleaner.CleanText(writetxt);
+							if(passelines.containsKey(cleantext) || faillines.containsKey(cleantext))
+							{
+								OutputEntry outentry = new OutputEntry(writetime, cleantext);
+								process.addToOutputTxt(outentry);
+							}
 						}
 					}
 

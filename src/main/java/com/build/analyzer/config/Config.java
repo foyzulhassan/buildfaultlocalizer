@@ -116,8 +116,8 @@ public class Config {
 	public static String resultLogFolder = "/Results2/";
 	
 	//This variabes are for debugging purpose
-	public static boolean quickAnalysis=false;
-	public static int quickAnalysisDataSize=5;
+	public static boolean quickAnalysis=true;
+	public static int quickAnalysisDataSize=1;
 	//This variabes are for debugging purpose end
 
 	public static String getResultLogFileName() {
