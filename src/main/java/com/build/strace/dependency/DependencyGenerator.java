@@ -3,6 +3,7 @@ package com.build.strace.dependency;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,9 +16,21 @@ import com.build.strace.buildexe.StraceBuildMgr;
 import com.build.strace.entity.FileScore;
 
 public class DependencyGenerator {
+	private Map<String,Boolean> passedlines;
+	public Map<String, Boolean> getPassedlines() {
+		return passedlines;
+	}
+
+	public Map<String, Boolean> getFailedlines() {
+		return failedlines;
+	}
+
+	private Map<String, Boolean> failedlines;	
 
 	public DependencyGenerator() {
 		File analysisdir = new File(Config.dynamicBuildDir);
+		passedlines=new HashMap<>();
+		failedlines=new HashMap<>();
 
 		if (!analysisdir.exists()) {
 			System.out.println("Setup Proper Analysis Dependency Path. Check Config file for Directory Setup");
@@ -42,7 +55,7 @@ public class DependencyGenerator {
 
 	}
 
-	public void BuildDependency(String strsrcdir, String commitid) {
+	public FileScore getFileSuspicionScore(String strsrcdir, String commitid,List<String> recentchangedfiles) {
 		File srcdir = new File(strsrcdir);
 		File desdir = new File(Config.dynamicBuildDir);
 
@@ -63,7 +76,7 @@ public class DependencyGenerator {
 			}
 		}
 		
-		///repodir=repodir+"//";
+		repodir=repodir+"/.git";;
 		
 		try {
 			CommitAnalyzer commitanalyzer=new CommitAnalyzer("test",repodir,commitid);
@@ -78,11 +91,8 @@ public class DependencyGenerator {
 		
 		StraceBuildMgr stracebuildmgr=new StraceBuildMgr(repodir,"teststrace","tracelog","./gradlew build -x test");
 		stracebuildmgr.InitBuild();
-		Map<String,Boolean> passedlines=stracebuildmgr.getPassedLines();
-		Map<String, Boolean> failedlines=stracebuildmgr.getFailedLines();
-		
-		List<String> recentchangedfiles=new ArrayList<>();
-		recentchangedfiles.add("/home/foyzulhassan/Research/Strace_Implementation/builddir/gradle-build-scan-quickstart/src/main/java/example/UtilTwo.java");
+		this.passedlines=stracebuildmgr.getPassedLines();
+		this.failedlines=stracebuildmgr.getFailedLines();	
 		
 		//This class is responsible for holding scores of files
 		FileScore filescore=new FileScore(files);
@@ -90,6 +100,8 @@ public class DependencyGenerator {
 		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles,filescore);
 		
 		Map<String, List<String>> compiletestdef=stracebuildmgr.getCompileTestJavaDependency(files, recentchangedfiles, "./gradlew test", compiledef,filescore);
+		
+		return filescore;
 		
 	}
 	
