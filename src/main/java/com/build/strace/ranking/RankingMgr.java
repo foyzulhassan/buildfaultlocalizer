@@ -60,12 +60,12 @@ public class RankingMgr {
 				List<String> localpathtochange=new ArrayList<>();				
 				for(String strfile:recentchangefile)
 				{
-					String localpath=Config.dynamicBuildDir+project+strfile;
+					String localpath=Config.dynamicBuildDir+project+"//"+strfile;
 					localpathtochange.add(localpath);
 				}
 				
 				DependencyGenerator depgen=new DependencyGenerator();
-				FileScore filescore=depgen.getFileSuspicionScore(projecth,proj.getGitLastfailCommit(),localpathtochange);
+				FileScore filescore=depgen.getFileSuspicionScore(projecth,project,proj.getGitLastfailCommit(),localpathtochange);
 				
 				Map<String,Boolean> passedlines=depgen.getPassedlines();
 				Map<String,Boolean> failedlines=depgen.getFailedlines();				

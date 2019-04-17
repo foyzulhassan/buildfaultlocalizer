@@ -7,7 +7,8 @@
      <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.password">DB3825</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost/travistorrent?autoReconnect=true</property>
+        <!--<property name="hibernate.connection.url">jdbc:mysql://localhost/travistorrent?autoReconnect=true</property>-->
+        <property name="hibernate.connection.url">jdbc:mysql://utsasrg6.utsa.edu:3306/travistorrent?autoReconnect=true</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <mapping resource="Travistorrent.hbm.xml"></mapping>

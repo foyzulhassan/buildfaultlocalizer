@@ -55,29 +55,30 @@ public class DependencyGenerator {
 
 	}
 
-	public FileScore getFileSuspicionScore(String strsrcdir, String commitid,List<String> recentchangedfiles) {
+	public FileScore getFileSuspicionScore(String strsrcdir, String projname, String commitid,List<String> recentchangedfiles) {
 		///Copy to Local Build Directory
 		File srcdir = new File(strsrcdir);
-		File desdir = new File(Config.dynamicBuildDir);
+		File desdir = new File(Config.dynamicBuildDir+projname);
 		try {
 			FileUtils.copyDirectory(srcdir, desdir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		File folder = new File(Config.dynamicBuildDir);
-		File[] listOfFiles = folder.listFiles();
-
+//		File folder = new File(Config.dynamicBuildDir);
+//		File[] listOfFiles = folder.listFiles();
+//
 		String repodir = "";
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isDirectory()) {
-				repodir = listOfFiles[i].toString();
-				break;
-			}
-		}
+//		for (int i = 0; i < listOfFiles.length; i++) {
+//			if (listOfFiles[i].isDirectory()) {
+//				repodir = listOfFiles[i].toString();
+//				break;
+//			}
+//		}
+		repodir=Config.dynamicBuildDir+"/"+projname;
 		//copy to local build dir completed
 		
 		//checkout specific version of project to build 
-		repodir=repodir+"/.git";		
+		//repodir=repodir+"/.git";		
 		try {
 			CommitAnalyzer commitanalyzer=new CommitAnalyzer("test",repodir,commitid);
 			commitanalyzer.gitCheckOut(commitid, "AnaLysis");			

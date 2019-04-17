@@ -154,12 +154,13 @@ public class CommitAnalyzer {
 			objectid = repository.resolve(commitid);
 			commit = rw.parseCommit(objectid);
 		} catch (RevisionSyntaxException | IOException e1) {
-			// TODO Auto-generated catch block
+			
 			e1.printStackTrace();
 		}
 		
 		try {
 			//git.checkout().setCreateBranch(true).setName(localbranchname).setStartPoint(commitid).call();
+			RevCommit stash = git.stashCreate().call();
 			git.checkout().setStartPoint(commit).setCreateBranch(false).setName(commit.name()).call();
 		} catch (RefAlreadyExistsException e) {
 			// TODO Auto-generated catch block
