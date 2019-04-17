@@ -31,6 +31,7 @@ import com.build.param.tunning.DiffFilterTunning;
 import com.build.param.tunning.ParformanceAnalysis;
 import com.build.param.tunning.TunningDTSetter;
 import com.build.revertanalyzer.ReverAnalyzer;
+import com.build.strace.ranking.RankingMgr;
 import com.build.util.TextFileReaderWriter;
 import com.github.gumtreediff.actions.model.Action;
 
@@ -64,7 +65,8 @@ public class MainClass {
 				+ "\n36->Diff filter+BoostScore" 
 				+ "\n37->Full Log+Dependency+BoostScore"
 				+ "\n38->Baseline(Saha et al){Fail Part Log+Java File Rank+Then Gradle Build Script}"
-				+ "\n39->All Evaluation Experiment");
+				+ "\n39->All Evaluation Experiment"
+				+ "\n41->Strace Experiment");
 
 		// create an object that reads integers:
 		Scanner cin = new Scanner(System.in);
@@ -158,6 +160,11 @@ public class MainClass {
 			genSimDifferentialLogOnChangeForLogging();
 			genSimFailLogPartWithSimLimit();
 			performResultAnalysis();
+		}
+		else if(inputid == 41)
+		{
+			RankingMgr straceraking=new RankingMgr();
+			straceraking.generateStraceRanking();
 		}
 
 		else {
