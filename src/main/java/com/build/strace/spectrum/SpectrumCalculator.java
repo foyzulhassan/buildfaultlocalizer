@@ -10,7 +10,7 @@ import com.build.strace.entity.Score;
 import com.util.sorting.SortingMgr;
 
 public class SpectrumCalculator {
-	public ArrayList<String> getTarantulaBasedRanking(FileScore filescore,Map<String,Boolean> passedlines,Map<String,Boolean> failedlines)
+	public ArrayList<String> getTarantulaBasedRanking(FileScore filescore,Map<String,Boolean> passedlines,Map<String,Boolean> failedlines,String localpath)
 	{
 		 Map<String, Score> rawfilescore=filescore.getFileScore();
 		 Map<String,Double> rankfilescore=new HashMap<>();
@@ -22,8 +22,19 @@ public class SpectrumCalculator {
 			 Score score=rawfilescore.get(file);
 			 int passeds=score.getPassedcount();
 			 int faileds=score.getFailedcount();			 
-			 double tarantulascore=(faileds/totalfailed)/((faileds/totalfailed)+(passeds/totalpassed));
-			 rankfilescore.put(file, tarantulascore);
+
+			 passeds=passeds+1;
+			 faileds=faileds+1;
+				 
+			 double d1= (double)faileds/totalfailed;
+			 double d2=(double)passeds/totalpassed;
+			 double n1=(double)faileds/totalfailed;
+			 
+			 
+			 double tarantulascore=(n1)/((d1)+(d2));
+			 int startpos=file.indexOf(localpath);
+			 String basepath=file.substring(startpos+localpath.length()+1);
+			 rankfilescore.put(basepath, tarantulascore);
 		 }
 		 
 		Map<String, Double> sortedsimmap = SortingMgr.sortByValue(rankfilescore);
@@ -45,7 +56,9 @@ public class SpectrumCalculator {
 		 {
 			 Score score=rawfilescore.get(file);
 			 int passeds=score.getPassedcount();
-			 int faileds=score.getFailedcount();			 
+			 int faileds=score.getFailedcount();	
+			 passeds=passeds+1;
+			 faileds=faileds+1;
 			 double sqrtval=Math.sqrt(totalfailed*(faileds+passeds));
 			 double ochiaicore=(faileds/sqrtval);
 			 rankfilescore.put(file, ochiaicore);
@@ -71,6 +84,8 @@ public class SpectrumCalculator {
 			 Score score=rawfilescore.get(file);
 			 int passeds=score.getPassedcount();
 			 int faileds=score.getFailedcount();	 
+			 passeds=passeds+1;
+			 faileds=faileds+1;
 			
 			 double op2score=faileds-(passeds/(totalpassed+1));
 			 rankfilescore.put(file, op2score);
@@ -95,7 +110,9 @@ public class SpectrumCalculator {
 		 {
 			 Score score=rawfilescore.get(file);
 			 int passeds=score.getPassedcount();
-			 int faileds=score.getFailedcount();	 
+			 int faileds=score.getFailedcount();
+			 passeds=passeds+1;
+			 faileds=faileds+1;
 			
 			 double barinelscore=1-(passeds/(passeds+faileds));
 			 rankfilescore.put(file, barinelscore);
@@ -107,6 +124,26 @@ public class SpectrumCalculator {
 		
 		return reankedfiles;
 		 
+	}
+	
+	public static void main(String[] args)
+	{
+		 int passeds=0;
+		 int faileds=0;	
+		 
+		 int totalfailed=3380;
+		 int totalpassed=3440;
+
+		 passeds=passeds+1;
+		 faileds=faileds+1;
+			 
+		 double d1= (double)faileds/totalfailed;
+		 double d2=(double)passeds/totalpassed;
+		 double n1=(double)faileds/totalfailed;
+		 
+		 double tarantulascore=(n1)/((d1)+(d2));
+		 
+		 System.out.println(tarantulascore);
 	}
 
 }

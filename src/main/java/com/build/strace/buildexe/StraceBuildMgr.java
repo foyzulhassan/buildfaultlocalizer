@@ -54,7 +54,7 @@ public class StraceBuildMgr {
 
 	public void InitBuild() {
 		InitLogPath();
-		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + buildCmd+">/home/foyzulhassan/Research/Strace_Implementation/builddir/gradle-build-scan-quickstart/log.txt";
+		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + buildCmd;
 		CmdExecutor cmdexe = new CmdExecutor();
 		cmdexe.ExecuteCommand(buildPath+"//", "chmod 777 gradlew", buildPath+"//");
 		

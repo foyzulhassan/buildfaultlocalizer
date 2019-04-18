@@ -24,8 +24,9 @@ public class RankingMgr {
 
 		RankingCalculator rankmetric = new RankingCalculator();
 
-		List<Gradlebuildfixdata> projects = dbexec.getProjectRows("BuildCraft/BuildCraft");
-
+		//List<Gradlebuildfixdata> projects = dbexec.getProjectRows("BuildCraft/BuildCraft");
+		List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(3284756);
+		
 		int totaltopn = 0;
 		double totalmrr = 0.0;
 		double totalmap = 0.0;
@@ -77,33 +78,33 @@ public class RankingMgr {
 				SpectrumCalculator spectrumcalc=new SpectrumCalculator();
 				
 				
-				ArrayList<String> tarantulalist=spectrumcalc.getTarantulaBasedRanking(filescore, passedlines, failedlines);
-				ArrayList<String> ochiailist=spectrumcalc.getOchiaiBasedRanking(filescore, passedlines, failedlines);
-				ArrayList<String> op2list=spectrumcalc.getOp2BasedRanking(filescore, passedlines, failedlines);
-				ArrayList<String> barinellist=spectrumcalc.getBarinelBasedRanking(filescore, passedlines, failedlines);
+				ArrayList<String> tarantulalist=spectrumcalc.getTarantulaBasedRanking(filescore, passedlines, failedlines,Config.dynamicBuildDir+project);
+//				ArrayList<String> ochiailist=spectrumcalc.getOchiaiBasedRanking(filescore, passedlines, failedlines);
+//				ArrayList<String> op2list=spectrumcalc.getOp2BasedRanking(filescore, passedlines, failedlines);
+//				ArrayList<String> barinellist=spectrumcalc.getBarinelBasedRanking(filescore, passedlines, failedlines);
 
 			
 				int tarantulatopn = rankmetric.getTopN(tarantulalist, actualfixs);
 				double tarantulamrr = rankmetric.getMeanAverageReciprocal(tarantulalist, actualfixs);
 				double tarantulamap = rankmetric.getMeanAveragePrecision(tarantulalist, actualfixs);
 				
-				int ochiaitopn = rankmetric.getTopN(ochiailist, actualfixs);
-				double ochiaimrr = rankmetric.getMeanAverageReciprocal(ochiailist, actualfixs);
-				double ochiaimap = rankmetric.getMeanAveragePrecision(ochiailist, actualfixs);
-				
-				int op2topn = rankmetric.getTopN(op2list, actualfixs);
-				double op2mrr = rankmetric.getMeanAverageReciprocal(op2list, actualfixs);
-				double op2map = rankmetric.getMeanAveragePrecision(op2list, actualfixs);
-				
-				int barineltopn = rankmetric.getTopN(barinellist, actualfixs);
-				double barinelmrr = rankmetric.getMeanAverageReciprocal(barinellist, actualfixs);
-				double barinelmap = rankmetric.getMeanAveragePrecision(barinellist, actualfixs);
+//				int ochiaitopn = rankmetric.getTopN(ochiailist, actualfixs);
+//				double ochiaimrr = rankmetric.getMeanAverageReciprocal(ochiailist, actualfixs);
+//				double ochiaimap = rankmetric.getMeanAveragePrecision(ochiailist, actualfixs);
+//				
+//				int op2topn = rankmetric.getTopN(op2list, actualfixs);
+//				double op2mrr = rankmetric.getMeanAverageReciprocal(op2list, actualfixs);
+//				double op2map = rankmetric.getMeanAveragePrecision(op2list, actualfixs);
+//				
+//				int barineltopn = rankmetric.getTopN(barinellist, actualfixs);
+//				double barinelmrr = rankmetric.getMeanAverageReciprocal(barinellist, actualfixs);
+//				double barinelmap = rankmetric.getMeanAveragePrecision(barinellist, actualfixs);
 				
 				
 				System.out.println("Tarantula "+"TopN:"+tarantulatopn+" MRR:"+tarantulamrr+" MAP:"+tarantulamap);
-				System.out.println("Oochiai "+"TopN:"+ochiaitopn+" MRR:"+ochiaimrr+" MAP:"+ochiaimap);
-				System.out.println("Op2 "+"TopN:"+op2topn+" MRR:"+op2mrr+" MAP:"+op2map);
-				System.out.println("Barinel "+"TopN:"+barineltopn+" MRR:"+barinelmrr+" MAP:"+barinelmap);
+//				System.out.println("Oochiai "+"TopN:"+ochiaitopn+" MRR:"+ochiaimrr+" MAP:"+ochiaimap);
+//				System.out.println("Op2 "+"TopN:"+op2topn+" MRR:"+op2mrr+" MAP:"+op2map);
+//				System.out.println("Barinel "+"TopN:"+barineltopn+" MRR:"+barinelmrr+" MAP:"+barinelmap);
 //				projects.get(index).setEvDiffdepboostPos(topn);
 //				projects.get(index).setEvDiffdepboostMrr(mrr);
 //				projects.get(index).setEvDiffdepboostMap(map);

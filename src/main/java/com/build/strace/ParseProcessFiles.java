@@ -21,7 +21,8 @@ import java.util.regex.Pattern;
 
 public class ParseProcessFiles {
 
-	public static ProcessInfo getProcessNode(long pid, Map<Long, String> tracefilemap, String buildrootdir,Map<String,Boolean> passelines,Map<String,Boolean> faillines) {
+	public static ProcessInfo getProcessNode(long pid, Map<Long, String> tracefilemap, String buildrootdir,
+			Map<String, Boolean> passelines, Map<String, Boolean> faillines) {
 		ProcessInfo process = new ProcessInfo(pid);
 
 		if (!tracefilemap.containsKey(pid))
@@ -61,13 +62,28 @@ public class ParseProcessFiles {
 
 						if (entry.getArgs().size() > 1) {
 							// For write second parameter is the text
+
 							String writetxt = entry.getArgs().get(1);
-							double writetime = entry.getTstamp();
-							String cleantext=TextCleaner.CleanText(writetxt);
-							if(passelines.containsKey(cleantext) || faillines.containsKey(cleantext))
-							{
-								OutputEntry outentry = new OutputEntry(writetime, cleantext);
-								process.addToOutputTxt(outentry);
+							// if(writetxt.contains("param name not found"))
+							// {
+							// System.out.println("found");
+
+							int index = writetxt.indexOf("\\n");
+
+							if (index >= 0) {
+								writetxt = writetxt.substring(0, index);
+							}
+
+							String[] lines = writetxt.split("\\r?\\n", -1);
+
+							for (String ln : lines) {
+								double writetime = entry.getTstamp();
+								String cleantext = TextCleaner.CleanText(ln);
+								if ((passelines.containsKey(cleantext) || faillines.containsKey(cleantext))
+										&& cleantext.length() > 0) {
+									OutputEntry outentry = new OutputEntry(writetime, cleantext);
+									process.addToOutputTxt(outentry);
+								}
 							}
 						}
 					}
@@ -83,7 +99,7 @@ public class ParseProcessFiles {
 
 	private static BufferedReader openFile(String fileName) throws IOException {
 		// Don't forget to add buffering to have better performance!
-		return new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8));
+		return new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
 	}
 
 	private static Entry parse_entry(String ln, String builddir) {
@@ -194,7 +210,7 @@ public class ParseProcessFiles {
 	}
 
 	public static List<FileInfo> getDependencyFileList(ProcessInfo rootprocess, FileScore filescore,
-			Map<String, Boolean> passedlines, Map<String, Boolean> failedlines,boolean updatescore) {
+			Map<String, Boolean> passedlines, Map<String, Boolean> failedlines, boolean updatescore) {
 		List<FileInfo> fileinfolist = new ArrayList<>();
 		Map<String, Boolean> localpassed = passedlines;
 		Map<String, Boolean> localfailedlines = failedlines;
@@ -204,34 +220,46 @@ public class ParseProcessFiles {
 
 		q.add(rootprocess);
 		visited.add(rootprocess.getProcessPID());
+        int i=0;
+		try {
+			while (!q.isEmpty()) {
+				
+				ProcessInfo process = q.poll();
+//				System.out.println(i);
+//				
+//				if(i==7)
+//				{
+//					System.out.println("here");
+//				}
 
-		while (!q.isEmpty()) {
-			ProcessInfo process = q.poll();
-			
-			if(updatescore)
-			{
-				updateFileScore(process,filescore,localpassed,localfailedlines);
-			}
-
-			List<ProcessInfo> childprocs = process.getChildProcessList();
-
-			for (ProcessInfo proc : childprocs) {
-				if (!visited.contains(proc.getProcessPID())) {
-
-					// This part if for propagating parent processes file list
-					// to child process to get file score
-					List<FileInfo> parentinputfiles = process.getInputFiles();
-					for (FileInfo finfo : parentinputfiles) {
-						proc.addToFileFromParentAndCurr(finfo);
-					}
-
-					q.add(proc);
+				if (updatescore) {
+					updateFileScore(process, filescore, localpassed, localfailedlines);
 				}
-			}
 
-			for (FileInfo file : process.getInputFiles()) {
-				fileinfolist.add(file);
+				List<ProcessInfo> childprocs = process.getChildProcessList();
+
+				for (ProcessInfo proc : childprocs) {
+					if (!visited.contains(proc.getProcessPID())) {
+
+						// This part if for propagating parent processes file
+						// list
+						// to child process to get file score
+						List<FileInfo> parentinputfiles = process.getInputFiles();
+						for (FileInfo finfo : parentinputfiles) {
+							proc.addToFileFromParentAndCurr(finfo);
+						}
+
+						q.add(proc);
+					}
+				}
+
+				for (FileInfo file : process.getInputFiles()) {
+					fileinfolist.add(file);
+				}
+				i++;
 			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 
 		return fileinfolist;
@@ -258,7 +286,7 @@ public class ParseProcessFiles {
 
 				for (FileInfo fileinfo : depfile) {
 					if (fileinfo.getAccessTime() < output.getMsgWriteTime()
-							&& passedlines.get(fileinfo.getTracefile()) == false) {
+							&& passedlines.get(output.getStrMsg()) == false) {
 						filescore.IncrementFilePassedScore(fileinfo.getTracefile());
 						passedlines.put(fileinfo.getTracefile(), true);
 					}
@@ -268,7 +296,7 @@ public class ParseProcessFiles {
 
 				for (FileInfo fileinfo : depfile) {
 					if (fileinfo.getAccessTime() < output.getMsgWriteTime()
-							&& failedlines.get(fileinfo.getTracefile()) == false) {
+							&& failedlines.get(output.getStrMsg()) == false) {
 						filescore.IncrementFilePassedScore(fileinfo.getTracefile());
 						failedlines.put(fileinfo.getTracefile(), true);
 					}

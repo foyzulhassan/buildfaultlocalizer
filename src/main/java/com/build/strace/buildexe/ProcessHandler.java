@@ -11,11 +11,11 @@ public class ProcessHandler extends Thread {
     String strType;
     LogPrinter logprint;
 
-    public ProcessHandler(InputStream inpStr, String strType) {
-	this.inpStr = inpStr;
-	this.strType = strType;
-	this.logprint = new LogPrinter();
-    }
+//    public ProcessHandler(InputStream inpStr, String strType) {
+//	this.inpStr = inpStr;
+//	this.strType = strType;
+//	this.logprint = new LogPrinter();
+//    }
 
     public ProcessHandler(InputStream inpStr, String strType,
 	    LogPrinter logprint) {
@@ -31,7 +31,7 @@ public class ProcessHandler extends Thread {
 	    String line = null;
 	    while ((line = buffRd.readLine()) != null) {
 		// logprint.println(strType + "-->" + line);
-		logprint.println(strType+"===>"+line);
+		logprint.println(line);
 	    }
 	    buffRd.close();
 	} catch (Exception e) {

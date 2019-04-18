@@ -31,16 +31,18 @@ public class CmdExecutor {
     
 
     public CmdExecutor(String path) {
-    	infologprinter = new LogPrinter();
-    	errorlogprinter= new LogPrinter();
+    	infologprinter = new LogPrinter(false);
+    	errorlogprinter= new LogPrinter(true);
     }
 
     public CmdExecutor(String path, boolean infocmd) {
-    	infologprinter = new LogPrinter();
+    	infologprinter = new LogPrinter(false);
+    	errorlogprinter= new LogPrinter(true);
     }
 
     public CmdExecutor() {
-    	infologprinter = new LogPrinter();
+    	infologprinter = new LogPrinter(false);
+    	errorlogprinter= new LogPrinter(true);
     }
 
     public boolean ExecuteCommand(String executionpath, String cmd,
