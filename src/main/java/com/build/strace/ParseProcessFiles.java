@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class ParseProcessFiles {
 
 	public static ProcessInfo getProcessNode(long pid, Map<Long, String> tracefilemap, String buildrootdir,
-			Map<String, Boolean> passelines, Map<String, Boolean> faillines) {
+			Map<String, Boolean> passelines, Map<String, Boolean> faillines,List<String> repofiles) {
 		ProcessInfo process = new ProcessInfo(pid);
 
 		if (!tracefilemap.containsKey(pid))
@@ -44,7 +44,7 @@ public class ParseProcessFiles {
 						String filepath = entry.getArgs().get(0);
 						filepath = new File(filepath).toString();
 						buildrootdir = new File(buildrootdir).toString();
-						if (filepath.contains(buildrootdir)) {
+						if (repofiles.contains(filepath)) {
 							FileInfo fileinfo = new FileInfo(pid, filepath, OperationType.Read, entry.getTstamp());
 							process.addToInputFileList(fileinfo);
 							process.addToFileAccessList(fileinfo);
@@ -53,7 +53,7 @@ public class ParseProcessFiles {
 						String filepath = entry.getArgs().get(0);
 						filepath = new File(filepath).toString();
 						buildrootdir = new File(buildrootdir).toString();
-						if (filepath.contains(buildrootdir)) {
+						if (repofiles.contains(filepath)) {
 
 							FileInfo fileinfo = new FileInfo(pid, filepath, OperationType.Read, entry.getTstamp());
 							process.addToOutputFileList(fileinfo);
