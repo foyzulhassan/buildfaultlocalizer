@@ -101,9 +101,10 @@ public class DependencyGenerator {
 		//This class is responsible for holding scores of files
 		FileScore filescore=new FileScore(files);
 		
-		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles,filescore,"./gradlew build -x test");
+		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles,filescore,"./gradlew build -x test --continue");
 		
-		Map<String, List<String>> compiletestdef=stracebuildmgr.getCompileTestJavaDependency(files, recentchangedfiles, "./gradlew test", compiledef,filescore);
+		@SuppressWarnings("unused")
+		Map<String, List<String>> compiletestdef=stracebuildmgr.getCompileTestJavaDependency(files, recentchangedfiles, "./gradlew test --continue", compiledef,filescore);
 		
 		return filescore;
 		

@@ -12,6 +12,7 @@ import com.build.strace.text.TextCleaner;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -19,11 +20,16 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
+
 public class ParseProcessFiles {
 
 	public static ProcessInfo getProcessNode(long pid, Map<Long, String> tracefilemap, String buildrootdir,
-			Map<String, Boolean> passelines, Map<String, Boolean> faillines,List<String> repofiles) {
+			Map<String, Boolean> passelines, Map<String, Boolean> faillines, List<String> repofiles,FileScore filescore) {
 		ProcessInfo process = new ProcessInfo(pid);
+
+		//List<String> javaclasslist = new ArrayList<>();
+		Map<String,Double> javaclasslist=new HashMap<>();
 
 		if (!tracefilemap.containsKey(pid))
 			return null;
@@ -44,29 +50,56 @@ public class ParseProcessFiles {
 						String filepath = entry.getArgs().get(0);
 						filepath = new File(filepath).toString();
 						buildrootdir = new File(buildrootdir).toString();
-						if (repofiles.contains(filepath)) {
-							FileInfo fileinfo = new FileInfo(pid, filepath, OperationType.Read, entry.getTstamp());
-							process.addToInputFileList(fileinfo);
-							process.addToFileAccessList(fileinfo);
+						if (repofiles.contains(filepath) && !isBinaryFile(filepath)) {
+
+							if (!filepath.endsWith(".java")) {
+								FileInfo fileinfo = new FileInfo(pid, filepath, OperationType.Read, entry.getTstamp());
+								process.addToInputFileList(fileinfo);
+								process.addToFileAccessList(fileinfo);								
+							} else {
+								// we will only add when .class files are
+								// generated
+								if (!javaclasslist.containsKey(filepath)) {
+									javaclasslist.put(filepath,entry.getTstamp());
+									//javaclasslist.add(filepath);
+								}
+							}
 						}
 					} else if (SysCallTypes.WRITE_CALLS.contains(entry.getFunc())) {
 						String filepath = entry.getArgs().get(0);
 						filepath = new File(filepath).toString();
 						buildrootdir = new File(buildrootdir).toString();
-						if (repofiles.contains(filepath)) {
+						//if (repofiles.contains(filepath)) {
 
-							FileInfo fileinfo = new FileInfo(pid, filepath, OperationType.Read, entry.getTstamp());
+							FileInfo fileinfo = new FileInfo(pid, filepath, OperationType.Write, entry.getTstamp());
 							process.addToOutputFileList(fileinfo);
 							process.addToFileAccessList(fileinfo);
-						}
+
+							if (filepath.contains(".class")) {								
+								String basename = FilenameUtils.getBaseName(filepath);
+								String extension = FilenameUtils.getExtension(filepath);
+
+								String javafilename = getJavaFileFromClassName(repofiles, basename, extension);
+
+								if (javaclasslist.containsKey(javafilename) && repofiles.contains(javafilename)) {
+									FileInfo fileinforead = new FileInfo(pid, javafilename, OperationType.Read,
+											javaclasslist.get(javafilename));
+									process.addToInputFileList(fileinforead);
+									process.addToFileAccessList(fileinforead);
+									//System.out.println(filepath);
+								}
+							}
+						//}
 
 						if (entry.getArgs().size() > 1) {
 							// For write second parameter is the text
 
 							String writetxt = entry.getArgs().get(1);
-							// if(writetxt.contains("param name not found"))
-							// {
-							// System.out.println("found");
+							 if(writetxt.contains("Constructor definition in wrong order"))
+							 {
+								 System.out.println("Constructor definition in wrong order");
+								 System.out.println(writetxt);
+							 }					
 
 							int index = writetxt.indexOf("\\n");
 
@@ -79,12 +112,26 @@ public class ParseProcessFiles {
 							for (String ln : lines) {
 								double writetime = entry.getTstamp();
 								String cleantext = TextCleaner.CleanText(ln);
+								
+								
+								if(cleantext.length()>2 &&  cleantext.startsWith("\"") &&  cleantext.endsWith("\""))
+								{
+									cleantext=cleantext.substring(1, cleantext.length()-1);
+								}
 								if ((passelines.containsKey(cleantext) || faillines.containsKey(cleantext))
 										&& cleantext.length() > 0) {
 									OutputEntry outentry = new OutputEntry(writetime, cleantext);
 									process.addToOutputTxt(outentry);
 								}
+//								String strfilename=getFileNameInMsg(ln,filescore);
+//								
+//								if(strfilename!=null)
+//								{
+//									filescore.IncrementFilePassedScore(fileinfo.getTracefile());
+//								}
 							}
+							
+							
 						}
 					}
 
@@ -96,6 +143,23 @@ public class ParseProcessFiles {
 
 		return process;
 	}
+	
+	
+    private static String getFileNameInMsg(String line, FileScore filescore)
+    {
+    	String filename=null;
+    	
+    	for(String strfile:filescore.getFileScore().keySet())
+    	{
+    		if(line.contains(strfile))
+    		{
+    			filename=strfile;
+    			break;
+    		}    		
+    	}
+    	
+    	return filename;
+    }
 
 	private static BufferedReader openFile(String fileName) throws IOException {
 		// Don't forget to add buffering to have better performance!
@@ -220,18 +284,12 @@ public class ParseProcessFiles {
 
 		q.add(rootprocess);
 		visited.add(rootprocess.getProcessPID());
-        int i=0;
+		int i = 0;
 		try {
 			while (!q.isEmpty()) {
-				
-				ProcessInfo process = q.poll();
-//				System.out.println(i);
-//				
-//				if(i==7)
-//				{
-//					System.out.println("here");
-//				}
 
+				ProcessInfo process = q.poll();
+	
 				if (updatescore) {
 					updateFileScore(process, filescore, localpassed, localfailedlines);
 				}
@@ -288,7 +346,14 @@ public class ParseProcessFiles {
 					if (fileinfo.getAccessTime() < output.getMsgWriteTime()
 							&& passedlines.get(output.getStrMsg()) == false) {
 						filescore.IncrementFilePassedScore(fileinfo.getTracefile());
-						passedlines.put(fileinfo.getTracefile(), true);
+						if(output.getStrMsg().contains(fileinfo.getTracefile()))
+						{
+							for(int i=0;i<10;i++)
+							{
+								filescore.IncrementFilePassedScore(fileinfo.getTracefile());
+							}
+						}
+						//passedlines.put(fileinfo.getTracefile(), true);
 					}
 				}
 			} else if (failedlines.containsKey(output.getStrMsg())) {
@@ -297,13 +362,68 @@ public class ParseProcessFiles {
 				for (FileInfo fileinfo : depfile) {
 					if (fileinfo.getAccessTime() < output.getMsgWriteTime()
 							&& failedlines.get(output.getStrMsg()) == false) {
-						filescore.IncrementFilePassedScore(fileinfo.getTracefile());
-						failedlines.put(fileinfo.getTracefile(), true);
+						filescore.IncrementFileFailedScore(fileinfo.getTracefile());
+						
+						if(output.getStrMsg().contains(fileinfo.getTracefile()))
+						{
+							filescore.IncrementFileFailedScoreByValue(fileinfo.getTracefile(),10);
+						}
+						//failedlines.put(fileinfo.getTracefile(), true);
 					}
 				}
 
 			}
 		}
+	}
+	
+	
+	//public String getFileNameForMsg()
+
+	public static boolean isBinaryFile(String strf) throws FileNotFoundException, IOException {
+		File f = new File(strf);
+		FileInputStream in = new FileInputStream(f);
+		int size = in.available();
+		if (size > 1024)
+			size = 1024;
+		byte[] data = new byte[size];
+		in.read(data);
+		in.close();
+
+		int ascii = 0;
+		int other = 0;
+
+		for (int i = 0; i < data.length; i++) {
+			byte b = data[i];
+			if (b < 0x09)
+				return true;
+
+			if (b == 0x09 || b == 0x0A || b == 0x0C || b == 0x0D)
+				ascii++;
+			else if (b >= 0x20 && b <= 0x7E)
+				ascii++;
+			else
+				other++;
+		}
+
+		if (other == 0)
+			return false;
+
+		return 100 * other / (ascii + other) > 95;
+	}
+
+	private static String getJavaFileFromClassName(List<String> repofiles, String classname, String extension) {
+		String filename = "";
+
+		for (String strfile : repofiles) {
+			String basename = FilenameUtils.getBaseName(strfile);
+			String repoextension = FilenameUtils.getExtension(strfile);
+			if (basename.equals(classname) && extension.equals("class") && repoextension.equals("java")) {
+				filename = strfile;
+				return filename;
+			}
+		}
+
+		return filename;
 	}
 
 }

@@ -39,7 +39,7 @@ public class TraceParser {
 		
 		Map<Long,String> pidtracefile=tracelist.getTraces();
 		
-		ProcessInfo process=ParseProcessFiles.getProcessNode(tracelist.getRootpid(),pidtracefile,builddir,passedLines,failedLines,repofiles);
+		ProcessInfo process=ParseProcessFiles.getProcessNode(tracelist.getRootpid(),pidtracefile,builddir,passedLines,failedLines,repofiles,filescore);
 		
 	    processInfoMap.put(tracelist.getRootpid(), process);
 		
@@ -47,7 +47,7 @@ public class TraceParser {
 		{
 			if(!processInfoMap.containsKey(pid))
 			{
-				ProcessInfo proc=ParseProcessFiles.getProcessNode(pid,pidtracefile,builddir,passedLines,failedLines,repofiles);				
+				ProcessInfo proc=ParseProcessFiles.getProcessNode(pid,pidtracefile,builddir,passedLines,failedLines,repofiles,filescore);				
 				if(proc!=null)
 				{
 					processInfoMap.put(pid, proc);

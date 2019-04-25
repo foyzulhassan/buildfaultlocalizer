@@ -36,6 +36,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
  * To touch a Java file we inserted a default import statement to each file
  * Inserted import statement:import java.lang.System.*;
  */
+
 public class JavaCodeToucher {
 	private List<String> srcLines;
 

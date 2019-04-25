@@ -6,7 +6,8 @@ public class TextCleaner {
 	{
 		String cleantext="";
 		line=line.trim();
-		cleantext=line.replaceAll("[^a-zA-Z\\s+]","");
+		//cleantext=line.replaceAll("[^a-zA-Z\\s+]","");
+		cleantext=line.replaceAll("[0-9]", "");
 		
 		return cleantext;
 	}

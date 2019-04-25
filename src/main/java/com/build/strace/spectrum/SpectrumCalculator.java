@@ -1,10 +1,14 @@
 package com.build.strace.spectrum;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.build.strace.entity.FileScore;
 import com.build.strace.entity.Score;
 import com.util.sorting.SortingMgr;
@@ -37,9 +41,41 @@ public class SpectrumCalculator {
 			 rankfilescore.put(basepath, tarantulascore);
 		 }
 		 
+		 String logpath="/home/foyzulhassan/Research/Strace_Implementation/log.txt";
+		 
+		    File fout = new File(logpath);
+			FileOutputStream fos;
+			try {
+				fos = new FileOutputStream(fout);
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));				 
+			
+				
+				for(String file:rawfilescore.keySet())
+				 {
+					 Score score=rawfilescore.get(file);
+					 int passeds=score.getPassedcount();
+					 int faileds=score.getFailedcount(); 
+
+					 bw.write(file+"===========>"+passeds+"-----"+faileds);
+					 bw.newLine();
+				 }
+			 
+				bw.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 
+		
+		 
+		 
+		 
 		Map<String, Double> sortedsimmap = SortingMgr.sortByValue(rankfilescore);
 
 		ArrayList<String> reankedfiles = new ArrayList<String>(sortedsimmap.keySet()); 
+		
+		
+		
 		
 		return reankedfiles;
 		 

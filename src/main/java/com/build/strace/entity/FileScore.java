@@ -45,4 +45,14 @@ public class FileScore {
     		fileScore.put(file,score);
     	}
     }
+    
+    public void IncrementFileFailedScoreByValue(String file, int value)
+    {
+    	if(fileScore.containsKey(file))
+    	{
+    		Score score=fileScore.get(file);
+    		score.incrementFailedByValue(value);
+    		fileScore.put(file,score);
+    	}
+    }
 }

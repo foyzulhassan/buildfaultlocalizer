@@ -35,6 +35,13 @@ public class Score {
 	{
 		this.failedcount++;
 	}
-
+	
+	public void incrementFailedByValue(int value)
+	{
+		for(int i=0;i<value;i++)
+		{
+			this.failedcount++;
+		}
+	}
 	
 }

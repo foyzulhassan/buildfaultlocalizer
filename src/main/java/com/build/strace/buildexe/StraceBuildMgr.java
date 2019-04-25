@@ -41,7 +41,8 @@ public class StraceBuildMgr {
 
 	private Map<String, Boolean> failedLines;
 
-	private final String straceCmd = "strace -ff -y -ttt -qq -a1 -s 500 -o ";
+	private final String straceCmd = "strace -ff -y -ttt -qq -a1 -s 300 -o ";
+	//private final String straceCmd = "strace -ff -y -ttt -qq -a1 -o ";
 
 	public StraceBuildMgr(String buildpath, String stracefolder, String stracelog, String buildcmd) {
 		this.buildPath = buildpath;
@@ -54,25 +55,25 @@ public class StraceBuildMgr {
 
 	public void InitBuild() {
 		InitLogPath();
-		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + buildCmd;
+		String cmd = this.straceCmd + "./" + straceFolder + "/" + straceLog + " " + buildCmd;
 		CmdExecutor cmdexe = new CmdExecutor();
-		cmdexe.ExecuteCommand(buildPath+"//", "chmod 777 gradlew", buildPath+"//");
+		cmdexe.ExecuteCommand(buildPath+"/", "chmod 777 gradlew", buildPath+"/");
 		
 		//Build and clean so that dependency related issues are not in log
 		cmdexe = new CmdExecutor();
-		cmdexe.ExecuteCommand(buildPath+"//", buildCmd+" clean", buildPath+"//");
+		cmdexe.ExecuteCommand(buildPath+"/", buildCmd+" clean", buildPath+"/");
 		
 		//build again to get only passes and fail parts
 		cmdexe = new CmdExecutor();
 		//cmdexe.ExecuteCommand(buildPath+"//", cmd, buildPath+"//");
-		cmdexe.ExecuteCommand(buildPath+"//", buildCmd, buildPath+"//");
+		cmdexe.ExecuteCommand(buildPath+"/", buildCmd, buildPath+"/");
 		passedLines=cmdexe.getPassedLines();
 		failedLines=cmdexe.getFailedLines();
 	}
 
 	public Map<String, List<String>> getCompileJavaDependency(List<String> repofiles, List<String> recentchangedfiles,FileScore filescore,String buildcmd) {
 		Map<String, List<String>> compileJavadeps = new HashMap<>();
-		String cmd = this.straceCmd + "./" + straceFolder + "//" + straceLog + " " + buildcmd;
+		String cmd = this.straceCmd + "./" + straceFolder + "/" + straceLog + " " + buildcmd;
 
 		for (String file : recentchangedfiles) {
 			InitLogPath();
@@ -99,7 +100,7 @@ public class StraceBuildMgr {
 			CmdExecutor cmdexe = new CmdExecutor();
 			cmdexe.ExecuteCommand(buildPath, cmd, buildPath);
 			TraceParser parser = new TraceParser(passedLines,failedLines);
-			List<FileInfo> dependency = parser.parseRawTraces(this.buildPath + "//" + this.straceFolder,
+			List<FileInfo> dependency = parser.parseRawTraces(this.buildPath + "/" + this.straceFolder,
 					this.buildPath,repofiles,filescore,true);
 
 			List<String> filelist = new ArrayList<>();

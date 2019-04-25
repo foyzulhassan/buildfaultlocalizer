@@ -2263,16 +2263,18 @@ public class CommitAnalyzer {
 
 			for (DiffEntry diff : diffs) {
 
-				if (diff.getNewPath().contains(".gradle")) {
-
-					filelist.add(diff.getNewPath());
-
-					// gradleChanges = gradleChanges + change;
-
-				} else if (diff.getNewPath().contains(".java")) {
-
-					filelist.add(diff.getNewPath());
-				}
+//				if (diff.getNewPath().contains(".gradle")) {
+//
+//					filelist.add(diff.getNewPath());
+//
+//					// gradleChanges = gradleChanges + change;
+//
+//				} else if (diff.getNewPath().contains(".java")) {
+//
+//					filelist.add(diff.getNewPath());
+//				}
+				
+				filelist.add(diff.getNewPath());
 
 			}
 

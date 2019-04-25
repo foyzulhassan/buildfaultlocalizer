@@ -25,7 +25,7 @@ public class RankingMgr {
 		RankingCalculator rankmetric = new RankingCalculator();
 
 		//List<Gradlebuildfixdata> projects = dbexec.getProjectRows("BuildCraft/BuildCraft");
-		List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(3284756);
+		List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(1343788);
 		
 		int totaltopn = 0;
 		double totalmrr = 0.0;
@@ -61,7 +61,7 @@ public class RankingMgr {
 				List<String> localpathtochange=new ArrayList<>();				
 				for(String strfile:recentchangefile)
 				{
-					String localpath=Config.dynamicBuildDir+project+"//"+strfile;
+					String localpath=Config.dynamicBuildDir+project+"/"+strfile;
 					localpathtochange.add(localpath);
 				}
 				
