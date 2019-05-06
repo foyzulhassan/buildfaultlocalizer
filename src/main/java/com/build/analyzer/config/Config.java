@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+//public class ConfigDebug {
 public class Config {
 	// public static String mainDir =
 	// "/home/foyzulhassan/Research/Data/autobuilder_testing/";

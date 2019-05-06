@@ -165,6 +165,34 @@ public class FilterLogText {
 			}
 
 		}
+		
+//		String str=strbuilder.toString();
+//		
+//		if(str.length()<=0)
+//		{
+//			for (int failindex = 0; failindex < buildfaillines.size(); failindex++) {
+//
+//				String strline = buildfaillines.get(failindex);
+//
+//				// Checking if line has sufficient length
+//				if (strline.length() >= Config.lineSimSeperator.length()) {
+//
+//					String[] strparts = strline.split(Config.lineSimSeperator);
+//
+//					if (strparts[1] != null && Double.parseDouble(strparts[1]) <= 0.5) {
+//
+//						if (strparts[0] != null) {
+//							strbuilder.append(strparts[0]);
+//							strbuilder.append("\n");
+//						}
+//
+//					}
+//
+//				}
+//
+//			}
+//			
+//		}
 
 		return strbuilder.toString();
 	}

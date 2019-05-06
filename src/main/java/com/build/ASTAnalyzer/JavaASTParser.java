@@ -62,6 +62,8 @@ public class JavaASTParser {
 		
 		return astList;
 	}
+	
+	
 
 	public String readFile(File file) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));

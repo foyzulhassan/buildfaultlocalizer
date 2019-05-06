@@ -194,6 +194,27 @@
         <property name="evBaselineISSTAMap" type="java.lang.Double">
             <column name="ev_baselineissta_map" precision="22" scale="0" />
         </property>
+        
+         <property name="evBaselineFilePos" type="java.lang.Integer">
+            <column name="ev_baselinefile_pos" />
+        </property>
+        <property name="evBaselineFileMrr" type="java.lang.Double">
+            <column name="ev_baselinefile_mrr" precision="22" scale="0" />
+        </property>
+        <property name="evBaselineFileMap" type="java.lang.Double">
+            <column name="ev_baselinefile_map" precision="22" scale="0" />
+        </property>
+        
+         <property name="evDiffDepBoostAstPos" type="java.lang.Integer">
+            <column name="ev_diffdepboostast_pos" />
+        </property>
+        <property name="evDiffDepBoostAstMrr" type="java.lang.Double">
+            <column name="ev_diffdepboostast_mrr" precision="22" scale="0" />
+        </property>
+        <property name="evDiffDepBoostAstMap" type="java.lang.Double">
+            <column name="ev_diffdepboostast_map" precision="22" scale="0" />
+        </property>
+        
        <property name="dtFailType" type="string">
             <column name="dt_fail_type" length="65535" />
         </property>

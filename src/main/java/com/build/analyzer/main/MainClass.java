@@ -24,6 +24,8 @@ import com.build.docsim.CosineDocumentSimilarity;
 import com.build.evaluation.EvaluationMgr;
 import com.build.evaluation.FixWithBuildFailChange;
 import com.build.failanalyzer.GenerateTestFailType;
+import com.build.gradlescript.GradleBuildScriptASTSelector;
+import com.build.java.ast.selection.JavaASTSelector;
 import com.build.logfilter.LogFailPartSimGenMgr;
 import com.build.param.tunning.DiffFilterRecentDependencyTunning;
 import com.build.param.tunning.DiffFilterRecentTunning;
@@ -64,9 +66,13 @@ public class MainClass {
 				+ "\n36->Diff filter+BoostScore" 
 				+ "\n37->Full Log+Dependency+BoostScore"
 				+ "\n38->Baseline(Saha et al){Fail Part Log+Java File Rank+Then Gradle Build Script}"
-				+ "\n39->All Evaluation Experiment");
-
-		// create an object that reads integers:
+				+ "\n39->All Evaluation Experiment"
+				+ "\n51->Gradle ASE Raw Label Log Generation"
+				+ "\n52->Gradle ASE AST Matching Statistics"
+				+ "\n53->Diff filter+Dependency+BoostScore+BuildScript AST"
+				+ "\n54->Baseline(File Name Mentioned in Log Error Part)"
+				+ "\n55->Java AST selection Statistics)");
+		
 		Scanner cin = new Scanner(System.in);
 
 		System.out.println("Enter an integer: ");
@@ -153,6 +159,29 @@ public class MainClass {
 			EvaluationMgr.BaseLineForISSTA();
 			
 		}		
+		else if((inputid == 51))
+		{
+			GradleBuildScriptASTSelector astlogsel=new GradleBuildScriptASTSelector();
+			astlogsel.performGradleTextAnalysis();			
+		}
+		else if((inputid == 52))
+		{
+			GradleBuildScriptASTSelector astlogsel=new GradleBuildScriptASTSelector();
+			astlogsel.generateStatistics();			
+		}
+		else if((inputid == 53))
+		{
+			EvaluationMgr.DiffFilterDependencyWithBoostScoreBuildASTSimEval();		
+		}
+		else if((inputid == 54))
+		{
+			EvaluationMgr.BaseLineForFileName();	
+		}
+		else if((inputid == 55))
+		{
+			JavaASTSelector aststat=new JavaASTSelector();
+			aststat.generateStatistics();
+		}
 		else if (inputid == 68913) {
 			genSimDifferentialLogOnChange();
 			genSimDifferentialLogOnChangeForLogging();

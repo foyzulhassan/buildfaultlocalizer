@@ -4,11 +4,11 @@
 <!-- Generated Apr 10, 2018 1:22:14 AM by Hibernate Tools 5.1.0.Alpha1 -->
 <hibernate-mapping>
    <!--For Server -->
-	<!--<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata" 
-		catalog="travistorrent" optimistic-lock="version">-->
+	<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata" 
+		catalog="travistorrent" optimistic-lock="version">
 	<!--For Local Test -->
-	<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata"
-		catalog="travisci" optimistic-lock="version"> 
+	<!--<class name="com.build.analyzer.entity.Gradlebuildfixdata" table="gradlebuildfixdata"
+		catalog="travisci" optimistic-lock="version"> -->
         <id name="row" type="long">
             <column name="row" />
             <generator class="assigned" />
@@ -183,6 +183,40 @@
         </property>
         <property name="evFulllogboostMap" type="java.lang.Double">
             <column name="ev_fulllogboost_map" precision="22" scale="0" />
+        </property>
+        
+        <property name="evBaselineISSTAPos" type="java.lang.Integer">
+            <column name="ev_baselineissta_pos" />
+        </property>
+        <property name="evBaselineISSTAMrr" type="java.lang.Double">
+            <column name="ev_baselineissta_mrr" precision="22" scale="0" />
+        </property>
+        <property name="evBaselineISSTAMap" type="java.lang.Double">
+            <column name="ev_baselineissta_map" precision="22" scale="0" />
+        </property>
+        
+         <property name="evBaselineFilePos" type="java.lang.Integer">
+            <column name="ev_baselinefile_pos" />
+        </property>
+        <property name="evBaselineFileMrr" type="java.lang.Double">
+            <column name="ev_baselinefile_mrr" precision="22" scale="0" />
+        </property>
+        <property name="evBaselineFileMap" type="java.lang.Double">
+            <column name="ev_baselinefile_map" precision="22" scale="0" />
+        </property>
+        
+         <property name="evDiffDepBoostAstPos" type="java.lang.Integer">
+            <column name="ev_diffdepboostast_pos" />
+        </property>
+        <property name="evDiffDepBoostAstMrr" type="java.lang.Double">
+            <column name="ev_diffdepboostast_mrr" precision="22" scale="0" />
+        </property>
+        <property name="evDiffDepBoostAstMap" type="java.lang.Double">
+            <column name="ev_diffdepboostast_map" precision="22" scale="0" />
+        </property>
+        
+       <property name="dtFailType" type="string">
+            <column name="dt_fail_type" length="65535" />
         </property>
         <property name="dtDatasetType" type="string">
             <column name="dt_dataset_type" length="65535" />

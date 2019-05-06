@@ -34,21 +34,9 @@ public class CosineDocumentSimilarity {
 	private int failen;
 
 	CosineDocumentSimilarity(String s1, String s2) throws IOException {
-		// Directory directory = createIndex(s1, s2);
-		// IndexReader reader = DirectoryReader.open(directory);
-		RAMDirectory ramDir = new RAMDirectory();
-		//purgeDirectory(new File(Config.luceneDir2));
-		//FSDirectory fsDir1 = null;
-//		try {
-//			fsDir1 = FSDirectory.open(Paths.get(Config.luceneDir2));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
 
-		// Index the full text of both documents
-		// CharArraySet stopword=
+		RAMDirectory ramDir = new RAMDirectory();
+
 		List<String> stopWords = Arrays.asList("a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if",
 				"in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then",
 				"there", "these", "they", "this", "to", "was", "will", "with", "java", "build", "auto", "break", "case",
@@ -79,14 +67,23 @@ public class CosineDocumentSimilarity {
 		
 		Document doc = new Document();		
 		String str1=FileUtils.readFileToString(new File(s1), "UTF-8");	
-		str1=removeStopWordsAndStem(str1);		
+		str1=removeStopWordsAndStem(str1);	
+		if(str1.length()<=0)
+		{
+			str1="nolog";
+		}
 		doc.add(new Field("text",str1 , Field.Store.NO,
 				Field.Index.ANALYZED, Field.TermVector.YES));
 		writer.addDocument(doc);
 		
 		doc = new Document();
 		String str2=FileUtils.readFileToString(new File(s2), "UTF-8");	
-		str2=removeStopWordsAndStem(str2);		
+		str2=removeStopWordsAndStem(str2);	
+		
+		if(str2.length()<=0)
+		{
+			str2="empquery";
+		}
 		doc.add(new Field("text", str2, Field.Store.NO,
 				Field.Index.ANALYZED, Field.TermVector.YES));
 		writer.addDocument(doc);
@@ -101,6 +98,7 @@ public class CosineDocumentSimilarity {
 		reader.close();
 		v1 = toRealVector(f1);
 		v2 = toRealVector(f2);
+
 	}
 
 	public CosineDocumentSimilarity(List<String> buildpasslines, List<String> buildfaillines) {
@@ -210,8 +208,7 @@ public class CosineDocumentSimilarity {
 				"fixed", "foreach", "implicit", "in", "interface", "internal", "is", "lock", "namespace", "new", "null",
 				"object", "operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref",
 				"sbyte", "sealed", "stackalloc", "string", "this", "throw", "true", "try", "typeof", "uint", "ulong",
-				"unchecked", "unsafe", "ushort", "using", "virtual", "build", "download", "time", "Resolving",
-				"dependencies");
+				"unchecked", "unsafe", "ushort", "using", "virtual", "build", "download", "time", "Resolving");
 
 		CharArraySet stopSet = new CharArraySet(stopWords, false);
 		Analyzer analyzer = new StandardAnalyzer(stopSet);

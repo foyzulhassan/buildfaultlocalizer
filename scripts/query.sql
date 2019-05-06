@@ -112,3 +112,18 @@ ALTER TABLE gradlebuildfixdata ADD ev_baselineissta_pos int AFTER ev_fulllogboos
 ALTER TABLE gradlebuildfixdata ADD ev_baselineissta_mrr DOUBLE AFTER ev_baselineissta_pos;
 ALTER TABLE gradlebuildfixdata ADD ev_baselineissta_map DOUBLE AFTER ev_baselineissta_mrr;
 
+%Need to add this part for Baseline 2: File Name mentioned in Failed Log part
+
+use travistorrent;
+ALTER TABLE gradlebuildfixdata ADD ev_baselinefile_pos int AFTER ev_baselineissta_map;
+ALTER TABLE gradlebuildfixdata ADD ev_baselinefile_mrr DOUBLE AFTER ev_baselinefile_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_baselinefile_map DOUBLE AFTER ev_baselinefile_mrr;
+
+
+
+%Need to add this part for Proposed approach with diff+dep+boost+BuildScript AST
+
+use travistorrent;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdepboostast_pos int AFTER ev_baselinefile_map;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdepboostast_mrr DOUBLE AFTER ev_diffdepboostast_pos;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdepboostast_map DOUBLE AFTER ev_diffdepboostast_mrr;

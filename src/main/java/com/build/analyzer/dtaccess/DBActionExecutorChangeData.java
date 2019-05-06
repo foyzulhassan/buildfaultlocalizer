@@ -1,5 +1,6 @@
 package com.build.analyzer.dtaccess;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -82,6 +83,38 @@ public class DBActionExecutorChangeData {
 		return results;		
 
 	}
+	
+	public List<Gradlepatch> getEntityWithRowId(long rowid) {
+		Gradlepatch proj = null;
+		List<Gradlepatch> projs=new ArrayList<>();
+
+		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
+
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+
+			String hql = "FROM Gradlepatch Tr WHERE Tr.row = :row";
+			Query query = session.createQuery(hql);
+			query.setParameter("row", rowid);
+			List results = query.list();
+
+			if (!results.isEmpty()) {
+				proj = (Gradlepatch) results.get(0);
+				projs.add(proj);
+			}
+
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return projs;
+	}
+	
 
 	public List<Gradlebuildfixdata> getRows() {
 

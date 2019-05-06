@@ -66,6 +66,13 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	private Integer evBaselineISSTAPos;
 	private Double evBaselineISSTAMrr;
 	private Double evBaselineISSTAMap;
+	private Integer evBaselineFilePos;	
+	private Double evBaselineFileMrr;
+	private Double evBaselineFileMap;
+	private Integer evDiffDepBoostAstPos;
+	private Double evDiffDepBoostAstMrr;
+	private Double evDiffDepBoostAstMap;
+
 	private String dtFailType;
 	private String dtDatasetType;
 
@@ -615,6 +622,54 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 
 	public void setEvBaselineISSTAMap(Double evBaselineISSTAMap) {
 		this.evBaselineISSTAMap = evBaselineISSTAMap;
+	}
+	
+	public Integer getEvBaselineFilePos() {
+		return evBaselineFilePos;
+	}
+
+	public void setEvBaselineFilePos(Integer evBaselineFilePos) {
+		this.evBaselineFilePos = evBaselineFilePos;
+	}
+
+	public Double getEvBaselineFileMrr() {
+		return evBaselineFileMrr;
+	}
+
+	public void setEvBaselineFileMrr(Double evBaselineFileMrr) {
+		this.evBaselineFileMrr = evBaselineFileMrr;
+	}
+
+	public Double getEvBaselineFileMap() {
+		return evBaselineFileMap;
+	}
+
+	public void setEvBaselineFileMap(Double evBaselineFileMap) {
+		this.evBaselineFileMap = evBaselineFileMap;
+	}
+
+	public Integer getEvDiffDepBoostAstPos() {
+		return evDiffDepBoostAstPos;
+	}
+
+	public void setEvDiffDepBoostAstPos(Integer evDiffDepBoostAstPos) {
+		this.evDiffDepBoostAstPos = evDiffDepBoostAstPos;
+	}
+
+	public Double getEvDiffDepBoostAstMrr() {
+		return evDiffDepBoostAstMrr;
+	}
+
+	public void setEvDiffDepBoostAstMrr(Double evDiffDepBoostAstMrr) {
+		this.evDiffDepBoostAstMrr = evDiffDepBoostAstMrr;
+	}
+
+	public Double getEvDiffDepBoostAstMap() {
+		return evDiffDepBoostAstMap;
+	}
+
+	public void setEvDiffDepBoostAstMap(Double evDiffDepBoostAstMap) {
+		this.evDiffDepBoostAstMap = evDiffDepBoostAstMap;
 	}
 
 

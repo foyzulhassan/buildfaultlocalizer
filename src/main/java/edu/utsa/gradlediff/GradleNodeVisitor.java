@@ -131,10 +131,9 @@ public class GradleNodeVisitor extends CodeVisitorSupport {
 				}
 			}
 
-			if (taskflag == true) {
+			if (taskflag == true && taskname!=null) {
 				call.setNodeMetaData("task", "task " + taskname);
 			}
-
 			else {
 				call.setNodeMetaData("task", "task");
 			}
@@ -152,13 +151,15 @@ public class GradleNodeVisitor extends CodeVisitorSupport {
 					if (block instanceof BlockStatement) {
 
 						blockflag = true;
+						String strblock=block.getText();
+						System.out.println(strblock);
 					}
 				}
 			}
 
 		}
 
-		if (blockflag == true) {
+		if (blockflag == true && call.getNodeMetaData("block")==null) {
 			call.setNodeMetaData("block", call.getMethodAsString());
 		}
 
@@ -801,9 +802,7 @@ Expression left=expression.getLeftExpression();
 		// TODO Auto-generated method stub
 		
 		if(expression.getValue()==null)
-			return;
-		
-		
+			return;		
     	
     	if (expression.getNodeMetaData("lbl") == null)
 			expression.setNodeMetaData("lbl", expression.getText());

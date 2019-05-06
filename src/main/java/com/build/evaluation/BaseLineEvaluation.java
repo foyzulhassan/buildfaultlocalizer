@@ -91,5 +91,133 @@ public class BaseLineEvaluation {
 		dbexec.updateBatchExistingRecord(projects);
 	}
 	
+	public void calculateBaseLineEvaluationScoreV2() throws Exception {
+		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
+		RankingCalculator rankmetric = new RankingCalculator();
+
+		List<Gradlebuildfixdata> projects = dbexec.getEvalRows();
+		
+		int totaltopn = 0;
+		double totalmrr = 0.0;
+		double totalmap = 0.0;
+		
+		for (int index = 0; index < projects.size(); index++) {
+			
+			Gradlebuildfixdata proj = projects.get(index);
+
+			String project = proj.getGhProjectName();
+			project = project.replace('/', '@');
+
+			System.out.println(project);
+
+			CommitAnalyzer cmtanalyzer = null;
+
+			try {
+				cmtanalyzer = new CommitAnalyzer("test", project);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBluIRBaseLine(proj.getGitLastfailCommit(),
+					proj.getF2row(), proj);
+
+			Map<String, Double> sortedsimmap = SortingMgr.sortByValue(simmap);	
+			
+			ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
+
+			String actualfixfile = proj.getF2passFilelist();
+
+			String[] actualfixs = actualfixfile.split(";");
+
+			projects.get(index).setTotalfileCount(sortedsimmap.size());
+			int topn = rankmetric.getTopN(keys, actualfixs);
+			double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
+			double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+
+			totaltopn = totaltopn + topn;
+			totalmrr = totalmrr + mrr;
+			totalmap = totalmap + map;		
+
+
+			projects.get(index).setEvBaselineISSTAPos(topn);
+			projects.get(index).setEvBaselineISSTAMrr(mrr);
+			projects.get(index).setEvBaselineISSTAMap(map);
+		}
+		
+		System.out.println("\n\n\n*******Baseline ISSTA********");
+		System.out.println("\n*******For Param: " + Config.thresholdForSimFilter + "********");
+		System.out.println("\nTopN: " + (totaltopn / projects.size()) + " MRR: " + (totalmrr / projects.size()) + " MAP: "
+				+ (totalmap / projects.size()));
+		
+		SessionGenerator.closeFactory();
+		dbexec = new DBActionExecutorChangeData();
+		dbexec.updateBatchExistingRecord(projects);
+	}
+	
+	public void calculateFileMentionedBaseLineEvaluationScore() throws Exception {
+		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
+		RankingCalculator rankmetric = new RankingCalculator();
+
+		List<Gradlebuildfixdata> projects = dbexec.getEvalRows();
+		
+		int totaltopn = 0;
+		double totalmrr = 0.0;
+		double totalmap = 0.0;
+		
+		for (int index = 0; index < projects.size(); index++) {
+			
+			Gradlebuildfixdata proj = projects.get(index);
+
+			String project = proj.getGhProjectName();
+			project = project.replace('/', '@');
+
+			System.out.println(project);
+
+			CommitAnalyzer cmtanalyzer = null;
+
+			try {
+				cmtanalyzer = new CommitAnalyzer("test", project);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			Map<String, Double> simmapjava = cmtanalyzer.getBaselineWithFileMentionedInFailLogPartTreeSimilarityMap(proj.getGitLastfailCommit(),
+					proj.getF2row(), proj);
+
+			Map<String, Double> sortedsimmap = SortingMgr.sortByValue(simmapjava);
+			
+			ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
+
+			String actualfixfile = proj.getF2passFilelist();
+
+			String[] actualfixs = actualfixfile.split(";");
+
+			projects.get(index).setTotalfileCount(sortedsimmap.size());
+			int topn = rankmetric.getTopN(keys, actualfixs);
+			double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
+			double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+
+			totaltopn = totaltopn + topn;
+			totalmrr = totalmrr + mrr;
+			totalmap = totalmap + map;		
+
+
+			projects.get(index).setEvBaselineFilePos(topn);
+			projects.get(index).setEvBaselineFileMrr(mrr);
+			projects.get(index).setEvBaselineFileMap(map);
+		}
+		
+		System.out.println("\n\n\n*******Baseline2(File Name Mentioned in Failed Log Part)********");
+		System.out.println("\n*******For Param: " + Config.thresholdForSimFilter + "********");
+		System.out.println("\nTopN: " + (totaltopn / projects.size()) + " MRR: " + (totalmrr / projects.size()) + " MAP: "
+				+ (totalmap / projects.size()));
+		
+		SessionGenerator.closeFactory();
+		dbexec = new DBActionExecutorChangeData();
+		dbexec.updateBatchExistingRecord(projects);
+	}
+	
 
 }

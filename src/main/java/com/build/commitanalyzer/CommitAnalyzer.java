@@ -40,7 +40,9 @@ import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
+import com.build.ASTAnalyzer.JavaASTEntity;
 import com.build.ASTAnalyzer.JavaASTParser;
+import com.build.ASTAnalyzer.JavaTypeWiseASTParser;
 import com.build.analyzer.config.Config;
 import com.build.analyzer.diff.gradle.GradleChange;
 import com.build.analyzer.diff.gradle.GradlePatchGenMngr;
@@ -53,6 +55,11 @@ import com.build.docsim.CosineDocumentSimilarity;
 import com.build.docsim.CosineDocumentSimilarityTFIDF;
 //import com.build.docsim.CosineSimilarity;
 import com.build.docsimilarity.DocumentSimilarity;
+import com.build.gradle.ast.selection.EntityToStringGenerator;
+import com.build.gradle.ast.selection.GradleExtractSelectedAST;
+import com.build.gradle.ast.selection.GradleSelectedASTEntities;
+import com.build.gradlescript.FileContent;
+import com.build.java.ast.selection.JavaSelectedASTEntities;
 import com.build.keyword.Keyword;
 import com.build.keyword.TermExtractor;
 import com.build.logfilter.FilterLogText;
@@ -67,6 +74,7 @@ import com.ir.assignment.LuceneMain;
 
 import edu.utsa.buildlogparser.util.TextFileReaderWriter;
 import edu.utsa.gradlediff.GradleASTParseMngr;
+import edu.utsa.gradlediff.SASTNode;
 import edu.utsa.gradlediff.StringMenupulator;
 
 import org.apache.commons.io.IOUtils;
@@ -741,8 +749,9 @@ public class CommitAnalyzer {
 
 		return filteredmap;
 	}
-	
-	public Map<String, Double> getBaselineFailLogPartTreeSimilarityMap(String ID, long rowid, Gradlebuildfixdata fixdata,boolean isJavaFile) {
+
+	public Map<String, Double> getBaselineFailLogPartTreeSimilarityMap(String ID, long rowid,
+			Gradlebuildfixdata fixdata, boolean isJavaFile) {
 
 		String logcontent = "";
 		File f1 = null;
@@ -757,7 +766,6 @@ public class CommitAnalyzer {
 
 		FilterLogText filter = new FilterLogText();
 		logcontent = filter.performFilteringOnSimValue(fixdata);
-		
 
 		try {
 			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
@@ -782,7 +790,7 @@ public class CommitAnalyzer {
 					treeWalk.enterSubtree();
 				}
 
-				else if (treeWalk.getPathString().contains(".java") && isJavaFile==true) {
+				else if (treeWalk.getPathString().contains(".java") && isJavaFile == true) {
 					ObjectId objectId = treeWalk.getObjectId(0);
 					ObjectLoader loader = repository.open(objectId);
 
@@ -794,16 +802,16 @@ public class CommitAnalyzer {
 						str = "blankfile";
 					}
 
-					 if (str.length() > 0) {
-					
-					 JavaASTParser javaparser = new JavaASTParser();
-					
-					 List<String> asts = javaparser.parseJavaMethodDecs(str);
-					
-					 str = String.join(" ", asts);
-					 } else {
-					 str = "blankfile";
-					 }
+					if (str.length() > 0) {
+
+						JavaASTParser javaparser = new JavaASTParser();
+
+						List<String> asts = javaparser.parseJavaMethodDecs(str);
+
+						str = String.join(" ", asts);
+					} else {
+						str = "blankfile";
+					}
 
 					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
 					index++;
@@ -818,7 +826,7 @@ public class CommitAnalyzer {
 					simMap.put(f2.toString(), sim);
 					filemap.put(treeWalk.getPathString(), f2.toString());
 
-				} else if (treeWalk.getPathString().contains(".gradle") && isJavaFile==false) {
+				} else if (treeWalk.getPathString().contains(".gradle") && isJavaFile == false) {
 					ObjectId objectId = treeWalk.getObjectId(0);
 					ObjectLoader loader = repository.open(objectId);
 
@@ -839,38 +847,379 @@ public class CommitAnalyzer {
 
 					// CosineDocumentSimilarity csm=new
 					// CosineDocumentSimilarity(file1,file2);
-					double sim =0.0;
+					double sim = 0.0;
 
 					simMap.put(f2.toString(), sim);
 					filemap.put(treeWalk.getPathString(), f2.toString());
 				}
 
 			}
-			
-			
 
 			ArrayList<String> files = new ArrayList<String>();
 
-			//All Java files
+			// All Java files
 			for (Map.Entry<String, String> entry : filemap.entrySet()) {
 				// System.out.println(entry.getKey() + ":" + entry.getValue());
 				files.add(entry.getValue());
 			}
-			
 
 			// log file content
-			//files.add(f1.toString());
+			// files.add(f1.toString());
 
 			int count = 0;
-			//Add similarity value for Java files
+			// Add similarity value for Java files
 			for (Map.Entry<String, String> entry : filemap.entrySet()) {
 				// System.out.println(entry.getKey() + ":" + entry.getValue());
 				if (simMap.containsKey(entry.getValue())) {
 					filteredmap.put(entry.getKey(), simMap.get(entry.getValue()));
 				}
 			}
-			
-			//delete Java files
+
+			// delete Java files
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				File f = new File(entry.getValue());
+				if (f.exists()) {
+					boolean flag = f.delete();
+
+				}
+			}
+
+			treeWalk.reset();
+			f1.delete();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		return filteredmap;
+	}
+	
+	
+	public Map<String, Double> getTreeSimilarityMapWithBluIRBaseLine(String ID, long rowid,
+			Gradlebuildfixdata fixdata) {
+
+		String logcontent = "";
+		File f1 = null;
+		File f2 = null;
+		File f3 = null;
+		int index = 0;
+
+		Map<String, String> filemap = new HashMap<String, String>();
+		Map<String, Double> filteredmap = new HashMap<String, Double>();
+
+		Map<String, Double> simMap = new HashMap<String, Double>();
+		// CosineSimilarity csm=new CosineSimilarity();
+
+		FilterLogText filter = new FilterLogText();
+		logcontent = filter.performFilteringOnSimValue(fixdata);
+
+
+		try {
+			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
+			f3 = commitAnalyzingUtils.writeContentInFile("logpass.text", fixdata.getFixChange());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+
+			RevTree tree = commit.getTree();
+
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			while (treeWalk.next()) {
+
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				}
+
+				else if (treeWalk.getPathString().endsWith(".java")) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String filecontent = new String(butestr);
+					String str = filecontent;
+					JavaASTEntity asts = null;
+
+					if (str.length() > 0) {
+
+						try {
+							// JavaASTParser javaparser = new JavaASTParser();
+							JavaTypeWiseASTParser javaparser = new JavaTypeWiseASTParser();
+
+							asts = javaparser.parseJavaMethodDecs(str);
+
+							// str = String.join(" ", asts);
+							// str=str+" "+treeWalk.getPathString();
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+							System.out.println("Java File Parsing Error");
+							str = "blankfile";
+						}
+
+					} else {
+						str = "blankfile";
+					}
+
+					str = str.trim();
+
+					if (str.length() <= 0) {
+						str = filecontent;
+					}
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+
+					// filemap.put(treeWalk.getPathString(), sourcefile);
+					double simimp = 0.0;
+					double simclass = 0.0;
+					double simmet = 0.0;
+					double simdec = 0.0;
+
+					str = String.join(" ", asts.getImportList());
+					str = str.trim();
+					if (str.length() > 0) {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						simimp = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					}
+
+					str = String.join(" ", asts.getClassName());
+					str = str.trim();
+					if (str.length() > 0) {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						simclass = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					}
+
+					str = String.join(" ", asts.getMethodList());
+					str = str.trim();
+					if (str.length() > 0) {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						simmet = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					}
+
+					str = String.join(" ", asts.getDecList());
+					str = str.trim();
+					if (str.length() > 0) {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						simdec = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					}
+
+					double sim = 0.0;
+
+					sim = simimp + simclass + simmet + simdec;
+					sim=sim/4.0;
+
+					// sim =
+					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+
+					// double sim =
+					// maxprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+					index++;
+
+				} else if (treeWalk.getPathString().endsWith(".gradle")) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String filecontent = new String(butestr);
+					String str = filecontent;
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					
+					str = str.trim();
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+					
+					str = str.trim();
+					if (str.length() <= 0)
+						str = filecontent;
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+
+					str = str.trim();
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);				
+
+					double sim =CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),f2.toString());
+
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+					index++;
+
+				}
+			}
+
+			ArrayList<String> files = new ArrayList<String>();
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				files.add(entry.getValue());
+			}
+
+			// log file content
+			files.add(f1.toString());
+			files.add(f3.toString());
+
+			int count = 0;
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				if (simMap.containsKey(entry.getValue())) {
+					filteredmap.put(entry.getKey(), simMap.get(entry.getValue()));
+				} else {
+					filteredmap.put(entry.getKey(), 0.0);
+				}
+			}
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				File f = new File(entry.getValue());
+				if (f.exists()) {
+					boolean flag = f.delete();
+
+				}
+
+			}
+
+			treeWalk.reset();
+			f1.delete();
+			f3.delete();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		return filteredmap;
+	}
+	
+	
+	public Map<String, Double> getBaselineWithFileMentionedInFailLogPartTreeSimilarityMap(String ID, long rowid,
+			Gradlebuildfixdata fixdata) {
+
+		String logcontent = "";
+		File f1 = null;
+		File f2 = null;
+		int index = 0;
+
+		Map<String, String> filemap = new HashMap<String, String>();
+		Map<String, Double> filteredmap = new HashMap<String, Double>();
+
+		Map<String, Double> simMap = new HashMap<String, Double>();
+		// CosineSimilarity csm=new CosineSimilarity();
+
+		FilterLogText filter = new FilterLogText();
+		logcontent = filter.performFilteringOnSimValue(fixdata);
+
+		try {
+			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+
+			RevTree tree = commit.getTree();
+
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			while (treeWalk.next()) {
+
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				}
+
+				else if (logcontent.contains(treeWalk.getPathString()) && (treeWalk.getPathString().endsWith(".java") || treeWalk.getPathString().endsWith(".gradle"))) {
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String filecontent = new String(butestr);
+					String str = filecontent;
+					JavaASTEntity asts = null;
+
+					if(str.length()<=0)
+					{
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";					
+
+					// filemap.put(treeWalk.getPathString(), sourcefile);
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+					double sim=1.0;
+					
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+					index++;
+
+				} else if(!logcontent.contains(treeWalk.getPathString()) && (treeWalk.getPathString().endsWith(".java") || treeWalk.getPathString().endsWith(".gradle"))){
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+
+					byte[] butestr = loader.getBytes();
+
+					String str = new String(butestr);
+
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					index++;
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+					double sim = 0.0;
+					simMap.put(f2.toString(), sim);
+					filemap.put(treeWalk.getPathString(), f2.toString());
+				}
+
+			}
+
+			ArrayList<String> files = new ArrayList<String>();
+
+			// All Java files
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				files.add(entry.getValue());
+			}
+
+			// log file content
+			// files.add(f1.toString());
+
+			int count = 0;
+			// Add similarity value for Java files
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				if (simMap.containsKey(entry.getValue())) {
+					filteredmap.put(entry.getKey(), simMap.get(entry.getValue()));
+				}
+			}
+
+			// delete Java files
 			for (Map.Entry<String, String> entry : filemap.entrySet()) {
 				// System.out.println(entry.getKey() + ":" + entry.getValue());
 				File f = new File(entry.getValue());
@@ -1109,8 +1458,8 @@ public class CommitAnalyzer {
 
 		FilterLogText filter = new FilterLogText();
 		logcontent = filter.performFilteringOnSimValue(fixdata);
-		
-		//logcontent=fixdata.getFailChange();
+
+		// logcontent=fixdata.getFailChange();
 
 		BuildDependencyGenerator depgen = new BuildDependencyGenerator();
 
@@ -1159,7 +1508,7 @@ public class CommitAnalyzer {
 					ObjectLoader loader = repository.open(objectId);
 					byte[] butestr = loader.getBytes();
 
-					String str = new String(butestr);					
+					String str = new String(butestr);
 
 					if (str.length() > 0) {
 
@@ -3525,4 +3874,1135 @@ public class CommitAnalyzer {
 		return tfidfindex;
 
 	}
+
+	public FileContent getGradleFileASTLabels(String ID, long rowid) {
+		FileContent filecontent = new FileContent();
+		StringBuilder sourcecode = new StringBuilder();
+		File f1 = null;
+		int index = 0;
+		Map<String, Integer> gradleastlbl = new HashMap<>();
+
+		try {
+
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+			RevTree tree = commit.getTree();
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			while (treeWalk.next()) {
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				}
+
+				else if (treeWalk.getPathString().endsWith(".gradle")) {
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+
+					f1 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+					sourcecode.append(str);
+					sourcecode.append("\n\n\n=========================================\n\n\n");
+
+					GradleASTParseMngr astParser = new GradleASTParseMngr();
+
+					List<SASTNode> nodes = astParser.getGradleASTNodes(sourcefile);
+					for (SASTNode node : nodes) {
+						if (node.getCurrent().getNodeMetaData("lbl") != null) {
+							if (!gradleastlbl.containsKey(node.getCurrent().getNodeMetaData("lbl").toString())) {
+								gradleastlbl.put(node.getCurrent().getNodeMetaData("lbl").toString(), 0);
+							}
+						}
+					}
+
+					if (f1.exists()) {
+						f1.delete();
+					}
+
+					index++;
+				}
+
+			}
+
+			treeWalk.reset();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		filecontent.setText(sourcecode.toString());
+		filecontent.setGradleastlabels(gradleastlbl);
+
+		return filecontent;
+	}
+
+	public List<GradleSelectedASTEntities> getSeletedGradleFileASTLabels(String ID, long rowid) {
+		FileContent filecontent = new FileContent();
+		File f1 = null;
+		int index = 0;
+		List<GradleSelectedASTEntities> selectedASTs = new ArrayList<>();
+		try {
+
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+			RevTree tree = commit.getTree();
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			while (treeWalk.next()) {
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				}
+
+				else if (treeWalk.getPathString().endsWith(".gradle")) {
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					f1 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					GradleExtractSelectedAST astextractor = new GradleExtractSelectedAST();
+					GradleSelectedASTEntities entities = astextractor.getGradleASTNodes(sourcefile,
+							treeWalk.getPathString());
+					selectedASTs.add(entities);
+
+					if (f1.exists()) {
+						f1.delete();
+					}
+
+					index++;
+				}
+
+			}
+
+			treeWalk.reset();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		return selectedASTs;
+	}
+	
+	public JavaSelectedASTEntities getSeletedJavaFileASTLabels(String ID, long rowid) {
+		FileContent filecontent = new FileContent();
+		File f1 = null;
+		int index = 0;
+		List<String> importlist=new ArrayList<>();
+		List<String> classlist=new ArrayList<>();
+		List<String> methlist=new ArrayList<>();
+		List<String> declist=new ArrayList<>();
+		JavaSelectedASTEntities selectedasts=new JavaSelectedASTEntities();
+		try {
+
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+			RevTree tree = commit.getTree();
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			while (treeWalk.next()) {
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				}
+
+				else if (treeWalk.getPathString().endsWith(".java")) {
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+					JavaASTEntity asts = null;
+					
+					if (str.length() > 0) {
+
+						try {
+							// JavaASTParser javaparser = new JavaASTParser();
+							JavaTypeWiseASTParser javaparser = new JavaTypeWiseASTParser();
+
+							asts = javaparser.parseJavaMethodDecs(str);
+
+							// str = String.join(" ", asts);
+							// str=str+" "+treeWalk.getPathString();
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+							System.out.println("Java File Parsing Error");
+							str = "blankfile";
+						}
+
+					} else {
+						str = "blankfile";
+					}
+					
+					if(asts!=null)
+					{
+						importlist.addAll(asts.getImportList());
+						classlist.addAll(asts.getClassName());
+						methlist.addAll(asts.getMethodList());
+						declist.addAll(asts.getDecList());
+					}
+
+					index++;
+				}
+
+			}
+
+			treeWalk.reset();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		selectedasts.setImportList(importlist);
+		selectedasts.setClassList(classlist);
+		selectedasts.setMethodList(methlist);
+		selectedasts.setDecList(declist);
+		
+		return selectedasts;
+		
+	}
+
+	public Map<String, Double> getTreeSimilarityMapWithBuildDependencyWithBuildAST(String ID, long rowid,
+			Gradlebuildfixdata fixdata, List<String> recentchanges) {
+
+		String logcontent = "";
+		File f1 = null;
+		File f2 = null;
+		File f3 = null;
+		int index = 0;
+
+		Map<String, String> filemap = new HashMap<String, String>();
+		Map<String, Double> filteredmap = new HashMap<String, Double>();
+
+		Map<String, Double> simMap = new HashMap<String, Double>();
+		// CosineSimilarity csm=new CosineSimilarity();
+
+		FilterLogText filter = new FilterLogText();
+		logcontent = filter.performFilteringOnSimValue(fixdata);
+
+		// logcontent=fixdata.getFailChange();
+
+		BuildDependencyGenerator depgen = new BuildDependencyGenerator();
+
+		String rootproject = depgen.getRootProjName(fixdata, ID, rowid);
+		List<String> allprojlist = depgen.getAllSubProjects(fixdata, ID, rowid);
+
+		List<String> depprojlist = depgen.getDependentProjectList(fixdata, ID, rowid, recentchanges);
+
+		Double minprob = 1.0;
+		Double maxprob = 1.0;
+
+		if (allprojlist.size() > 0 && depprojlist.size() > 0) {
+			Map<String, Double> probmap = getDependentProjProbability(allprojlist, depprojlist);
+			minprob = Collections.min(probmap.values());
+			maxprob = Collections.max(probmap.values());
+		}
+
+		try {
+			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
+			f3 = commitAnalyzingUtils.writeContentInFile("logpass.text", fixdata.getFixChange());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+
+			RevTree tree = commit.getTree();
+
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			while (treeWalk.next()) {
+
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				}
+
+				else if (treeWalk.getPathString().endsWith(".java")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject)) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String filecontent = new String(butestr);
+					String str = filecontent;
+					JavaASTEntity asts = null;
+
+					if (str.length() > 0) {
+
+						try {
+							// JavaASTParser javaparser = new JavaASTParser();
+							JavaTypeWiseASTParser javaparser = new JavaTypeWiseASTParser();
+
+							asts = javaparser.parseJavaMethodDecs(str);
+
+							// str = String.join(" ", asts);
+							// str=str+" "+treeWalk.getPathString();
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+							System.out.println("Java File Parsing Error");
+							str = "blankfile";
+						}
+
+					} else {
+						str = "blankfile";
+					}
+
+					str = str.trim();
+
+					if (str.length() <= 0) {
+						str = filecontent;
+					}
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+
+					// filemap.put(treeWalk.getPathString(), sourcefile);
+					double simimp = 0.0;
+					double simclass = 0.0;
+					double simmet = 0.0;
+					double simdec = 0.0;
+
+					str = String.join(" ", asts.getImportList());
+					str = str.trim();
+					if (str.length() > 0) {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						simimp = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					}
+
+					str = String.join(" ", asts.getClassName());
+					str = str.trim();
+					if (str.length() > 0) {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						simclass = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					}
+
+					str = String.join(" ", asts.getMethodList());
+					str = str.trim();
+					if (str.length() > 0) {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						simmet = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					}
+
+					str = String.join(" ", asts.getDecList());
+					str = str.trim();
+					if (str.length() > 0) {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						simdec = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					}
+
+					double sim = 0.0;
+
+					sim = simimp + simclass + simmet + simdec;
+
+					// sim =
+					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+
+					// double sim =
+					// maxprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+					index++;
+
+				} else if (treeWalk.getPathString().endsWith(".gradle")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject)) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String filecontent = new String(butestr);
+					String str = filecontent;
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					GradleSelectedASTEntities entities = null;
+					str = str.trim();
+					if (str.length() <= 0) {
+						str = "blankfile";
+					} else {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						GradleExtractSelectedAST gradleast = new GradleExtractSelectedAST(rootproject);
+
+						try {
+							entities = gradleast.getGradleASTNodes(sourcefile, treeWalk.getPathString());
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+							System.out.println("Gradle File Parsing Error");
+							entities = null;
+						}
+
+						if (f2.exists())
+							f2.delete();
+
+						String str1 = EntityToStringGenerator.getStringFromEntity(entities);
+						str1 = str1.trim();
+						str = str1;
+
+					}
+
+					str = str.trim();
+					if (str.length() <= 0)
+						str = filecontent;
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+
+					str = str.trim();
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					double sim = 0.0;
+
+					if (entities != null) {
+						double simdep = 0.0;
+						double simtask = 0.0;
+						double simprop = 0.0;
+						double simsub = 0.0;
+						String strdep = String.join(" ", entities.getDependencyList());
+						strdep = strdep.trim();
+						String strtask = String.join(" ", entities.getTaskList());
+						strtask = strtask.trim();
+						String strprop = String.join(" ", entities.getPropertyList());
+						strprop = strprop.trim();
+
+						String strsub = String.join(" ", entities.getSubprojList());
+						strsub = strsub.trim();
+
+						if (strdep.length() > 0) {
+							f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, strdep);
+							simdep = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+						}
+
+						if (strtask.length() > 0) {
+							f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, strtask);
+							simtask = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+						}
+
+						if (strprop.length() > 0) {
+							f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, strprop);
+							simprop = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+						}
+
+						if (strsub.length() > 0) {
+							f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, strsub);
+							simsub = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+						}
+
+						sim = simdep + simtask + simprop + simsub;
+
+					} else {
+						sim = 0.0;
+					}
+
+					// double sim =
+					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+					// double sim =
+					// maxprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+					index++;
+
+				} else if (treeWalk.getPathString().endsWith(".java")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject) == false) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+
+					if (str.length() > 0) {
+						try {
+							JavaASTParser javaparser = new JavaASTParser();
+
+							List<String> asts = javaparser.parseJavaMethodDecs(str);
+
+							str = String.join(" ", asts);
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+						}
+					} else {
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					index++;
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					double sim = 0.0;
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+				} else if (treeWalk.getPathString().endsWith(".gradle")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject) == false) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+					// else
+					// {
+					// f2 = commitAnalyzingUtils.writeContentInFile(sourcefile,
+					// str);
+					// GradleExtractSelectedAST gradleast=new
+					// GradleExtractSelectedAST();
+					// GradleSelectedASTEntities
+					// entities=gradleast.getGradleASTNodes(sourcefile);
+					// String depstr=String.join(" ",
+					// entities.getDependencyList());
+					// String propstr=String.join(" ",
+					// entities.getPropertyList());
+					// String taskstr=String.join(" ", entities.getTaskList());
+					// String substr=String.join(" ",
+					// entities.getSubprojList());
+					// str=depstr+" "+propstr+" "+taskstr+" "+substr;
+					//
+					// if(f2.exists())
+					// f2.delete();
+					//
+					// }
+
+					index++;
+					// filemap.put(treeWalk.getPathString(), sourcefile);
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+					// double sim = maxprob *
+					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+					double sim = 0.0;
+					// double sim =
+					// maxprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+				}
+				// else
+				// {
+				// filemap.put(treeWalk.getPathString(), "no java gradle");
+				// }
+
+			}
+
+			ArrayList<String> files = new ArrayList<String>();
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				files.add(entry.getValue());
+			}
+
+			// log file content
+			files.add(f1.toString());
+			files.add(f3.toString());
+
+			int count = 0;
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				if (simMap.containsKey(entry.getValue())) {
+					filteredmap.put(entry.getKey(), simMap.get(entry.getValue()));
+				} else {
+					filteredmap.put(entry.getKey(), 0.0);
+				}
+			}
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				File f = new File(entry.getValue());
+				if (f.exists()) {
+					boolean flag = f.delete();
+
+				}
+
+			}
+
+			treeWalk.reset();
+			f1.delete();
+			f3.delete();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		return filteredmap;
+	}
+
+	public Map<String, Double> getTreeSimilarityMapWithBuildDependencyWithBuildASTV2(String ID, long rowid,
+			Gradlebuildfixdata fixdata, List<String> recentchanges) {
+
+		String logcontent = "";
+		File f1 = null;
+		File f2 = null;
+		File f3 = null;
+		int index = 0;
+
+		Map<String, String> filemap = new HashMap<String, String>();
+		Map<String, Double> filteredmap = new HashMap<String, Double>();
+
+		Map<String, Double> simMap = new HashMap<String, Double>();
+		// CosineSimilarity csm=new CosineSimilarity();
+
+		FilterLogText filter = new FilterLogText();
+		logcontent = filter.performFilteringOnSimValue(fixdata);
+
+		// logcontent=fixdata.getFailChange();
+
+		BuildDependencyGenerator depgen = new BuildDependencyGenerator();
+
+		String rootproject = depgen.getRootProjName(fixdata, ID, rowid);
+		List<String> allprojlist = depgen.getAllSubProjects(fixdata, ID, rowid);
+
+		List<String> depprojlist = depgen.getDependentProjectList(fixdata, ID, rowid, recentchanges);
+
+		Double minprob = 1.0;
+		Double maxprob = 1.0;
+
+		if (allprojlist.size() > 0 && depprojlist.size() > 0) {
+			Map<String, Double> probmap = getDependentProjProbability(allprojlist, depprojlist);
+			minprob = Collections.min(probmap.values());
+			maxprob = Collections.max(probmap.values());
+		}
+
+		try {
+			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
+			f3 = commitAnalyzingUtils.writeContentInFile("logpass.text", fixdata.getFixChange());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+
+			RevTree tree = commit.getTree();
+
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			while (treeWalk.next()) {
+
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				}
+
+				else if (treeWalk.getPathString().endsWith(".java")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject)) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String filecontent = new String(butestr);
+					String str = filecontent;
+					JavaASTEntity asts = null;
+
+					if (str.length() > 0) {
+
+						try {
+							// JavaASTParser javaparser = new JavaASTParser();
+							JavaTypeWiseASTParser javaparser = new JavaTypeWiseASTParser();
+
+							asts = javaparser.parseJavaMethodDecs(str);
+							str = String.join(" ", asts.getAllAST());
+							// str = String.join(" ", asts);
+							// str=str+" "+treeWalk.getPathString();
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+							System.out.println("Java File Parsing Error");
+							str = "blankfile";
+						}
+
+					} else {
+						str = "blankfile";
+					}
+
+					str = str.trim();
+
+					if (str.length() <= 0) {
+						str = filecontent;
+					}
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					double sim = 0.0;
+
+					sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+					if (f2.exists())
+						f2.delete();
+
+					index++;
+
+				} else if (treeWalk.getPathString().endsWith(".gradle")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject)) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String filecontent = new String(butestr);
+					String str = filecontent;
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					GradleSelectedASTEntities entities = null;
+
+					if (str.length() <= 0) {
+						str = "blankfile";
+					} else {
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						GradleExtractSelectedAST gradleast = new GradleExtractSelectedAST(rootproject);
+
+						try {
+							entities = gradleast.getGradleASTNodes(sourcefile, treeWalk.getPathString());
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+							System.out.println("Gradle File Parsing Error");
+							entities = null;
+						}
+
+						if (f2.exists())
+							f2.delete();
+					}
+
+					double sim = 0.0;
+
+					if (entities != null) {
+						str = EntityToStringGenerator.getStringFromEntity(entities);
+						str = str.trim();
+
+						if (str.length() <= 0)
+							str = filecontent;
+
+						if (str.length() <= 0) {
+							str = "blankfile";
+						}
+						str = str.trim();
+
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+
+					} else {
+						str=filecontent;
+
+						if (str.length() <= 0) {
+							str = "blankfile";
+						}
+						str = str.trim();
+						f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+						sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					}
+
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+					if (f2.exists())
+						f2.delete();
+
+					index++;
+
+				} else if (treeWalk.getPathString().endsWith(".java")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject) == false) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+
+					if (str.length() > 0) {
+						try {
+							JavaASTParser javaparser = new JavaASTParser();
+
+							List<String> asts = javaparser.parseJavaMethodDecs(str);
+
+							str = String.join(" ", asts);
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+						}
+					} else {
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					index++;
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					double sim = 0.0;
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+				} else if (treeWalk.getPathString().endsWith(".gradle")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject) == false) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+					// else
+					// {
+					// f2 = commitAnalyzingUtils.writeContentInFile(sourcefile,
+					// str);
+					// GradleExtractSelectedAST gradleast=new
+					// GradleExtractSelectedAST();
+					// GradleSelectedASTEntities
+					// entities=gradleast.getGradleASTNodes(sourcefile);
+					// String depstr=String.join(" ",
+					// entities.getDependencyList());
+					// String propstr=String.join(" ",
+					// entities.getPropertyList());
+					// String taskstr=String.join(" ", entities.getTaskList());
+					// String substr=String.join(" ",
+					// entities.getSubprojList());
+					// str=depstr+" "+propstr+" "+taskstr+" "+substr;
+					//
+					// if(f2.exists())
+					// f2.delete();
+					//
+					// }
+
+					index++;
+					// filemap.put(treeWalk.getPathString(), sourcefile);
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+					// double sim = maxprob *
+					// CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+					double sim = 0.0;
+					// double sim =
+					// maxprob*CosineDocumentSimilarity.getCosineSimilarity(f1.toString(),
+					// f2.toString());
+
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+				}
+				// else
+				// {
+				// filemap.put(treeWalk.getPathString(), "no java gradle");
+				// }
+
+			}
+
+			ArrayList<String> files = new ArrayList<String>();
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				files.add(entry.getValue());
+			}
+
+			// log file content
+			files.add(f1.toString());
+			files.add(f3.toString());
+
+			int count = 0;
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				if (simMap.containsKey(entry.getValue())) {
+					filteredmap.put(entry.getKey(), simMap.get(entry.getValue()));
+				} else {
+					filteredmap.put(entry.getKey(), 0.0);
+				}
+			}
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				File f = new File(entry.getValue());
+				if (f.exists()) {
+					boolean flag = f.delete();
+
+				}
+
+			}
+
+			treeWalk.reset();
+			f1.delete();
+			f3.delete();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		return filteredmap;
+	}
+
+	public Map<String, Double> getTreeSimilarityMapWithBuildDependencyWithBuildASTV3(String ID, long rowid,
+			Gradlebuildfixdata fixdata, List<String> recentchanges) {
+
+		String logcontent = "";
+		File f1 = null;
+		File f2 = null;
+		File f3 = null;
+		int index = 0;
+
+		Map<String, String> filemap = new HashMap<String, String>();
+		Map<String, Double> filteredmap = new HashMap<String, Double>();
+
+		Map<String, Double> simMap = new HashMap<String, Double>();
+		// CosineSimilarity csm=new CosineSimilarity();
+
+		FilterLogText filter = new FilterLogText();
+		logcontent = filter.performFilteringOnSimValue(fixdata);
+
+		// logcontent=fixdata.getFailChange();
+
+		BuildDependencyGenerator depgen = new BuildDependencyGenerator();
+
+		String rootproject = depgen.getRootProjName(fixdata, ID, rowid);
+		List<String> allprojlist = depgen.getAllSubProjects(fixdata, ID, rowid);
+
+		List<String> depprojlist = depgen.getDependentProjectList(fixdata, ID, rowid, recentchanges);
+
+		Double minprob = 1.0;
+		Double maxprob = 1.0;
+
+		if (allprojlist.size() > 0 && depprojlist.size() > 0) {
+			Map<String, Double> probmap = getDependentProjProbability(allprojlist, depprojlist);
+			minprob = Collections.min(probmap.values());
+			maxprob = Collections.max(probmap.values());
+		}
+
+		try {
+			f1 = commitAnalyzingUtils.writeContentInFile("log.text", logcontent);
+			f3 = commitAnalyzingUtils.writeContentInFile("logpass.text", fixdata.getFixChange());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			ObjectId objectid = repository.resolve(ID);
+			RevCommit commit = rw.parseCommit(objectid);
+
+			RevTree tree = commit.getTree();
+
+			TreeWalk treeWalk = new TreeWalk(repository);
+			treeWalk.addTree(commit.getTree());
+			treeWalk.setRecursive(false);
+
+			while (treeWalk.next()) {
+
+				if (treeWalk.isSubtree()) {
+					treeWalk.enterSubtree();
+				}
+
+				else if (treeWalk.getPathString().endsWith(".java")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject)) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String filecontent = new String(butestr);
+					String str = filecontent;
+					JavaASTEntity asts = null;
+
+					if (str.length() > 0) {
+
+						try {
+							// JavaASTParser javaparser = new JavaASTParser();
+							JavaTypeWiseASTParser javaparser = new JavaTypeWiseASTParser();
+
+							asts = javaparser.parseJavaMethodDecs(str);
+							str = String.join(" ", asts.getAllAST());
+							// str = String.join(" ", asts);
+							// str=str+" "+treeWalk.getPathString();
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+							System.out.println("Java File Parsing Error");
+							str = "blankfile";
+						}
+
+					} else {
+						str = "blankfile";
+					}
+
+					str = str.trim();
+
+					if (str.length() <= 0) {
+						str = filecontent;
+					}
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					double sim = 0.0;
+
+					sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+					if (f2.exists())
+						f2.delete();
+
+					index++;
+
+				} else if (treeWalk.getPathString().endsWith(".gradle")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject)) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+
+					String filecontent = new String(butestr);
+					String str = filecontent;
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+
+					str = str.trim();
+
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}
+					str = str.trim();
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+					double sim = CosineDocumentSimilarity.getCosineSimilarity(f1.toString(), f2.toString());
+
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+
+					if (f2.exists())
+						f2.delete();
+
+					index++;
+
+				} else if (treeWalk.getPathString().endsWith(".java")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject) == false) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+
+					if (str.length() > 0) {
+						try {
+							JavaASTParser javaparser = new JavaASTParser();
+
+							List<String> asts = javaparser.parseJavaMethodDecs(str);
+
+							str = String.join(" ", asts);
+						} catch (Exception ex) {
+							System.out.print(ex.getMessage());
+						}
+					} else {
+						str = "blankfile";
+					}
+
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+					index++;
+
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);
+
+					double sim = 0.0;
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+					
+					if (f2.exists())
+						f2.delete();
+
+				} else if (treeWalk.getPathString().endsWith(".gradle")
+						&& isInDependencySubProject(treeWalk.getPathString(), depprojlist, rootproject) == false) {
+
+					ObjectId objectId = treeWalk.getObjectId(0);
+					ObjectLoader loader = repository.open(objectId);
+					byte[] butestr = loader.getBytes();
+					String str = new String(butestr);
+					String sourcefile = Config.workDir + Config.tempFolder + "sourcecode" + index + ".txt";
+
+					if (str.length() <= 0) {
+						str = "blankfile";
+					}				
+
+					index++;
+					
+					f2 = commitAnalyzingUtils.writeContentInFile(sourcefile, str);					
+					double sim = 0.0;
+					
+					filemap.put(treeWalk.getPathString(), f2.toString());
+					simMap.put(f2.toString(), sim);
+					
+					if (f2.exists())
+						f2.delete();
+				}
+			}
+
+			ArrayList<String> files = new ArrayList<String>();
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				files.add(entry.getValue());
+			}
+
+			// log file content
+			files.add(f1.toString());
+			files.add(f3.toString());
+
+			int count = 0;
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				if (simMap.containsKey(entry.getValue())) {
+					filteredmap.put(entry.getKey(), simMap.get(entry.getValue()));
+				} else {
+					filteredmap.put(entry.getKey(), 0.0);
+				}
+			}
+
+			for (Map.Entry<String, String> entry : filemap.entrySet()) {
+				// System.out.println(entry.getKey() + ":" + entry.getValue());
+				File f = new File(entry.getValue());
+				if (f.exists()) {
+					boolean flag = f.delete();
+
+				}
+
+			}
+
+			treeWalk.reset();
+			f1.delete();
+			f3.delete();
+
+		} catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+
+		return filteredmap;
+	}
+
 }

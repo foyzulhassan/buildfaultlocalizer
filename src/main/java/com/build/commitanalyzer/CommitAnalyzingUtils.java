@@ -49,6 +49,10 @@ public class CommitAnalyzingUtils {
 		
 		f = new File(name);
 		
+		content=content.trim();
+		if(content.length()<0)
+			content="abcdef";
+		
 		FileUtils.writeStringToFile(f, content);
 
 		return f;

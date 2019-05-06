@@ -675,16 +675,15 @@ public class GradleASTParseMngr {
 		for (int index = 0; index < nodes.size(); index++) {
 			if (nodes.get(index) instanceof InnerClassNode) {
 				astnodes[index] = new EmptyStatement();
-			} 
-			else if (nodes.get(index) instanceof ClassNode) {
+			} else if (nodes.get(index) instanceof ClassNode) {
 				astnodes[index] = new EmptyStatement();
-			}else {
+			} else {
 				astnodes[index] = nodes.get(index);
 			}
 
 		}
 
-		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0],":root");
+		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0], ":root");
 
 		for (ASTNode node : astnodes) {
 			node.visit(visitordep);
@@ -692,9 +691,9 @@ public class GradleASTParseMngr {
 
 		List<String> subprojs = visitordep.getSubprojects();
 
-//		for (String subproj : subprojs) {
-//			System.out.println(subproj);
-//		}
+		// for (String subproj : subprojs) {
+		// System.out.println(subproj);
+		// }
 		//
 		// Map<String,List<String>>
 		// projdeps=visitordep.getProjectDependencyies();
@@ -728,7 +727,7 @@ public class GradleASTParseMngr {
 		return subprojs;
 
 	}
-	
+
 	public static String getRootProjectName(List<String> strlist) {
 		String srcstr = "";
 
@@ -761,16 +760,15 @@ public class GradleASTParseMngr {
 		for (int index = 0; index < nodes.size(); index++) {
 			if (nodes.get(index) instanceof InnerClassNode) {
 				astnodes[index] = new EmptyStatement();
-			} 
-			else if (nodes.get(index) instanceof ClassNode) {
+			} else if (nodes.get(index) instanceof ClassNode) {
 				astnodes[index] = new EmptyStatement();
-			}else {
+			} else {
 				astnodes[index] = nodes.get(index);
 			}
 
 		}
 
-		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0],":root");
+		GradleSubProjDependencyVisitor visitordep = new GradleSubProjDependencyVisitor(astnodes[0], ":root");
 
 		for (ASTNode node : astnodes) {
 			node.visit(visitordep);
@@ -816,7 +814,7 @@ public class GradleASTParseMngr {
 				astnodes[index] = new EmptyStatement();
 			} else if (nodes.get(index) instanceof ClassNode) {
 				astnodes[index] = new EmptyStatement();
-			}else {
+			} else {
 				astnodes[index] = nodes.get(index);
 			}
 
@@ -832,6 +830,98 @@ public class GradleASTParseMngr {
 
 		return projdeps;
 
+	}
+
+	public TreeContext getGradleScriptTree(String srcfilepath) {
+		Run.initGenerators();
+		StringMenupulator strmenu = new StringMenupulator();
+		TreeContext tsrc;
+		List<String> strlist = TextFileReaderWriter.GetFileContentByLine(srcfilepath);
+
+		for (int index = 0; index < strlist.size(); index++) {
+			String str = strlist.get(index);
+			str = strmenu.getMarkedString(str);
+			strlist.set(index, str);
+
+		}
+
+		tsrc = getTreeContext(strlist);
+		TreeUtils.computeDepth(tsrc.getRoot());
+		TreeUtils.computeHeight(tsrc.getRoot());
+		TreeUtils.computeSize(tsrc.getRoot());
+
+		return tsrc;
+	}
+
+	public List<SASTNode> getGradleASTNodes(String srcfilepath) {
+		Run.initGenerators();
+		StringMenupulator strmenu = new StringMenupulator();
+		TreeContext tsrc;
+		List<String> strlist = TextFileReaderWriter.GetFileContentByLine(srcfilepath);
+
+		for (int index = 0; index < strlist.size(); index++) {
+			String str = strlist.get(index);
+			str = strmenu.getMarkedString(str);
+			strlist.set(index, str);
+
+		}
+
+		List<SASTNode> nodes = getGradleNodes(strlist);
+
+		return nodes;
+	}
+
+	private List<SASTNode> getGradleNodes(List<String> strlist) {
+		String srcstr = "";
+
+		for (int size = 0; size < strlist.size(); size++) {
+			srcstr = srcstr + strlist.get(size);
+			srcstr = srcstr + "\r\n";
+
+		}
+
+		List<ASTNode> nodes = null;
+
+		try {
+			// nodes = new AstBuilder().buildFromString(srcstr);
+			// nodes = new
+			// AstBuilder().buildFromString(CompilePhase.CANONICALIZATION,
+			// srcstr);
+			nodes = new AstBuilder().buildFromString(CompilePhase.CONVERSION, srcstr);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		if (nodes == null) {
+			ASTNode node = new EmptyStatement();
+			nodes = new ArrayList<ASTNode>();
+			nodes.add(node);
+		}
+
+		ASTNode[] astnodes = new ASTNode[nodes.size()];
+
+		for (int index = 0; index < nodes.size(); index++) {
+			if (nodes.get(index) instanceof InnerClassNode) {
+				astnodes[index] = new EmptyStatement();
+			} else {
+				astnodes[index] = nodes.get(index);
+			}
+
+		}
+
+		GradleNodeVisitor visitordep = new GradleNodeVisitor(astnodes[0]);
+		try {
+
+			for (ASTNode node : astnodes) {
+				node.visit(visitordep);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		List<SASTNode> astList = visitordep.getNodes();
+
+		return astList;
 	}
 
 }
