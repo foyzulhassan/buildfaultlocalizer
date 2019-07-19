@@ -24,8 +24,11 @@ public class RankingMgr {
 
 		RankingCalculator rankmetric = new RankingCalculator();
 
+		
+
 		//List<Gradlebuildfixdata> projects = dbexec.getProjectRows("BuildCraft/BuildCraft");
-		List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(1343788);
+		//List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(1343788);
+		List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(1735200);
 		
 		int totaltopn = 0;
 		double totalmrr = 0.0;
@@ -78,10 +81,21 @@ public class RankingMgr {
 				SpectrumCalculator spectrumcalc=new SpectrumCalculator();
 				
 				
-				ArrayList<String> tarantulalist=spectrumcalc.getTarantulaBasedRanking(filescore, passedlines, failedlines,Config.dynamicBuildDir+project);
+				ArrayList<String> tarantulalisttemp=spectrumcalc.getTarantulaBasedRanking(filescore, passedlines, failedlines,Config.dynamicBuildDir+project);
 //				ArrayList<String> ochiailist=spectrumcalc.getOchiaiBasedRanking(filescore, passedlines, failedlines);
 //				ArrayList<String> op2list=spectrumcalc.getOp2BasedRanking(filescore, passedlines, failedlines);
 //				ArrayList<String> barinellist=spectrumcalc.getBarinelBasedRanking(filescore, passedlines, failedlines);
+				
+				ArrayList<String> tarantulalist=new ArrayList<>();
+				
+				for(String s:tarantulalisttemp)
+				{
+					if(!s.startsWith("."))
+					{
+						tarantulalist.add(s);
+					}
+					
+				}
 
 			
 				int tarantulatopn = rankmetric.getTopN(tarantulalist, actualfixs);
