@@ -8,13 +8,21 @@ public class TextCleaner {
 		line=line.trim();
 		//cleantext=line.replaceAll("[^a-zA-Z\\s+]","");
 		cleantext=line.replaceAll("[0-9]", "");
+		cleantext=cleantext.replaceAll("\33[28D\33[0K", "");
+		cleantext=cleantext.replaceAll("\33[1m", "");
+		cleantext=cleantext.replaceAll("\33[22m", "");
+		cleantext=cleantext.replaceAll("\33[15D\33[0K", "");
+		cleantext=cleantext.replaceAll("\33[13D\33[0K", "");
 		
+		cleantext=cleantext.trim();
 		return cleantext;
 	}
 	
 	public static void main(String[] args)
 	{
-		String test="Execution failed for task ':test'.";
+		String test="\33[28D\33[0K/home/foyzulhassan/Research/Strace_Implementation/builddir/SpongePowered@SpongeAPI/src/main/java/org/spongepowered/api/";
+		final String msgWithoutColorCodes =
+			    test.replaceAll("\u001B\\[[;\\d]*m", "");
 		String cleantext=CleanText(test);
 		
 		test="@param name not found\n\t * @param filer an IStackFilter to match against\n\t          ^\n";
@@ -23,12 +31,13 @@ public class TextCleaner {
 		
 		for(String ln:lines)
 		{
-			System.out.println(ln);
+			//System.out.println(ln);
 		}
 		
-		System.out.println(test);
+		//System.out.println(test);
 		
 		System.out.println(cleantext);
+		System.out.println(msgWithoutColorCodes);
 	}
 
 }

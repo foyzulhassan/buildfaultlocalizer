@@ -8,6 +8,7 @@ import com.build.strace.entity.OutputEntry;
 import com.build.strace.entity.ProcessInfo;
 import com.build.strace.entity.SysCallTypes;
 import com.build.strace.text.TextCleaner;
+import com.build.util.MapContains;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -118,7 +119,7 @@ public class ParseProcessFiles {
 								{
 									cleantext=cleantext.substring(1, cleantext.length()-1);
 								}
-								if ((passelines.containsKey(cleantext) || faillines.containsKey(cleantext))
+								if ((MapContains.IsMapContainsPartial(passelines,cleantext) || MapContains.IsMapContainsPartial(faillines,cleantext))
 										&& cleantext.length() > 0) {
 									OutputEntry outentry = new OutputEntry(writetime, cleantext);
 									process.addToOutputTxt(outentry);
@@ -339,7 +340,7 @@ public class ParseProcessFiles {
 			Map<String, Boolean> failedlines) {
 
 		for (OutputEntry output : process.getOutputText()) {
-			if (passedlines.containsKey(output.getStrMsg())) {
+			if (MapContains.IsMapContainsPartial(passedlines, output.getStrMsg())) {
 				List<FileInfo> depfile = process.getFileFromParentAndCurr();
 
 				for (FileInfo fileinfo : depfile) {
@@ -356,7 +357,7 @@ public class ParseProcessFiles {
 						//passedlines.put(fileinfo.getTracefile(), true);
 					}
 				}
-			} else if (failedlines.containsKey(output.getStrMsg())) {
+			} else if(MapContains.IsMapContainsPartial(failedlines, output.getStrMsg())) {
 				List<FileInfo> depfile = process.getFileFromParentAndCurr();
 
 				for (FileInfo fileinfo : depfile) {
