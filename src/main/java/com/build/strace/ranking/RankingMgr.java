@@ -17,19 +17,20 @@ import com.build.strace.spectrum.SpectrumCalculator;
 import com.util.sorting.SortingMgr;
 
 public class RankingMgr {
-	
-	public void generateStraceRanking()
-	{
+
+	public void generateStraceRanking() {
 		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
 
 		RankingCalculator rankmetric = new RankingCalculator();
 
-		
+		// List<Gradlebuildfixdata> projects =
+		// dbexec.getProjectRows("BuildCraft/BuildCraft");
+//		 List<Gradlebuildfixdata> projects =
+//		 dbexec.getProjectWithRowID(1343788);
+//		 List<Gradlebuildfixdata> projects =
+//		 dbexec.getProjectWithRowID(1735200);
+		List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(1088847);
 
-		//List<Gradlebuildfixdata> projects = dbexec.getProjectRows("BuildCraft/BuildCraft");
-		//List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(1343788);
-		List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(1735200);
-		
 		int totaltopn = 0;
 		double totalmrr = 0.0;
 		double totalmap = 0.0;
@@ -43,7 +44,7 @@ public class RankingMgr {
 			for (int index = 0; index < projects.size(); index++) {
 				Gradlebuildfixdata proj = projects.get(index);
 				String project = proj.getGhProjectName();
-				project = project.replace('/', '@');				
+				project = project.replace('/', '@');
 				String projecth = Config.repoDir + project;
 				System.out.println(proj.getRow() + "=>" + project);
 
@@ -56,84 +57,69 @@ public class RankingMgr {
 					e.printStackTrace();
 				}
 
-				//this gives path based on Git repo relative path
+				// this gives path based on Git repo relative path
 				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
 						proj.getGitLastfailCommit());
-				
-				//Git repo relative path to local path list
-				List<String> localpathtochange=new ArrayList<>();				
-				for(String strfile:recentchangefile)
-				{
-					String localpath=Config.dynamicBuildDir+project+"/"+strfile;
+
+				// Git repo relative path to local path list
+				List<String> localpathtochange = new ArrayList<>();
+				for (String strfile : recentchangefile) {
+					String localpath = Config.dynamicBuildDir + project + "/" + strfile;
 					localpathtochange.add(localpath);
 				}
-				
-				DependencyGenerator depgen=new DependencyGenerator();
-				FileScore filescore=depgen.getFileSuspicionScore(projecth,project,proj.getGitLastfailCommit(),localpathtochange);
-				
-				Map<String,Boolean> passedlines=depgen.getPassedlines();
-				Map<String,Boolean> failedlines=depgen.getFailedlines();				
+
+				DependencyGenerator depgen = new DependencyGenerator();
+				FileScore filescore = depgen.getFileSuspicionScore(projecth, project, proj.getGitLastfailCommit(),
+						localpathtochange);
+
+				Map<String, Boolean> passedlines = depgen.getPassedlines();
+				Map<String, Boolean> failedlines = depgen.getFailedlines();
 
 				String actualfixfile = proj.getF2passFilelist();
-				//String failintrofiles = proj.getFailFilelist();
+				// String failintrofiles = proj.getFailFilelist();
 				String[] actualfixs = actualfixfile.split(";");
-				
-				SpectrumCalculator spectrumcalc=new SpectrumCalculator();
-				
-				
-				ArrayList<String> tarantulalisttemp=spectrumcalc.getTarantulaBasedRanking(filescore, passedlines, failedlines,Config.dynamicBuildDir+project);
-//				ArrayList<String> ochiailist=spectrumcalc.getOchiaiBasedRanking(filescore, passedlines, failedlines);
-//				ArrayList<String> op2list=spectrumcalc.getOp2BasedRanking(filescore, passedlines, failedlines);
-//				ArrayList<String> barinellist=spectrumcalc.getBarinelBasedRanking(filescore, passedlines, failedlines);
-				
-				ArrayList<String> tarantulalist=new ArrayList<>();
-				
-				for(String s:tarantulalisttemp)
-				{
-					if(!s.startsWith("."))
-					{
-						tarantulalist.add(s);
-					}
-					
-				}
 
-			
+				SpectrumCalculator spectrumcalc = new SpectrumCalculator();
+
+				ArrayList<String> tarantulalisttemp = spectrumcalc.getTarantulaBasedRanking(filescore, passedlines,
+						failedlines, Config.dynamicBuildDir + project);
+				ArrayList<String> ochiailisttemp = spectrumcalc.getOchiaiBasedRanking(filescore, passedlines, failedlines,
+						Config.dynamicBuildDir + project);
+				ArrayList<String> op2listtemp = spectrumcalc.getOp2BasedRanking(filescore, passedlines, failedlines,
+						Config.dynamicBuildDir + project);
+				ArrayList<String> barinellisttemp = spectrumcalc.getBarinelBasedRanking(filescore, passedlines, failedlines,
+						Config.dynamicBuildDir + project);
+
+				ArrayList<String> tarantulalist = getFilteredFiles(tarantulalisttemp);
+				ArrayList<String> ochiailist=getFilteredFiles(ochiailisttemp);
+				ArrayList<String> op2list = getFilteredFiles(op2listtemp);
+				ArrayList<String> barinellist=getFilteredFiles(barinellisttemp);
+
 				int tarantulatopn = rankmetric.getTopN(tarantulalist, actualfixs);
 				double tarantulamrr = rankmetric.getMeanAverageReciprocal(tarantulalist, actualfixs);
 				double tarantulamap = rankmetric.getMeanAveragePrecision(tarantulalist, actualfixs);
-				
-//				int ochiaitopn = rankmetric.getTopN(ochiailist, actualfixs);
-//				double ochiaimrr = rankmetric.getMeanAverageReciprocal(ochiailist, actualfixs);
-//				double ochiaimap = rankmetric.getMeanAveragePrecision(ochiailist, actualfixs);
-//				
-//				int op2topn = rankmetric.getTopN(op2list, actualfixs);
-//				double op2mrr = rankmetric.getMeanAverageReciprocal(op2list, actualfixs);
-//				double op2map = rankmetric.getMeanAveragePrecision(op2list, actualfixs);
-//				
-//				int barineltopn = rankmetric.getTopN(barinellist, actualfixs);
-//				double barinelmrr = rankmetric.getMeanAverageReciprocal(barinellist, actualfixs);
-//				double barinelmap = rankmetric.getMeanAveragePrecision(barinellist, actualfixs);
-				
-				
-				System.out.println("Tarantula "+"TopN:"+tarantulatopn+" MRR:"+tarantulamrr+" MAP:"+tarantulamap);
-//				System.out.println("Oochiai "+"TopN:"+ochiaitopn+" MRR:"+ochiaimrr+" MAP:"+ochiaimap);
-//				System.out.println("Op2 "+"TopN:"+op2topn+" MRR:"+op2mrr+" MAP:"+op2map);
-//				System.out.println("Barinel "+"TopN:"+barineltopn+" MRR:"+barinelmrr+" MAP:"+barinelmap);
-//				projects.get(index).setEvDiffdepboostPos(topn);
-//				projects.get(index).setEvDiffdepboostMrr(mrr);
-//				projects.get(index).setEvDiffdepboostMap(map);
-//
-//				totaltopn = totaltopn + topn;
-//				totalmrr = totalmrr + mrr;
-//				totalmap = totalmap + map;
+
+				int ochiaitopn = rankmetric.getTopN(ochiailist, actualfixs);
+				double ochiaimrr = rankmetric.getMeanAverageReciprocal(ochiailist, actualfixs);
+				double ochiaimap = rankmetric.getMeanAveragePrecision(ochiailist, actualfixs);
+
+				int op2topn = rankmetric.getTopN(op2list, actualfixs);
+				double op2mrr = rankmetric.getMeanAverageReciprocal(op2list, actualfixs);
+				double op2map = rankmetric.getMeanAveragePrecision(op2list, actualfixs);
+
+				int barineltopn = rankmetric.getTopN(barinellist, actualfixs);
+				double barinelmrr = rankmetric.getMeanAverageReciprocal(barinellist, actualfixs);
+				double barinelmap = rankmetric.getMeanAveragePrecision(barinellist, actualfixs);
+
+				System.out.println(
+						"Tarantula " + "TopN:" + tarantulatopn + " MRR:" + tarantulamrr + " MAP:" + tarantulamap);
+				System.out.println("Oochiai " + "TopN:" + ochiaitopn + " MRR:" + ochiaimrr + " MAP:" + ochiaimap);
+				System.out.println("Op2 " + "TopN:" + op2topn + " MRR:" + op2mrr + " MAP:" + op2map);
+				System.out.println("Barinel " + "TopN:" + barineltopn + " MRR:" + barinelmrr + " MAP:" + barinelmap);
+
 
 			}
 
-//			System.out.println("\n\n\n*******Diff Filter+Dependency+BoostScore********");
-//			System.out.println("\n*******For Param: " + Config.thresholdForSimFilter + "********");
-//			System.out.println("\nTopN: " + (totaltopn / projects.size()) + " MRR: " + (totalmrr / projects.size()) + " MAP: "
-//					+ (totalmap / projects.size()));
-			
 			SessionGenerator.closeFactory();
 			dbexec = new DBActionExecutorChangeData();
 			dbexec.updateBatchExistingRecord(projects);
@@ -141,6 +127,18 @@ public class RankingMgr {
 		} catch (Exception ex) {
 			/* ignore */}
 
+	}
+
+	public ArrayList<String> getFilteredFiles(ArrayList<String> filelist) {
+		ArrayList<String> list = new ArrayList<>();
+
+		for (String s : filelist) {
+			if (!s.startsWith(".") && !s.startsWith(".git") && (s.endsWith(".java") || s.endsWith(".gradle"))) {
+				list.add(s);
+			}
+		}
+
+		return list;
 	}
 
 }

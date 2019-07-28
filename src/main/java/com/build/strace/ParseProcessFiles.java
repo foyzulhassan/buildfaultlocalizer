@@ -26,11 +26,12 @@ import org.apache.commons.io.FilenameUtils;
 public class ParseProcessFiles {
 
 	public static ProcessInfo getProcessNode(long pid, Map<Long, String> tracefilemap, String buildrootdir,
-			Map<String, Boolean> passelines, Map<String, Boolean> faillines, List<String> repofiles,FileScore filescore) {
+			Map<String, Boolean> passelines, Map<String, Boolean> faillines, List<String> repofiles,
+			FileScore filescore) {
 		ProcessInfo process = new ProcessInfo(pid);
 
-		//List<String> javaclasslist = new ArrayList<>();
-		Map<String,Double> javaclasslist=new HashMap<>();
+		// List<String> javaclasslist = new ArrayList<>();
+		Map<String, Double> javaclasslist = new HashMap<>();
 
 		if (!tracefilemap.containsKey(pid))
 			return null;
@@ -51,56 +52,60 @@ public class ParseProcessFiles {
 						String filepath = entry.getArgs().get(0);
 						filepath = new File(filepath).toString();
 						buildrootdir = new File(buildrootdir).toString();
+
 						if (repofiles.contains(filepath) && !isBinaryFile(filepath)) {
 
 							if (!filepath.endsWith(".java")) {
 								FileInfo fileinfo = new FileInfo(pid, filepath, OperationType.Read, entry.getTstamp());
 								process.addToInputFileList(fileinfo);
-								process.addToFileAccessList(fileinfo);								
+								process.addToFileAccessList(fileinfo);
 							} else {
 								// we will only add when .class files are
 								// generated
 								if (!javaclasslist.containsKey(filepath)) {
-									javaclasslist.put(filepath,entry.getTstamp());
-									//javaclasslist.add(filepath);
+									javaclasslist.put(filepath, entry.getTstamp());
+									// javaclasslist.add(filepath);
 								}
 							}
 						}
 					} else if (SysCallTypes.WRITE_CALLS.contains(entry.getFunc())) {
+
 						String filepath = entry.getArgs().get(0);
 						filepath = new File(filepath).toString();
-						buildrootdir = new File(buildrootdir).toString();
-						//if (repofiles.contains(filepath)) {
 
+						buildrootdir = new File(buildrootdir).toString();
+						// if (repofiles.contains(filepath)) {
+
+						if (repofiles.contains(filepath) && !isBinaryFile(filepath)) {
 							FileInfo fileinfo = new FileInfo(pid, filepath, OperationType.Write, entry.getTstamp());
 							process.addToOutputFileList(fileinfo);
 							process.addToFileAccessList(fileinfo);
+						}
 
-							if (filepath.contains(".class")) {								
-								String basename = FilenameUtils.getBaseName(filepath);
-								String extension = FilenameUtils.getExtension(filepath);
+						if (filepath.contains(".class")) {
+							String basename = FilenameUtils.getBaseName(filepath);
+							String extension = FilenameUtils.getExtension(filepath);
 
-								String javafilename = getJavaFileFromClassName(repofiles, basename, extension);
+							String javafilename = getJavaFileFromClassName(repofiles, basename, extension);
 
-								if (javaclasslist.containsKey(javafilename) && repofiles.contains(javafilename)) {
-									FileInfo fileinforead = new FileInfo(pid, javafilename, OperationType.Read,
-											javaclasslist.get(javafilename));
-									process.addToInputFileList(fileinforead);
-									process.addToFileAccessList(fileinforead);
-									//System.out.println(filepath);
-								}
+							if (javaclasslist.containsKey(javafilename) && repofiles.contains(javafilename)) {
+								FileInfo fileinforead = new FileInfo(pid, javafilename, OperationType.Read,
+										javaclasslist.get(javafilename));
+								process.addToInputFileList(fileinforead);
+								process.addToFileAccessList(fileinforead);
+								// System.out.println(filepath);
 							}
-						//}
+						}
+						// }
 
 						if (entry.getArgs().size() > 1) {
 							// For write second parameter is the text
 
 							String writetxt = entry.getArgs().get(1);
-							 if(writetxt.contains("Constructor definition in wrong order"))
-							 {
-								 System.out.println("Constructor definition in wrong order");
-								 System.out.println(writetxt);
-							 }					
+							if (writetxt.contains("Constructor definition in wrong order")) {
+								System.out.println("Constructor definition in wrong order");
+								System.out.println(writetxt);
+							}
 
 							int index = writetxt.indexOf("\\n");
 
@@ -113,54 +118,87 @@ public class ParseProcessFiles {
 							for (String ln : lines) {
 								double writetime = entry.getTstamp();
 								String cleantext = TextCleaner.CleanText(ln);
-								
-								
-								if(cleantext.length()>2 &&  cleantext.startsWith("\"") &&  cleantext.endsWith("\""))
-								{
-									cleantext=cleantext.substring(1, cleantext.length()-1);
+
+								if (cleantext.length() > 2 && cleantext.startsWith("\"") && cleantext.endsWith("\"")) {
+									cleantext = cleantext.substring(1, cleantext.length() - 1);
 								}
-								if ((MapContains.IsMapContainsPartial(passelines,cleantext) || MapContains.IsMapContainsPartial(faillines,cleantext))
+								if ((MapContains.IsMapContainsPartial(passelines, cleantext)
+										|| MapContains.IsMapContainsPartial(faillines, cleantext))
 										&& cleantext.length() > 0) {
 									OutputEntry outentry = new OutputEntry(writetime, cleantext);
 									process.addToOutputTxt(outentry);
 								}
-//								String strfilename=getFileNameInMsg(ln,filescore);
-//								
-//								if(strfilename!=null)
-//								{
-//									filescore.IncrementFilePassedScore(fileinfo.getTracefile());
-//								}
+								// String
+								// strfilename=getFileNameInMsg(ln,filescore);
+								//
+								// if(strfilename!=null)
+								// {
+								// filescore.IncrementFilePassedScore(fileinfo.getTracefile());
+								// }
 							}
-							
-							
+
 						}
+
 					}
 
 				}
 			}
+
+			// This code is for the case where Java file is read; but .class
+			// file not created due to compilatio or
+			// other error
+			List<FileInfo> filelist = process.getFileAccessList();
+			List<String> strfilelist = new ArrayList<>();
+			for (FileInfo fileinfo : filelist) {
+				strfilelist.add(fileinfo.getTracefile());
+			}
+
+			Set<String> accessfiles = javaclasslist.keySet();
+
+			for (String strfile : accessfiles) {
+				if (!strfilelist.contains(strfile)) {
+					if (isFailedLogContainsFileLine(faillines, strfile)) {
+
+						FileInfo fileinforead = new FileInfo(pid, strfile, OperationType.Read,
+								javaclasslist.get(strfile));
+						process.addToInputFileList(fileinforead);
+						process.addToFileAccessList(fileinforead);
+					}
+				}
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		return process;
 	}
-	
-	
-    private static String getFileNameInMsg(String line, FileScore filescore)
-    {
-    	String filename=null;
-    	
-    	for(String strfile:filescore.getFileScore().keySet())
-    	{
-    		if(line.contains(strfile))
-    		{
-    			filename=strfile;
-    			break;
-    		}    		
-    	}
-    	
-    	return filename;
-    }
+
+	private static boolean isFailedLogContainsFileLine(Map<String, Boolean> faillines, String file) {
+
+		Set<String> logtext = faillines.keySet();
+
+		for (String line : logtext) {
+			if (line.contains(file))
+				return true;
+		}
+
+		return false;
+
+	}
+
+	private static String getFileNameInMsg(String line, FileScore filescore) {
+		String filename = null;
+
+		for (String strfile : filescore.getFileScore().keySet()) {
+			if (line.contains(strfile)) {
+				filename = strfile;
+				break;
+			}
+		}
+
+		return filename;
+	}
 
 	private static BufferedReader openFile(String fileName) throws IOException {
 		// Don't forget to add buffering to have better performance!
@@ -290,7 +328,7 @@ public class ParseProcessFiles {
 			while (!q.isEmpty()) {
 
 				ProcessInfo process = q.poll();
-	
+
 				if (updatescore) {
 					updateFileScore(process, filescore, localpassed, localfailedlines);
 				}
@@ -345,40 +383,37 @@ public class ParseProcessFiles {
 
 				for (FileInfo fileinfo : depfile) {
 					if (fileinfo.getAccessTime() < output.getMsgWriteTime()
-							&& passedlines.get(output.getStrMsg()) == false) {
+							&& passedlines.get(MapContains.GetContainsKey(passedlines, output.getStrMsg())) == false) {
 						filescore.IncrementFilePassedScore(fileinfo.getTracefile());
-						if(output.getStrMsg().contains(fileinfo.getTracefile()))
-						{
-							for(int i=0;i<10;i++)
-							{
+						if (output.getStrMsg().contains(fileinfo.getTracefile())) {
+							for (int i = 0; i < 10; i++) {
 								filescore.IncrementFilePassedScore(fileinfo.getTracefile());
 							}
 						}
-						//passedlines.put(fileinfo.getTracefile(), true);
+						// passedlines.put(fileinfo.getTracefile(), true);
 					}
 				}
-			} else if(MapContains.IsMapContainsPartial(failedlines, output.getStrMsg())) {
+			} else if (MapContains.IsMapContainsPartial(failedlines, output.getStrMsg())) {
 				List<FileInfo> depfile = process.getFileFromParentAndCurr();
 
 				for (FileInfo fileinfo : depfile) {
 					if (fileinfo.getAccessTime() < output.getMsgWriteTime()
-							&& failedlines.get(output.getStrMsg()) == false) {
+							&& failedlines.get(MapContains.GetContainsKey(failedlines, output.getStrMsg())) == false) {
 						filescore.IncrementFileFailedScore(fileinfo.getTracefile());
-						
-						if(output.getStrMsg().contains(fileinfo.getTracefile()))
-						{
-							filescore.IncrementFileFailedScoreByValue(fileinfo.getTracefile(),10);
+
+						if (output.getStrMsg().contains(fileinfo.getTracefile())) {
+							filescore.IncrementFileFailedScoreByValue(fileinfo.getTracefile(), 10);
+							// filescore.DecrementFilePassedScore(fileinfo.getTracefile(),10);
 						}
-						//failedlines.put(fileinfo.getTracefile(), true);
+						// failedlines.put(fileinfo.getTracefile(), true);
 					}
 				}
 
 			}
 		}
 	}
-	
-	
-	//public String getFileNameForMsg()
+
+	// public String getFileNameForMsg()
 
 	public static boolean isBinaryFile(String strf) throws FileNotFoundException, IOException {
 		File f = new File(strf);

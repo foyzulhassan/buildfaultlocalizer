@@ -92,7 +92,7 @@ public class DependencyGenerator {
 		List<String> files=getRepoFiles(repodir);
 		
 		//Build command
-		StraceBuildMgr stracebuildmgr=new StraceBuildMgr(repodir,"teststrace","tracelog","./gradlew build");
+		StraceBuildMgr stracebuildmgr=new StraceBuildMgr(repodir,"teststrace","tracelog",Config.projBuildCmd);
 		stracebuildmgr.InitBuild();
 		
 		this.passedlines=stracebuildmgr.getPassedLines();
@@ -100,8 +100,9 @@ public class DependencyGenerator {
 		
 		//This class is responsible for holding scores of files
 		FileScore filescore=new FileScore(files);
+		String buidcmd=Config.projBuildCmd+" -x test --continue";
 		
-		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles,filescore,"./gradlew build -x test --continue");
+		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles,filescore,buidcmd);
 		
 		@SuppressWarnings("unused")
 		Map<String, List<String>> compiletestdef=stracebuildmgr.getCompileTestJavaDependency(files, recentchangedfiles, "./gradlew test --continue", compiledef,filescore);

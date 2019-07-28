@@ -36,6 +36,16 @@ public class FileScore {
     	}
     }
     
+    public void DecrementFilePassedScore(String file,int val)
+    {
+    	if(fileScore.containsKey(file))
+    	{
+    		Score score=fileScore.get(file);
+    		score.decrementPassedValue(val);
+    		fileScore.put(file,score);
+    	}
+    }
+    
     public void IncrementFileFailedScore(String file)
     {
     	if(fileScore.containsKey(file))
@@ -55,4 +65,5 @@ public class FileScore {
     		fileScore.put(file,score);
     	}
     }
+    
 }

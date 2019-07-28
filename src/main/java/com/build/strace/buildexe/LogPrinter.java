@@ -38,25 +38,30 @@ public class LogPrinter {
 			System.out.println("Error=>"+txt);
 			String strlow = txt.toLowerCase();
 
-			if (strlow.contains("error") || strlow.contains("fail") || strlow.contains("exception")
-					|| strlow.contains("wrong") || !strlow.contains("warning")) {
+			if (!strlow.contains("warning")) {
 
 				String cleantxt = TextCleaner.CleanText(txt);
 
 				if (!lineMaps.containsKey(cleantxt)) {
-					lineMaps.put(cleantxt, false);
-					failcount++;
+					if(cleantxt.length()>2)
+					{
+						lineMaps.put(cleantxt, false);
+						failcount++;
+					}
 				}
 			}
 
 		} else {
 
 			String cleantxt = TextCleaner.CleanText(txt);
-			System.out.println("Passed=>"+txt);
+			//System.out.println("Passed=>"+txt);
 
 			if (!lineMaps.containsKey(cleantxt)) {
-				lineMaps.put(cleantxt, false);
-				passcount++;
+				if(cleantxt.length()>2)
+				{
+					lineMaps.put(cleantxt, false);
+					passcount++;
+				}
 			}
 		}
 		

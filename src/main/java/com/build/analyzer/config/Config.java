@@ -150,5 +150,7 @@ public class Config {
 	
 	// For Strace Based Dynamic Analisis Configurations
 	public static String dynamicBuildDir="/home/foyzulhassan/Research/Strace_Implementation/builddir/";
+	
+	public static String projBuildCmd="./gradlew assemble";
 
 }

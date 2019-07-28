@@ -61,12 +61,12 @@ public class StraceBuildMgr {
 		
 		//Build and clean so that dependency related issues are not in log
 		cmdexe = new CmdExecutor();
-		cmdexe.ExecuteCommand(buildPath+"/", buildCmd+" clean", buildPath+"/");
+		cmdexe.ExecuteCommand(buildPath+"/", buildCmd+" --continue clean", buildPath+"/");
 		
 		//build again to get only passes and fail parts
 		cmdexe = new CmdExecutor();
 		//cmdexe.ExecuteCommand(buildPath+"//", cmd, buildPath+"//");
-		cmdexe.ExecuteCommand(buildPath+"/", buildCmd, buildPath+"/");
+		cmdexe.ExecuteCommand(buildPath+"/", buildCmd+" --continue", buildPath+"/");
 		passedLines=cmdexe.getPassedLines();
 		failedLines=cmdexe.getFailedLines();
 	}
@@ -114,6 +114,8 @@ public class StraceBuildMgr {
 			}
 
 			compileJavadeps.put(file, filelist);
+			cmdexe.ExecuteCommand(buildPath, "git stash", buildPath);
+			cmdexe.ExecuteCommand(buildPath, buildcmd, buildPath);
 		}
 
 		return compileJavadeps;

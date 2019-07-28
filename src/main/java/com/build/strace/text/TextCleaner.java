@@ -7,12 +7,23 @@ public class TextCleaner {
 		String cleantext="";
 		line=line.trim();
 		//cleantext=line.replaceAll("[^a-zA-Z\\s+]","");
-		cleantext=line.replaceAll("[0-9]", "");
-		cleantext=cleantext.replaceAll("\33[28D\33[0K", "");
-		cleantext=cleantext.replaceAll("\33[1m", "");
-		cleantext=cleantext.replaceAll("\33[22m", "");
-		cleantext=cleantext.replaceAll("\33[15D\33[0K", "");
-		cleantext=cleantext.replaceAll("\33[13D\33[0K", "");
+		cleantext=line;//.replaceAll("[0-9]", "");
+
+		
+		cleantext = cleantext.replaceAll("[^\\x00-\\x7F]", "");
+		//cleantext = cleantext.replaceAll("[^\\x00-\\x7F]", "");
+	    
+	    // erases all the ASCII control characters
+		cleantext = cleantext.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
+	     
+	    // removes non-printable characters from Unicode
+		cleantext = cleantext.replaceAll("\\p{C}", "");
+		cleantext=cleantext.replaceAll("\\[28D\\[0K", "");
+		cleantext=cleantext.replaceAll("\\[1m", "");
+		cleantext=cleantext.replaceAll("\\[22m", "");
+		cleantext=cleantext.replaceAll("\\[15D\\[0K", "");
+		cleantext=cleantext.replaceAll("\\[13D\\[0K", "");
+	    
 		
 		cleantext=cleantext.trim();
 		return cleantext;

@@ -31,6 +31,18 @@ public class Score {
 		this.passedcount++;
 	}
 	
+
+	public void decrementPassedValue(int value)
+	{
+		for(int i=0;i<value;i++)
+		{
+			if(this.passedcount>0)
+			{
+				this.passedcount--;
+			}
+		}
+	}
+	
 	public void incrementFailed()
 	{
 		this.failedcount++;
