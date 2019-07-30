@@ -9,12 +9,17 @@ import com.build.analyzer.config.Config;
 import com.build.analyzer.dtaccess.DBActionExecutorChangeData;
 import com.build.analyzer.dtaccess.SessionGenerator;
 import com.build.analyzer.entity.Gradlebuildfixdata;
+import com.build.analyzer.entity.SpectrumGradlebuildfixdata;
 import com.build.commitanalyzer.CommitAnalyzer;
 import com.build.metrics.RankingCalculator;
 import com.build.strace.dependency.DependencyGenerator;
 import com.build.strace.entity.FileScore;
 import com.build.strace.spectrum.SpectrumCalculator;
 import com.util.sorting.SortingMgr;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class RankingMgr {
 
@@ -29,7 +34,8 @@ public class RankingMgr {
 //		 dbexec.getProjectWithRowID(1343788);
 //		 List<Gradlebuildfixdata> projects =
 //		 dbexec.getProjectWithRowID(1735200);
-		List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(1088847);
+		//List<Gradlebuildfixdata> projects = dbexec.getProjectWithRowID(1088847);
+		List<SpectrumGradlebuildfixdata> projects=dbexec.getSpectrumRows();
 
 		int totaltopn = 0;
 		double totalmrr = 0.0;
@@ -42,7 +48,8 @@ public class RankingMgr {
 			totalmap = 0.0;
 
 			for (int index = 0; index < projects.size(); index++) {
-				Gradlebuildfixdata proj = projects.get(index);
+				Instant start = Instant.now();
+				SpectrumGradlebuildfixdata proj = projects.get(index);
 				String project = proj.getGhProjectName();
 				project = project.replace('/', '@');
 				String projecth = Config.repoDir + project;
@@ -68,6 +75,7 @@ public class RankingMgr {
 					localpathtochange.add(localpath);
 				}
 
+				Config.projBuildCmd=proj.getSpBuildCmd();
 				DependencyGenerator depgen = new DependencyGenerator();
 				FileScore filescore = depgen.getFileSuspicionScore(projecth, project, proj.getGitLastfailCommit(),
 						localpathtochange);
@@ -98,31 +106,51 @@ public class RankingMgr {
 				int tarantulatopn = rankmetric.getTopN(tarantulalist, actualfixs);
 				double tarantulamrr = rankmetric.getMeanAverageReciprocal(tarantulalist, actualfixs);
 				double tarantulamap = rankmetric.getMeanAveragePrecision(tarantulalist, actualfixs);
+				
+				projects.get(index).setSpEVTarantulaPos(tarantulatopn);
+				projects.get(index).setSpEVTarantulaMrr(tarantulamrr);
+				projects.get(index).setSpEVTarantulaMap(tarantulamap);
 
 				int ochiaitopn = rankmetric.getTopN(ochiailist, actualfixs);
 				double ochiaimrr = rankmetric.getMeanAverageReciprocal(ochiailist, actualfixs);
 				double ochiaimap = rankmetric.getMeanAveragePrecision(ochiailist, actualfixs);
+				
+				projects.get(index).setSpEVOchiaiPos(ochiaitopn);
+				projects.get(index).setSpEVOchiaiMrr(ochiaimrr);
+				projects.get(index).setSpEVOchiaiMap(ochiaimap);
 
 				int op2topn = rankmetric.getTopN(op2list, actualfixs);
 				double op2mrr = rankmetric.getMeanAverageReciprocal(op2list, actualfixs);
 				double op2map = rankmetric.getMeanAveragePrecision(op2list, actualfixs);
+				
+				projects.get(index).setSpEVOp2Pos(op2topn);
+				projects.get(index).setSpEVOp2Mrr(op2mrr);
+				projects.get(index).setSpEVOp2Map(op2map);
 
 				int barineltopn = rankmetric.getTopN(barinellist, actualfixs);
 				double barinelmrr = rankmetric.getMeanAverageReciprocal(barinellist, actualfixs);
 				double barinelmap = rankmetric.getMeanAveragePrecision(barinellist, actualfixs);
+				
+				projects.get(index).setSpEVBarinelPos(barineltopn);
+				projects.get(index).setSpEVBarinelMrr(barinelmrr);
+				projects.get(index).setSpEVBarinelMap(barinelmap);
+				Instant end = Instant.now();
+				Duration interval = Duration.between(start, end);
+				
+				projects.get(index).setSpExecTime(interval.get(SECONDS));
 
 				System.out.println(
 						"Tarantula " + "TopN:" + tarantulatopn + " MRR:" + tarantulamrr + " MAP:" + tarantulamap);
 				System.out.println("Oochiai " + "TopN:" + ochiaitopn + " MRR:" + ochiaimrr + " MAP:" + ochiaimap);
 				System.out.println("Op2 " + "TopN:" + op2topn + " MRR:" + op2mrr + " MAP:" + op2map);
 				System.out.println("Barinel " + "TopN:" + barineltopn + " MRR:" + barinelmrr + " MAP:" + barinelmap);
-
+				
 
 			}
 
 			SessionGenerator.closeFactory();
 			dbexec = new DBActionExecutorChangeData();
-			dbexec.updateBatchExistingRecord(projects);
+			dbexec.updateSpectrumBatchExistingRecord(projects);
 
 		} catch (Exception ex) {
 			/* ignore */}

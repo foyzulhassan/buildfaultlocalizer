@@ -100,7 +100,7 @@ public class DependencyGenerator {
 		
 		//This class is responsible for holding scores of files
 		FileScore filescore=new FileScore(files);
-		String buidcmd=Config.projBuildCmd+" -x test --continue";
+		String buidcmd=Config.projBuildCmd+Config.projBuildContinue;
 		
 		Map<String, List<String>> compiledef=stracebuildmgr.getCompileJavaDependency(files, recentchangedfiles,filescore,buidcmd);
 		

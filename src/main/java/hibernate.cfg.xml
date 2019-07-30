@@ -15,6 +15,7 @@
         <mapping resource="Gradlepatch.hbm.xml"></mapping>
         <mapping resource="Mavenpatch.hbm.xml"></mapping>
         <mapping resource="Gradlebuildfixdata.hbm.xml"></mapping>
+        <mapping resource="SpectrumGradlebuildfixdata.hbm.xml"></mapping>
     </session-factory> 
     <!--For Local Test -->
    <!--<session-factory>
@@ -27,5 +28,6 @@
         <mapping resource="Gradlepatch.hbm.xml"></mapping>
         <mapping resource="Mavenpatch.hbm.xml"></mapping>
         <mapping resource="Gradlebuildfixdata.hbm.xml"></mapping>
+        <mapping resource="SpectrumGradlebuildfixdata.hbm.xml"></mapping>
     </session-factory> -->
 </hibernate-configuration>

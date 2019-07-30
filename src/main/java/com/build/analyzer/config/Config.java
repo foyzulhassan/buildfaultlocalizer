@@ -152,5 +152,6 @@ public class Config {
 	public static String dynamicBuildDir="/home/foyzulhassan/Research/Strace_Implementation/builddir/";
 	
 	public static String projBuildCmd="./gradlew assemble";
+	public static String projBuildContinue=" -x test --continue";
 
 }

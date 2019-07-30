@@ -10,6 +10,7 @@ import org.hibernate.Transaction;
 import com.build.analyzer.config.Config;
 import com.build.analyzer.entity.Gradlebuildfixdata;
 import com.build.analyzer.entity.Gradlepatch;
+import com.build.analyzer.entity.SpectrumGradlebuildfixdata;
 
 public class DBActionExecutorChangeData {
 	
@@ -186,6 +187,44 @@ public class DBActionExecutorChangeData {
 		return results;
 	}
 	
+	public List<SpectrumGradlebuildfixdata> getSpectrumRows() {
+
+		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
+		List<SpectrumGradlebuildfixdata> results = null;
+
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+
+			//// SELECT count(*) FROM travistorrent.travistorrent_27_10_2016
+			//// where gh_lang="java" and (tr_status="errored" or
+			//// tr_status="failed") and (tr_analyzer="java-ant" or
+			//// tr_analyzer="java-maven" or tr_analyzer="java-gradle") and
+			//// bl_log is NULL ;
+
+			String hql = "FROM SpectrumGradlebuildfixdata gp";
+
+			Query query = session.createQuery(hql);
+			
+			
+			if(Config.quickAnalysis)
+			{
+				query.setMaxResults(Config.quickAnalysisDataSize);
+			}
+
+			results = query.list();
+
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return results;
+	}
+	
 	public List<Gradlebuildfixdata> getRowsWithID(long rowid) {
 
 		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
@@ -249,5 +288,35 @@ public class DBActionExecutorChangeData {
 		}
 		
 	}
+	
+	public void updateSpectrumBatchExistingRecord(List<SpectrumGradlebuildfixdata> projects) {
+		//Travistorrent travis = null;
+
+		Session session = SessionGenerator.getSessionFactoryInstance().openSession();		
+		
+
+		Transaction tx = null;
+		try {
+			
+			for(int index=0;index<projects.size();index++)
+			{
+				tx = session.beginTransaction();			
+			
+				session.update(projects.get(index));
+				tx.commit();	
+				
+				System.out.println("Update Project:"+projects.get(index).getGhProjectName());
+			}
+
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+	}
+
 
 }
