@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -64,8 +65,9 @@ public class DiffFilterDependencyWithBoostScoreSimBuildAST {
 				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
 						proj.getGitLastfailCommit());
 
-				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependencyWithBuildASTV2(
+				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependencyWithBuildAST(
 						proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
+				List<String> filementioned=cmtanalyzer.getFilesMentionedInFailPart(proj.getGitLastfailCommit(), proj.getF2row(), proj);
 				
 //				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependencyTFIDF(
 //				proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
@@ -75,6 +77,14 @@ public class DiffFilterDependencyWithBoostScoreSimBuildAST {
 
 				String[] failfixs = failintrofiles.split(";");
 				String[] actualfixs = actualfixfile.split(";");
+				
+				List<String> failfixslist = Arrays.asList(failfixs);  
+				
+				List<String> mergedfiles=new ArrayList<>();
+				
+				mergedfiles.addAll(failfixslist);
+				
+				//mergedfiles.addAll(filementioned);
 
 				String difflog = proj.getFailChange();
 
@@ -83,9 +93,9 @@ public class DiffFilterDependencyWithBoostScoreSimBuildAST {
 
 					File f = new File(name);
 					boolean match=false;
-					while (failindex < failfixs.length) {
+					while (failindex < mergedfiles.size()) {
 
-						if (name.equals(failfixs[failindex])) {
+						if (name.equals(mergedfiles.get(failindex))) {
 							// Double val = simmap.get(name) + param2 *
 							// simmap.get(name);
 							// Double val=nthroot(param2,simmap.get(name));
@@ -134,9 +144,232 @@ public class DiffFilterDependencyWithBoostScoreSimBuildAST {
 			dbexec.updateBatchExistingRecord(projects);
 
 		} catch (Exception ex) {
+			System.out.println("Exception in Calling Method");
 			/* ignore */}
 
 	}
+	
+	
+	public void simAnalyzerWithFailPartLineSimRecentDependencySumming() throws Exception {
+
+		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
+
+		RankingCalculator rankmetric = new RankingCalculator();
+
+		List<Gradlebuildfixdata> projects = dbexec.getEvalRows();
+		
+		//List<Gradlebuildfixdata> projects=dbexec.getRowsWithID(2490551);
+
+		int totaltopn = 0;
+		double totalmrr = 0.0;
+		double totalmap = 0.0;
+
+		try {
+
+			totaltopn = 0;
+			totalmrr = 0.0;
+			totalmap = 0.0;
+
+			int datasize = 0;
+
+			for (int index = 0; index < projects.size(); index++) {
+				Gradlebuildfixdata proj = projects.get(index);
+
+				String project = proj.getGhProjectName();
+				project = project.replace('/', '@');
+
+				datasize++;
+				System.out.println(proj.getRow() + "=>" + project);
+
+				CommitAnalyzer cmtanalyzer = null;
+
+				try {
+					cmtanalyzer = new CommitAnalyzer("test", project);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
+						proj.getGitLastfailCommit());	
+//				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependencyTFIDF(
+//				proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
+
+				String actualfixfile = proj.getF2passFilelist();
+				String failintrofiles = proj.getFailFilelist();
+
+				String[] failfixs = failintrofiles.split(";");
+				String[] actualfixs = actualfixfile.split(";");
+				
+				List<String> failfixslist = Arrays.asList(failfixs);  
+				
+				List<String> mergedlist=new ArrayList<>();
+				
+				mergedlist.addAll(recentchangefile);
+				mergedlist.addAll(failfixslist);
+				
+				Map<String, Double> simmap=cmtanalyzer.getTreeSimilarityMapWithBuildDependencyWithBuildASTFiltering(proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile,mergedlist);
+
+				Map<String, Double> sortedsimmap = SortingMgr.sortByValue(simmap);
+
+				ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
+
+				int topn = rankmetric.getTopN(keys, actualfixs);
+				double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
+				double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+				
+				projects.get(index).setEvDiffDepBoostAstPos(topn);
+				projects.get(index).setEvDiffDepBoostAstMrr(mrr);
+				projects.get(index).setEvDiffDepBoostAstMap(map);
+
+				totaltopn = totaltopn + topn;
+				totalmrr = totalmrr + mrr;
+				totalmap = totalmap + map;
+
+			}
+
+			System.out.println("\n\n\n*******Diff Filter+Dependency+BoostScore+BuildScript AST********");
+			System.out.println("\n*******For Param: " + Config.thresholdForSimFilter + "********");
+			System.out.println("\nTopN: " + (totaltopn / projects.size()) + " MRR: " + (totalmrr / projects.size()) + " MAP: "
+					+ (totalmap / projects.size()));
+			
+			SessionGenerator.closeFactory();
+			dbexec = new DBActionExecutorChangeData();
+			dbexec.updateBatchExistingRecord(projects);
+
+		} catch (Exception ex) {
+			/* ignore */}
+
+	}
+	
+	public void luceneScoring() throws Exception {
+
+		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
+
+		RankingCalculator rankmetric = new RankingCalculator();
+
+		List<Gradlebuildfixdata> projects = dbexec.getEvalRows();
+		
+		//List<Gradlebuildfixdata> projects=dbexec.getRowsWithID(2490551);
+
+		int totaltopn = 0;
+		double totalmrr = 0.0;
+		double totalmap = 0.0;
+
+		try {
+
+			totaltopn = 0;
+			totalmrr = 0.0;
+			totalmap = 0.0;
+
+			int datasize = 0;
+
+			for (int index = 0; index < projects.size(); index++) {
+				Gradlebuildfixdata proj = projects.get(index);
+
+				String project = proj.getGhProjectName();
+				project = project.replace('/', '@');
+
+				datasize++;
+				System.out.println(proj.getRow() + "=>" + project);
+
+				CommitAnalyzer cmtanalyzer = null;
+
+				try {
+					cmtanalyzer = new CommitAnalyzer("test", project);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
+						proj.getGitLastfailCommit());	
+//				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependencyTFIDF(
+//				proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
+
+				String actualfixfile = proj.getF2passFilelist();
+				String failintrofiles = proj.getFailFilelist();
+
+				String[] failfixs = failintrofiles.split(";");
+				String[] actualfixs = actualfixfile.split(";");
+				
+				List<String> failfixslist = Arrays.asList(failfixs);  
+				
+				List<String> mergedlist=new ArrayList<>();
+				
+				mergedlist.addAll(recentchangefile);
+				mergedlist.addAll(failfixslist);
+				
+				Map<String, Double> simmap=cmtanalyzer.getLuceneScoring(proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
+  
+				List<String> mergedfiles=new ArrayList<>();
+				
+				mergedfiles.addAll(failfixslist);
+				
+				//mergedfiles.addAll(filementioned);
+
+				String difflog = proj.getFailChange();
+
+				for (String name : simmap.keySet()) {
+					int failindex = 0;
+
+					File f = new File(name);
+					boolean match=false;
+					while (failindex < mergedfiles.size()) {
+
+						if (name.equals(mergedfiles.get(failindex))) {
+							// Double val = simmap.get(name) + param2 *
+							// simmap.get(name);
+							// Double val=nthroot(param2,simmap.get(name));
+							Double val = Math.pow(simmap.get(name), Config.alphaparam)
+									* Math.pow(1, (1.0 - Config.alphaparam));
+							simmap.put(name, val);
+							match=true;
+							break;
+						} 
+						failindex++;
+					}
+					
+					if(match==false)
+					{
+						Double val = Math.pow(simmap.get(name), Config.alphaparam)
+								* Math.pow(simmap.get(name), (1.0 - Config.alphaparam));
+						simmap.put(name, val);
+					}
+				}	
+
+				Map<String, Double> sortedsimmap = SortingMgr.sortByValue(simmap);
+
+				ArrayList<String> keys = new ArrayList<String>(sortedsimmap.keySet());
+
+				int topn = rankmetric.getTopN(keys, actualfixs);
+				double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
+				double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+				
+				projects.get(index).setEvDiffDepBoostAstPos(topn);
+				projects.get(index).setEvDiffDepBoostAstMrr(mrr);
+				projects.get(index).setEvDiffDepBoostAstMap(map);
+
+				totaltopn = totaltopn + topn;
+				totalmrr = totalmrr + mrr;
+				totalmap = totalmap + map;
+
+			}
+
+			System.out.println("\n\n\n*******Diff Filter+Dependency+BoostScore+BuildScript AST********");
+			System.out.println("\n*******For Param: " + Config.thresholdForSimFilter + "********");
+			System.out.println("\nTopN: " + (totaltopn / projects.size()) + " MRR: " + (totalmrr / projects.size()) + " MAP: "
+					+ (totalmap / projects.size()));
+			
+			SessionGenerator.closeFactory();
+			dbexec = new DBActionExecutorChangeData();
+			dbexec.updateBatchExistingRecord(projects);
+
+		} catch (Exception ex) {
+			/* ignore */}
+
+	}
+	
 	
 	
 	public void simAnalyzerWithFailPartLineSimRecentDependencyNoHistory() throws Exception {

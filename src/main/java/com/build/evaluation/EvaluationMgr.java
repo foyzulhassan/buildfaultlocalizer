@@ -111,6 +111,17 @@ public class EvaluationMgr {
 		DiffFilterDependencyWithBoostScoreSimBuildAST obj = new DiffFilterDependencyWithBoostScoreSimBuildAST();
 		try {
 			obj.simAnalyzerWithFailPartLineSimRecentDependency();
+			//obj.luceneScoring();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void UpdateFixFileCount() {
+		BaseLineEvaluation obj = new BaseLineEvaluation();
+		try {
+			obj.updateFixFileCount();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

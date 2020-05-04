@@ -67,6 +67,7 @@ public class MainClass {
 				+ "\n37->Full Log+Dependency+BoostScore"
 				+ "\n38->Baseline(Saha et al){Fail Part Log+Java File Rank+Then Gradle Build Script}"
 				+ "\n39->All Evaluation Experiment"
+				+ "\n40->Generate Fix File Count Data"
 				+ "\n51->Gradle ASE Raw Label Log Generation"
 				+ "\n52->Gradle ASE AST Matching Statistics"
 				+ "\n53->Diff filter+Dependency+BoostScore+BuildScript AST"
@@ -159,6 +160,12 @@ public class MainClass {
 			EvaluationMgr.BaseLineForISSTA();
 			
 		}		
+		else if((inputid == 40))
+		{
+			EvaluationMgr.UpdateFixFileCount();
+
+			
+		}
 		else if((inputid == 51))
 		{
 			GradleBuildScriptASTSelector astlogsel=new GradleBuildScriptASTSelector();
@@ -183,10 +190,14 @@ public class MainClass {
 			aststat.generateStatistics();
 		}
 		else if (inputid == 68913) {
-			genSimDifferentialLogOnChange();
-			genSimDifferentialLogOnChangeForLogging();
-			genSimFailLogPartWithSimLimit();
-			performResultAnalysis();
+//			genSimDifferentialLogOnChange();
+//			genSimDifferentialLogOnChangeForLogging();
+//			genSimFailLogPartWithSimLimit();
+//			performResultAnalysis();
+			parameterTunningDiffFilter();
+			EvaluationMgr.DiffFilterDependencySimEval();
+			EvaluationMgr.FullLogDependencyBoostScoreSimEval();
+			EvaluationMgr.DiffFilterBoostScoreSimEval();
 		}
 
 		else {

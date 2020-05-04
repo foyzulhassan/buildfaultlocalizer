@@ -156,8 +156,12 @@ public class FilterLogText {
 				if (strparts[1] != null && Double.parseDouble(strparts[1]) <= Config.thresholdForSimFilter) {
 
 					if (strparts[0] != null) {
-						strbuilder.append(strparts[0]);
-						strbuilder.append("\n");
+						String strpart1 = strparts[0];
+						strpart1 = strpart1.trim();
+						if (strpart1.length() > 0) {
+							strbuilder.append(strpart1);
+							strbuilder.append("\n");
+						}
 					}
 
 				}
@@ -195,6 +199,43 @@ public class FilterLogText {
 //		}
 
 		return strbuilder.toString();
+	}
+	
+	public List<String> getListFilteringOnSimValue(Gradlebuildfixdata buildfixdata) {
+
+		StringBuilder strbuilder = new StringBuilder();
+
+		String faillog = buildfixdata.getFailPartSim();
+
+		List<String> buildfaillines = new ArrayList<String>(Arrays.asList(faillog.split("\n")));
+		List<String> strlist = new ArrayList<>();
+
+		for (int failindex = 0; failindex < buildfaillines.size(); failindex++) {
+
+			String strline = buildfaillines.get(failindex);
+
+			// Checking if line has sufficient length
+			if (strline.length() >= Config.lineSimSeperator.length()) {
+
+				String[] strparts = strline.split(Config.lineSimSeperator);
+
+				if (strparts[1] != null && Double.parseDouble(strparts[1]) <= Config.thresholdForSimFilter) {
+
+					if (strparts[0] != null && strparts[0].length() <500) {
+						String strpart1 = strparts[0];
+						strpart1 = strpart1.trim();
+						if (strpart1.length() > 0) {
+							strlist.add(strpart1);
+						}
+					}
+
+				}
+
+			}
+
+		}
+
+		return strlist;
 	}
 
 	public String performFilteringOld(Gradlebuildfixdata buildfixdata) {

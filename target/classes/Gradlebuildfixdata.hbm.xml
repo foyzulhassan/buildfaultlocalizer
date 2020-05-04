@@ -67,6 +67,9 @@
         <property name="changefileCount" type="int">
             <column name="changefile_count" not-null="true" />
         </property>
+        <property name="fixfileCount" type="java.lang.Integer">
+            <column name="fixfile_count"/>
+        </property>
         <property name="revertfileCount" type="int">
             <column name="revertfile_count" not-null="true" />
         </property>

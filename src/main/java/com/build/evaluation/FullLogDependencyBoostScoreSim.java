@@ -55,7 +55,7 @@ public class FullLogDependencyBoostScoreSim {
 				List<String> recentchangefile = cmtanalyzer.extractFileChangeListInBetweenCommit(proj.getGitCommit(),
 						proj.getGitLastfailCommit());
 
-				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithFullLogBuildDependency(
+				Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithFullLogBuildDependencyWithBuildAST(
 						proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
 
 				String actualfixfile = proj.getF2passFilelist();

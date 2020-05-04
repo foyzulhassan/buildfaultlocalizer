@@ -69,7 +69,7 @@ public class DiffFilterRecentDependencyTunning {
 		double totalmrr = 0.0;
 		double totalmap = 0.0;
 
-		String file = Config.getInspectionLogDir() + "geom_mean_final_last.txt";
+		String file = Config.getInspectionLogDir() + "geom_mean_final_May10.txt";
 
 		Writer writer = null;
 
@@ -113,7 +113,7 @@ public class DiffFilterRecentDependencyTunning {
 						List<String> recentchangefile = cmtanalyzer
 								.extractFileChangeListInBetweenCommit(proj.getGitCommit(), proj.getGitLastfailCommit());
 
-						Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependency(
+						Map<String, Double> simmap = cmtanalyzer.getTreeSimilarityMapWithBuildDependencyWithBuildAST(
 								proj.getGitLastfailCommit(), proj.getF2row(), proj, recentchangefile);
 
 						// // this map contains from having in common logdiff

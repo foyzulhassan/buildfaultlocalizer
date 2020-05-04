@@ -96,8 +96,11 @@ public class CosineDocumentSimilarity {
 		Map<String, Integer> f1 = getTermFrequencies(reader, 0);
 		Map<String, Integer> f2 = getTermFrequencies(reader, 1);
 		reader.close();
-		v1 = toRealVector(f1);
-		v2 = toRealVector(f2);
+		
+		if(f1!=null)
+			v1 = toRealVector(f1);
+		if(f2!=null)
+			v2 = toRealVector(f2);
 
 	}
 
@@ -339,6 +342,7 @@ public class CosineDocumentSimilarity {
 	{
 
 		String strinput=input.replaceAll("\\.", " \\. ");
+		//String strinput=input;
 		
 		String[] stop_word={"auto", "break","case", "char","const","continue","default","do","double","else","enum",
 				"extern", "float", "for", "goto", "if", "int", "long", "register", "return", "short", "signed", "sizeof",
@@ -375,6 +379,22 @@ public class CosineDocumentSimilarity {
 	  
 	    
 	    return sb.toString();
+	}
+	
+	public static void main(String[] args)
+	{
+		String str1="\\hometest\\file.java\n\n has some issue\ndependency a:c:c missing";
+		//str1=str1.replace("\\", "SP");
+		
+		try {
+			String str2=removeStopWordsAndStem(str1);
+			System.out.println(str2);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }

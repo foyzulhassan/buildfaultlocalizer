@@ -3,9 +3,12 @@ RQ1:
 1
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 SELECT 
-(sum(case when ev_baselineissta_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS baselinetop1percent, 
-(sum(case when ev_baselineissta_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS baselinetop5percent,
-(sum(case when ev_baselineissta_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS baselinetop10percent,
+(sum(case when ev_baselinefile_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS baseline1top1percent, 
+(sum(case when ev_baselinefile_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS baseline1top5percent,
+(sum(case when ev_baselinefile_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS baseline1top10percent,
+(sum(case when ev_baselineissta_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS baseline2top1percent, 
+(sum(case when ev_baselineissta_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS baseline2top5percent,
+(sum(case when ev_baselineissta_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS baseline2top10percent,
 (sum(case when ev_diffdepboost_pos<=1 then 1 else 0 end))/COUNT(*)*100 AS proposedtop1percent,
 (sum(case when ev_diffdepboost_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS proposedtop5percent,
 (sum(case when ev_diffdepboost_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS proposedtop10percent

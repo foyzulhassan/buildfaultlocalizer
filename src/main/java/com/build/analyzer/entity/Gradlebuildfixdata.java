@@ -25,6 +25,7 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	private String passFilelist;
 	private String f2passFilelist;
 	private int changefileCount;
+	private Integer fixfileCount;
 	private int revertfileCount;
 	private Integer totalfileCount;
 	private Integer fulllogPos;
@@ -278,6 +279,14 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 
 	public void setChangefileCount(int changefileCount) {
 		this.changefileCount = changefileCount;
+	}
+	
+	public int getFixfileCount() {
+		return fixfileCount;
+	}
+
+	public void setFixfileCount(Integer fixfileCount) {
+		this.fixfileCount = fixfileCount;
 	}
 
 	public int getRevertfileCount() {

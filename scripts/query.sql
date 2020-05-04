@@ -127,3 +127,10 @@ use travistorrent;
 ALTER TABLE gradlebuildfixdata ADD ev_diffdepboostast_pos int AFTER ev_baselinefile_map;
 ALTER TABLE gradlebuildfixdata ADD ev_diffdepboostast_mrr DOUBLE AFTER ev_diffdepboostast_pos;
 ALTER TABLE gradlebuildfixdata ADD ev_diffdepboostast_map DOUBLE AFTER ev_diffdepboostast_mrr;
+
+SELECT row, f1row, f2row, gh_project_name, git_branch, git_commit, git_failintro_commit, git_lastfail_commit, git_fix_commit, revereted_status, changefile_count, revertfile_count, totalfile_count, ev_reverting_pos, ev_reverting_mrr, ev_reverting_map, ev_fulllog_pos, ev_fulllog_mrr,
+ev_fulllog_map, ev_fulllogast_pos, ev_fulllogast_mrr, ev_fulllogast_map, ev_diffdepboost_pos, ev_diffdepboost_mrr, ev_diffdepboost_map, ev_diffdep_pos, ev_diffdep_mrr, ev_diffdep_map, ev_diffboost_pos, ev_diffboost_mrr, ev_diffboost_map, ev_fulllogboost_pos, ev_fulllogboost_mrr, ev_fulllogboost_map, ev_baselineissta_pos, ev_baselineissta_mrr, ev_baselineissta_map, ev_baselinefile_pos, ev_baselinefile_mrr, ev_baselinefile_map, ev_diffdepboostast_pos, ev_diffdepboostast_mrr, ev_diffdepboostast_map, dt_fail_type, dt_dataset_type FROM travistorrent.gradlebuildfixdata;
+
+%Add Column to Fix File Count%
+use travistorrent;
+ALTER TABLE gradlebuildfixdata ADD fixfile_count int AFTER changefile_count;
