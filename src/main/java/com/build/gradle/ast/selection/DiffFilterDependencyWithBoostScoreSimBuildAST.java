@@ -123,10 +123,25 @@ public class DiffFilterDependencyWithBoostScoreSimBuildAST {
 				int topn = rankmetric.getTopN(keys, actualfixs);
 				double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
 				double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+				double ndcg=rankmetric.calculateNDCG(keys, actualfixs);
 				
-				projects.get(index).setEvDiffDepBoostAstPos(topn);
-				projects.get(index).setEvDiffDepBoostAstMrr(mrr);
-				projects.get(index).setEvDiffDepBoostAstMap(map);
+				System.out.println("\n\n\nNDCG:");
+				System.out.print(ndcg);
+				
+				if(Config.updateTopN)
+					projects.get(index).setEvDiffDepBoostAstPos(topn);
+				
+				if(Config.updateMrr)
+					projects.get(index).setEvDiffDepBoostAstMrr(mrr);
+				
+				if(Config.updateMap)
+					projects.get(index).setEvDiffDepBoostAstMap(map);
+				
+				if(Config.updateNdcg)
+				{
+					projects.get(index).setEvDiffDepBoostAstNdcg(ndcg);
+					System.out.println("\n\n\nSetting NDCG");
+				}
 
 				totaltopn = totaltopn + topn;
 				totalmrr = totalmrr + mrr;

@@ -1,16 +1,21 @@
 package com.build.evaluation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.build.analyzer.analysis.CSVReaderWriter;
+import com.build.analyzer.analysis.LongEntity;
 import com.build.analyzer.config.Config;
 import com.build.analyzer.dtaccess.DBActionExecutorChangeData;
 import com.build.analyzer.dtaccess.SessionGenerator;
 import com.build.analyzer.entity.Gradlebuildfixdata;
 import com.build.commitanalyzer.CommitAnalyzer;
 import com.build.metrics.RankingCalculator;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.util.sorting.SortingMgr;
 
 /*
@@ -95,8 +100,8 @@ public class BaseLineEvaluation {
 		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
 		RankingCalculator rankmetric = new RankingCalculator();
 
-		// List<Gradlebuildfixdata> projects = dbexec.getEvalRows();
-		List<Gradlebuildfixdata> projects = dbexec.getTunningRows();
+		 List<Gradlebuildfixdata> projects = dbexec.getEvalRows();
+		//List<Gradlebuildfixdata> projects = dbexec.getTunningRows();
 
 		int totaltopn = 0;
 		double totalmrr = 0.0;
@@ -135,14 +140,23 @@ public class BaseLineEvaluation {
 			int topn = rankmetric.getTopN(keys, actualfixs);
 			double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
 			double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+			double ndcg=rankmetric.calculateNDCG(keys, actualfixs);
 
 			totaltopn = totaltopn + topn;
 			totalmrr = totalmrr + mrr;
 			totalmap = totalmap + map;
 
-			projects.get(index).setEvBaselineISSTAPos(topn);
-			projects.get(index).setEvBaselineISSTAMrr(mrr);
-			projects.get(index).setEvBaselineISSTAMap(map);
+			if(Config.updateTopN)
+				projects.get(index).setEvBaselineISSTAPos(topn);
+			
+			if(Config.updateMrr)
+				projects.get(index).setEvBaselineISSTAMrr(mrr);
+			
+			if(Config.updateMap)
+				projects.get(index).setEvBaselineISSTAMap(map);
+			
+			if(Config.updateNdcg)
+				projects.get(index).setEvBaselineISSTANdcg(ndcg);
 		}
 
 		System.out.println("\n\n\n*******Baseline ISSTA********");
@@ -159,8 +173,8 @@ public class BaseLineEvaluation {
 		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
 		RankingCalculator rankmetric = new RankingCalculator();
 
-		// List<Gradlebuildfixdata> projects = dbexec.getEvalRows();
-		List<Gradlebuildfixdata> projects = dbexec.getTunningRows();
+		 List<Gradlebuildfixdata> projects = dbexec.getEvalRows();
+		//List<Gradlebuildfixdata> projects = dbexec.getTunningRows();
 
 		int totaltopn = 0;
 		double totalmrr = 0.0;
@@ -203,14 +217,33 @@ public class BaseLineEvaluation {
 			int topn = rankmetric.getTopN(keys, actualfixs);
 			double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
 			double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+			double ndcg=rankmetric.calculateNDCG(keys, actualfixs);
 
 			totaltopn = totaltopn + topn;
 			totalmrr = totalmrr + mrr;
 			totalmap = totalmap + map;
 
-			projects.get(index).setEvBaselineFilePos(topn);
-			projects.get(index).setEvBaselineFileMrr(mrr);
-			projects.get(index).setEvBaselineFileMap(map);
+			if(Config.updateTopN)
+			{
+				projects.get(index).setEvBaselineFilePos(topn);
+			}
+			
+			if(Config.updateMrr)
+			{
+				projects.get(index).setEvBaselineFileMrr(mrr);
+			}
+			
+			if(Config.updateMap)
+			{
+				projects.get(index).setEvBaselineFileMap(map);
+			}
+			
+			if(Config.updateNdcg)
+			{
+				projects.get(index).setEvBaselineFileNdcg(ndcg);
+				System.out.println("\nNDCG=");
+				System.out.print(ndcg);
+			}
 		}
 
 		System.out.println("\n\n\n*******Baseline2(File Name Mentioned in Failed Log Part)********");
@@ -221,6 +254,8 @@ public class BaseLineEvaluation {
 		SessionGenerator.closeFactory();
 		dbexec = new DBActionExecutorChangeData();
 		dbexec.updateBatchExistingRecord(projects);
+		
+
 	}
 
 	public void updateFixFileCount() throws Exception {
@@ -250,5 +285,109 @@ public class BaseLineEvaluation {
 		dbexec = new DBActionExecutorChangeData();
 		dbexec.updateBatchExistingRecord(projects);
 	}
+	
+	
+	public List<LongEntity> calculateCommitTime(boolean sourceonly,String filename) throws Exception {
+		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
+		RankingCalculator rankmetric = new RankingCalculator();
+		List<Gradlebuildfixdata> projects;
+		
+		if(sourceonly)
+			projects = dbexec.getOnlySourceRelatedFix();
+		else
+			projects = dbexec.getOnlyBuildFileRelatedFix();
+		//List<Gradlebuildfixdata> projects = dbexec.getTunningRows();
+
+		int totaltopn = 0;
+		double totalmrr = 0.0;
+		double totalmap = 0.0;
+		List<LongEntity> timeList=new ArrayList<>();
+
+		for (int index = 0; index < projects.size(); index++) {
+
+			Gradlebuildfixdata proj = projects.get(index);
+
+			String project = proj.getGhProjectName();
+			project = project.replace('/', '@');
+
+			System.out.println(proj.getRow() + "=>" + project);
+
+			CommitAnalyzer cmtanalyzer = null;
+
+			try {
+				cmtanalyzer = new CommitAnalyzer("test", project);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			long timeinmin= cmtanalyzer.getTimeDiffOfTwoCommitInMin(proj.getGitLastfailCommit(),proj.getGitFixCommit());
+			LongEntity time=new LongEntity(timeinmin);
+			timeList.add(time);			
+
+		}
+		
+		CSVReaderWriter writer=new CSVReaderWriter();
+		try {
+			writer.writeListBean(timeList, filename);
+		} catch (CsvDataTypeMismatchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CsvRequiredFieldEmptyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return timeList;
+		
+	}
+	
+	public void FixFileCountAnalysis(boolean sourceonly,String filename) throws Exception {
+		DBActionExecutorChangeData dbexec = new DBActionExecutorChangeData();
+
+		List<Gradlebuildfixdata> projects;
+		
+		if(sourceonly)
+			projects = dbexec.getOnlySourceRelatedFix();
+		else
+			projects = dbexec.getOnlyBuildFileRelatedFix();
+
+		List<LongEntity> fixcountlist=new ArrayList<>();
+		for (int index = 0; index < projects.size(); index++) {
+
+			Gradlebuildfixdata proj = projects.get(index);
+
+			String project = proj.getGhProjectName();
+			project = project.replace('/', '@');
+
+			System.out.println(project);
+
+			String actualfixfile = proj.getF2passFilelist();
+
+			String[] actualfixs = actualfixfile.split(";");
+
+			int fixcount = actualfixs.length;
+			
+			fixcountlist.add(new LongEntity(fixcount));			
+		}
+		
+		CSVReaderWriter writer=new CSVReaderWriter();
+		try {
+			writer.writeListBean(fixcountlist, filename);
+		} catch (CsvDataTypeMismatchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CsvRequiredFieldEmptyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
 
 }

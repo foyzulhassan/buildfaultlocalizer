@@ -127,5 +127,25 @@ public class EvaluationMgr {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void CommitTimeAnalysis(boolean sourceonly,String filename) {
+		BaseLineEvaluation obj = new BaseLineEvaluation();
+		try {
+			obj.calculateCommitTime(sourceonly,filename);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void FixAnalysis(boolean sourceonly,String filename) {
+		BaseLineEvaluation obj = new BaseLineEvaluation();
+		try {
+			obj.FixFileCountAnalysis(sourceonly,filename);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }

@@ -116,5 +116,10 @@ public class RankingCalculator {
 		
 		return avg;
 	}
+	
+	public double calculateNDCG(ArrayList<String> predictionData, String[] actualfiles)
+	{
+		return NDCG.calculateNDCG(predictionData,actualfiles);
+	}
 
 }

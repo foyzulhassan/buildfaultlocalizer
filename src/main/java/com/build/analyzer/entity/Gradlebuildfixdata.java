@@ -46,6 +46,7 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	private Integer evRevertingPos;
 	private Double evRevertingMrr;
 	private Double evRevertingMap;
+	private Double evRevertingNdcg;
 	private Integer evFulllogPos;
 	private Double evFulllogMrr;
 	private Double evFulllogMap;
@@ -55,25 +56,31 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	private Integer evDiffdepboostPos;
 	private Double evDiffdepboostMrr;
 	private Double evDiffdepboostMap;
+	private Double evDiffdepboostNdcg;
 	private Integer evDiffdepPos;
 	private Double evDiffdepMrr;
 	private Double evDiffdepMap;
+	private Double evDiffdepNdcg;
 	private Integer evDiffboostPos;
 	private Double evDiffboostMrr;
 	private Double evDiffboostMap;
+	private Double evDiffboostNdcg;
 	private Integer evFulllogboostPos;
 	private Double evFulllogboostMrr;
 	private Double evFulllogboostMap;
+	private Double evFulllogboostNdcg;
 	private Integer evBaselineISSTAPos;
 	private Double evBaselineISSTAMrr;
 	private Double evBaselineISSTAMap;
-	private Integer evBaselineFilePos;	
+	private Double evBaselineISSTANdcg;
+	private Integer evBaselineFilePos;
 	private Double evBaselineFileMrr;
 	private Double evBaselineFileMap;
+	private Double evBaselineFileNdcg;
 	private Integer evDiffDepBoostAstPos;
 	private Double evDiffDepBoostAstMrr;
 	private Double evDiffDepBoostAstMap;
-
+	private Double evDiffDepBoostAstNdcg;
 	private String dtFailType;
 	private String dtDatasetType;
 
@@ -240,7 +247,7 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	public void setFailPartSim(String failPartSim) {
 		this.failPartSim = failPartSim;
 	}
-	
+
 	public String getReveretedStatus() {
 		return this.reveretedStatus;
 	}
@@ -280,7 +287,7 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	public void setChangefileCount(int changefileCount) {
 		this.changefileCount = changefileCount;
 	}
-	
+
 	public int getFixfileCount() {
 		return fixfileCount;
 	}
@@ -400,7 +407,7 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	public void setFilterlogdualMap(Double filterlogdualMap) {
 		this.filterlogdualMap = filterlogdualMap;
 	}
-	
+
 	public Integer getFailpartsimPos() {
 		return failpartsimPos;
 	}
@@ -424,7 +431,7 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	public void setFailpartsimMap(Double failpartsimMap) {
 		this.failpartsimMap = failpartsimMap;
 	}
-	
+
 	public Integer getEvRevertingPos() {
 		return this.evRevertingPos;
 	}
@@ -447,6 +454,14 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 
 	public void setEvRevertingMap(Double evRevertingMap) {
 		this.evRevertingMap = evRevertingMap;
+	}
+
+	public Double getEvRevertingNdcg() {
+		return evRevertingNdcg;
+	}
+
+	public void setEvRevertingNdcg(Double evRevertingNdcg) {
+		this.evRevertingNdcg = evRevertingNdcg;
 	}
 
 	public Integer getEvFulllogPos() {
@@ -521,6 +536,14 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 		this.evDiffdepboostMap = evDiffdepboostMap;
 	}
 
+	public Double getEvDiffdepboostNdcg() {
+		return evDiffdepboostNdcg;
+	}
+
+	public void setEvDiffdepboostNdcg(Double evDiffdepboostNdcg) {
+		this.evDiffdepboostNdcg = evDiffdepboostNdcg;
+	}
+
 	public Integer getEvDiffdepPos() {
 		return this.evDiffdepPos;
 	}
@@ -543,6 +566,14 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 
 	public void setEvDiffdepMap(Double evDiffdepMap) {
 		this.evDiffdepMap = evDiffdepMap;
+	}
+
+	public Double getEvDiffdepNdcg() {
+		return evDiffdepNdcg;
+	}
+
+	public void setEvDiffdepNdcg(Double evDiffdepNdcg) {
+		this.evDiffdepNdcg = evDiffdepNdcg;
 	}
 
 	public Integer getEvDiffboostPos() {
@@ -569,6 +600,14 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 		this.evDiffboostMap = evDiffboostMap;
 	}
 
+	public Double getEvDiffboostNdcg() {
+		return evDiffboostNdcg;
+	}
+
+	public void setEvDiffboostNdcg(Double evDiffboostNdcg) {
+		this.evDiffboostNdcg = evDiffboostNdcg;
+	}
+
 	public Integer getEvFulllogboostPos() {
 		return this.evFulllogboostPos;
 	}
@@ -593,6 +632,14 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 		this.evFulllogboostMap = evFulllogboostMap;
 	}
 
+	public Double getEvFulllogboostNdcg() {
+		return evFulllogboostNdcg;
+	}
+
+	public void setEvFulllogboostNdcg(Double evFulllogboostNdcg) {
+		this.evFulllogboostNdcg = evFulllogboostNdcg;
+	}
+
 	public String getDtDatasetType() {
 		return this.dtDatasetType;
 	}
@@ -600,7 +647,7 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	public void setDtDatasetType(String dtDatasetType) {
 		this.dtDatasetType = dtDatasetType;
 	}
-	
+
 	public String getDtFailType() {
 		return this.dtFailType;
 	}
@@ -632,7 +679,15 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	public void setEvBaselineISSTAMap(Double evBaselineISSTAMap) {
 		this.evBaselineISSTAMap = evBaselineISSTAMap;
 	}
-	
+
+	public Double getEvBaselineISSTANdcg() {
+		return evBaselineISSTANdcg;
+	}
+
+	public void setEvBaselineISSTANdcg(Double evBaselineISSTANdcg) {
+		this.evBaselineISSTANdcg = evBaselineISSTANdcg;
+	}
+
 	public Integer getEvBaselineFilePos() {
 		return evBaselineFilePos;
 	}
@@ -655,6 +710,14 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 
 	public void setEvBaselineFileMap(Double evBaselineFileMap) {
 		this.evBaselineFileMap = evBaselineFileMap;
+	}
+
+	public Double getEvBaselineFileNdcg() {
+		return evBaselineFileNdcg;
+	}
+
+	public void setEvBaselineFileNdcg(Double evBaselineFileNdcg) {
+		this.evBaselineFileNdcg = evBaselineFileNdcg;
 	}
 
 	public Integer getEvDiffDepBoostAstPos() {
@@ -680,6 +743,13 @@ public class Gradlebuildfixdata implements java.io.Serializable {
 	public void setEvDiffDepBoostAstMap(Double evDiffDepBoostAstMap) {
 		this.evDiffDepBoostAstMap = evDiffDepBoostAstMap;
 	}
+	
+	public Double getEvDiffDepBoostAstNdcg() {
+		return evDiffDepBoostAstNdcg;
+	}
 
+	public void setEvDiffDepBoostAstNdcg(Double evDiffDepBoostAstNdcg) {
+		this.evDiffDepBoostAstNdcg = evDiffDepBoostAstNdcg;
+	}
 
 }

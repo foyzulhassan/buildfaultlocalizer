@@ -72,7 +72,11 @@ public class MainClass {
 				+ "\n52->Gradle ASE AST Matching Statistics"
 				+ "\n53->Diff filter+Dependency+BoostScore+BuildScript AST"
 				+ "\n54->Baseline(File Name Mentioned in Log Error Part)"
-				+ "\n55->Java AST selection Statistics)");
+				+ "\n55->Java AST selection Statistics"
+				+ "\n56->TSE Paper Calculate NDCG metric"
+				+ "\n61->Commit Time Analysis"
+				+ "\n62->Fix File Change Count Analysis");
+		
 		
 		Scanner cin = new Scanner(System.in);
 
@@ -150,14 +154,17 @@ public class MainClass {
 		} 
 		else if((inputid == 39))
 		{
-			EvaluationMgr.FixWithBuildFailChangeEval();
-			EvaluationMgr.FullLogFaultLocalizationEval();
-			EvaluationMgr.FullLogASTFaultLocalizationEval();
-			EvaluationMgr.DiffFilterDependencyWithBoostScoreSimEval();
-			EvaluationMgr.DiffFilterDependencySimEval();
-			EvaluationMgr.DiffFilterBoostScoreSimEval();
-			EvaluationMgr.FullLogDependencyBoostScoreSimEval();
-			EvaluationMgr.BaseLineForISSTA();
+			//EvaluationMgr.FixWithBuildFailChangeEval();
+			//EvaluationMgr.FullLogFaultLocalizationEval();			
+			//EvaluationMgr.FullLogASTFaultLocalizationEval();			
+			
+			EvaluationMgr.DiffFilterDependencySimEval(); //V3
+			EvaluationMgr.DiffFilterBoostScoreSimEval(); //V2
+			EvaluationMgr.DiffFilterDependencyWithBoostScoreSimEval(); //UniLoc
+			EvaluationMgr.FullLogDependencyBoostScoreSimEval(); //V1
+			
+			EvaluationMgr.BaseLineForFileName(); //baseline1	
+			EvaluationMgr.BaseLineForISSTA(); //baseline2
 			
 		}		
 		else if((inputid == 40))
@@ -189,6 +196,16 @@ public class MainClass {
 			JavaASTSelector aststat=new JavaASTSelector();
 			aststat.generateStatistics();
 		}
+		else if((inputid == 56))
+		{
+			EvaluationMgr.FixWithBuildFailChangeEval();
+			EvaluationMgr.BaseLineForISSTA();
+			EvaluationMgr.BaseLineForFileName();	
+//			EvaluationMgr.FullLogDependencyBoostScoreSimEval();
+//			EvaluationMgr.DiffFilterBoostScoreSimEval();
+//			EvaluationMgr.DiffFilterDependencySimEval();
+//			EvaluationMgr.DiffFilterDependencyWithBoostScoreBuildASTSimEval();
+		}
 		else if (inputid == 68913) {
 //			genSimDifferentialLogOnChange();
 //			genSimDifferentialLogOnChangeForLogging();
@@ -198,8 +215,15 @@ public class MainClass {
 			EvaluationMgr.DiffFilterDependencySimEval();
 			EvaluationMgr.FullLogDependencyBoostScoreSimEval();
 			EvaluationMgr.DiffFilterBoostScoreSimEval();
+		}		
+		else if (inputid == 61) {
+			EvaluationMgr.CommitTimeAnalysis(true, "sourceonlcommittimey.csv");
+			EvaluationMgr.CommitTimeAnalysis(false,"buildrelatedcommittime.csv");			
 		}
-
+		else if (inputid == 62) {
+			EvaluationMgr.FixAnalysis(true, "sourceonlycommitfilecount.csv");
+			EvaluationMgr.FixAnalysis(false, "buildcommitfilecount.csv");
+		}
 		else {
 			CommitChangeExtractor obj = new CommitChangeExtractor();
 			obj.testCommit();

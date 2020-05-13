@@ -74,10 +74,19 @@ public class DiffFilterDependencySim {
 				int topn = rankmetric.getTopN(keys, actualfixs);
 				double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
 				double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+				double ndcg=rankmetric.calculateNDCG(keys, actualfixs);
 				
-				projects.get(index).setEvDiffdepPos(topn);
-				projects.get(index).setEvDiffdepMrr(mrr);
-				projects.get(index).setEvDiffdepMap(map);
+				if(Config.updateTopN)
+					projects.get(index).setEvDiffdepPos(topn);
+				
+				if(Config.updateMrr)
+					projects.get(index).setEvDiffdepMrr(mrr);
+				
+				if(Config.updateMap)
+					projects.get(index).setEvDiffdepMap(map);
+				
+				if(Config.updateNdcg)
+					projects.get(index).setEvDiffdepNdcg(ndcg);
 
 				totaltopn = totaltopn + topn;
 				totalmrr = totalmrr + mrr;

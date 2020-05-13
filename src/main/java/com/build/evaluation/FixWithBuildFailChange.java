@@ -74,14 +74,31 @@ public class FixWithBuildFailChange {
 			int topn = rankmetric.getTopN(keys, actualfixs);
 			double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
 			double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+			double ndcg=rankmetric.calculateNDCG(keys, actualfixs);
 
 			totaltopn = totaltopn + topn;
 			totalmrr = totalmrr + mrr;
 			totalmap = totalmap + map;
 
-			projects.get(index).setEvRevertingPos(topn);
-			projects.get(index).setEvRevertingMrr(mrr);
-			projects.get(index).setEvRevertingMap(map);
+			if(Config.updateTopN)
+			{
+				projects.get(index).setEvRevertingPos(topn);
+			}
+			
+			if(Config.updateMrr)
+			{
+				projects.get(index).setEvRevertingMrr(mrr);
+			}
+			
+			if(Config.updateMap)
+			{
+				projects.get(index).setEvRevertingMap(map);
+			}
+			
+			if(Config.updateNdcg)
+			{
+				projects.get(index).setEvRevertingNdcg(ndcg);
+			}
 
 		}
 		

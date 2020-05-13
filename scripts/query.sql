@@ -134,3 +134,13 @@ ev_fulllog_map, ev_fulllogast_pos, ev_fulllogast_mrr, ev_fulllogast_map, ev_diff
 %Add Column to Fix File Count%
 use travistorrent;
 ALTER TABLE gradlebuildfixdata ADD fixfile_count int AFTER changefile_count;
+
+%Add Column for NDCG metric calculation
+ALTER TABLE gradlebuildfixdata ADD ev_reverting_ndcg DOUBLE AFTER ev_reverting_map;
+ALTER TABLE gradlebuildfixdata ADD ev_baselinefile_ndcg DOUBLE AFTER ev_baselinefile_map;
+ALTER TABLE gradlebuildfixdata ADD ev_baselineissta_ndcg DOUBLE AFTER ev_baselineissta_map;
+ALTER TABLE gradlebuildfixdata ADD ev_fulllogboost_ndcg DOUBLE AFTER ev_fulllogboost_map;
+ALTER TABLE gradlebuildfixdata ADD ev_diffboost_ndcg DOUBLE AFTER ev_diffboost_map;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdep_ndcg DOUBLE AFTER ev_diffdep_map;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdepboost_ndcg DOUBLE AFTER ev_diffdepboost_map;
+ALTER TABLE gradlebuildfixdata ADD ev_diffdepboostast_ndcg DOUBLE AFTER ev_diffdepboostast_map;

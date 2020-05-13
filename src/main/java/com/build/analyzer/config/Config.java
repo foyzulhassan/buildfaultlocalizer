@@ -147,5 +147,10 @@ public class Config {
 	public static String luceneDir2=workDir+"lucenedir2/";
 	
 	public static String logfileDir="/media/AutoBuilder/Machine_Learning/Results3/";
+	
+	public static boolean updateTopN=false;
+	public static boolean updateMrr=false;
+	public static boolean updateMap=false;
+	public static boolean updateNdcg=true;
 
 }

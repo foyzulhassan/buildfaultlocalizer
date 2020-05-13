@@ -101,10 +101,19 @@ public class FullLogDependencyBoostScoreSim {
 				int topn = rankmetric.getTopN(keys, actualfixs);
 				double mrr = rankmetric.getMeanAverageReciprocal(keys, actualfixs);
 				double map = rankmetric.getMeanAveragePrecision(keys, actualfixs);
+				double ndcg=rankmetric.calculateNDCG(keys, actualfixs);
 				
-				projects.get(index).setEvFulllogboostPos(topn);
-				projects.get(index).setEvFulllogboostMrr(mrr);
-				projects.get(index).setEvFulllogboostMap(map);
+				if(Config.updateTopN)
+					projects.get(index).setEvFulllogboostPos(topn);
+				
+				if(Config.updateMrr)
+					projects.get(index).setEvFulllogboostMrr(mrr);
+				
+				if(Config.updateMap)
+					projects.get(index).setEvFulllogboostMap(map);
+				
+				if(Config.updateNdcg)
+					projects.get(index).setEvFulllogboostNdcg(ndcg);
 
 				totaltopn = totaltopn + topn;
 				totalmrr = totalmrr + mrr;

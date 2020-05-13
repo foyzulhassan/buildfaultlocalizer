@@ -41,7 +41,8 @@ SELECT gh_project_name, count(*),
 (sum(case when ev_reverting_pos<=5 then 1 else 0 end))/COUNT(*)*100 AS reverttop5percent,
 (sum(case when ev_reverting_pos<=10 then 1 else 0 end))/COUNT(*)*100 AS reverttop10percent,
 avg(ev_reverting_mrr) as revertMRR,
-avg(ev_reverting_map) as revertMAP
+avg(ev_reverting_map) as revertMAP,
+avg(ev_reverting_ndcg) as revertNDCG
 FROM travisci.gradlebuildfixdatashort where dt_dataset_type="EVAL";
 
 

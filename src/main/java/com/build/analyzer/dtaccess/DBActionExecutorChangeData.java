@@ -84,6 +84,72 @@ public class DBActionExecutorChangeData {
 
 	}
 	
+	public List<Gradlebuildfixdata> getOnlySourceRelatedFix()
+	{
+		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
+		List<Gradlebuildfixdata> results = null;
+
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+
+			String hql = "FROM Gradlebuildfixdata gp where gp.f2passFilelist like :keyword1 and gp.f2passFilelist not like :keyword2";
+			Query query = session.createQuery(hql);
+			query.setParameter("keyword1","%"+".java"+"%");
+			query.setParameter("keyword2","%"+".gradle"+"%");
+			
+			if(Config.quickAnalysis)
+			{
+				query.setMaxResults(Config.quickAnalysisDataSize);
+			}
+
+			results = query.list();
+
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return results;		
+
+	}
+	
+	public List<Gradlebuildfixdata> getOnlyBuildFileRelatedFix()
+	{
+		Session session = SessionGenerator.getSessionFactoryInstance().openSession();
+		List<Gradlebuildfixdata> results = null;
+
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+
+			String hql = "FROM Gradlebuildfixdata gp where gp.f2passFilelist like :keyword1";
+			Query query = session.createQuery(hql);
+			query.setParameter("keyword1","%"+".gradle"+"%");
+			
+			
+			if(Config.quickAnalysis)
+			{
+				query.setMaxResults(Config.quickAnalysisDataSize);
+			}
+
+			results = query.list();
+
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return results;		
+
+	}
+	
 	public List<Gradlepatch> getEntityWithRowId(long rowid) {
 		Gradlepatch proj = null;
 		List<Gradlepatch> projs=new ArrayList<>();
